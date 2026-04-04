@@ -60,6 +60,46 @@ function doLogin() {
   e.textContent = ''; CU = d; applyTheme(CU.theme || 'dark'); enterApp();
 }
 
+function showForgotPin() {
+  document.getElementById('forgot-pin-panel').style.display = 'block';
+  document.getElementById('lf-in').style.display = 'none';
+}
+
+function hideForgotPin() {
+  document.getElementById('forgot-pin-panel').style.display = 'none';
+  document.getElementById('lf-in').style.display = 'block';
+}
+
+function doResetPin() {
+  const u = document.getElementById('fp-user').value.trim().toLowerCase();
+  const code = document.getElementById('fp-code').value.trim().toUpperCase();
+  const pin  = document.getElementById('fp-pin').value.trim();
+  const pin2 = document.getElementById('fp-pin2').value.trim();
+  const e = document.getElementById('fp-e');
+  if (!u || !code || !pin) { e.textContent = 'All fields required.'; return; }
+  const d = loadU(u);
+  if (!d) { e.textContent = 'Username not found.'; return; }
+  if (!d.recoveryCode || d.recoveryCode !== hashPin(code)) { e.textContent = 'Recovery code incorrect.'; return; }
+  if (!/^\d{4}$/.test(pin)) { e.textContent = 'PIN must be 4 digits.'; return; }
+  if (pin !== pin2) { e.textContent = 'PINs do not match.'; return; }
+  d.pin = hashPin(pin);
+  localStorage.setItem(sk(u), JSON.stringify(d));
+  e.textContent = '';
+  hideForgotPin();
+  document.getElementById('li-u').value = u;
+  document.getElementById('li-e').textContent = '✅ PIN reset — sign in now.';
+  document.getElementById('li-e').style.color = 'var(--gr)';
+}
+
+const RESERVED_USERNAMES = ['kmansgolf','kman','admin','test','guest','demo','system','range','bunker','fairway'];
+
+function genRecoveryCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I confusion
+  let code = '';
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
 function doCreate() {
   const name = document.getElementById('ca-n').value.trim();
   const user = document.getElementById('ca-u').value.trim().toLowerCase();
@@ -68,11 +108,37 @@ function doCreate() {
   const pin2 = document.getElementById('ca-p2').value.trim();
   const e    = document.getElementById('ca-e');
   if (!name || !user || !pin) { e.textContent = 'All fields required.'; return; }
+  if (!/^[a-z0-9_]{3,20}$/.test(user)) { e.textContent = 'Username: 3–20 chars, letters/numbers/underscore only.'; return; }
+  if (RESERVED_USERNAMES.includes(user)) { e.textContent = 'That username is reserved. Please choose another.'; return; }
   if (!/^\d{4}$/.test(pin)) { e.textContent = 'PIN must be 4 digits.'; return; }
   if (pin !== pin2) { e.textContent = 'PINs do not match.'; return; }
   if (loadU(user)) { e.textContent = 'Username already taken.'; return; }
-  CU = { username: user, name, hcp, pin: hashPin(pin), sessions: [], aimpointMode: false, created: Date.now() };
-  saveU(CU); e.textContent = ''; enterApp();
+
+  const recoveryCode = genRecoveryCode();
+  CU = {
+    username: user, name, hcp,
+    pin: hashPin(pin),
+    recoveryCode: hashPin(recoveryCode), // stored hashed
+    sessions: [], aimpointMode: false,
+    firstRun: true,
+    created: Date.now()
+  };
+  saveU(CU);
+  e.textContent = '';
+
+  // Show recovery code before entering app
+  showRecoveryCode(recoveryCode);
+}
+
+function showRecoveryCode(code) {
+  const overlay = document.getElementById('recovery-overlay');
+  document.getElementById('recovery-code-display').textContent = code;
+  overlay.style.display = 'flex';
+}
+
+function dismissRecoveryCode() {
+  document.getElementById('recovery-overlay').style.display = 'none';
+  enterApp();
 }
 
 function doLogout() {
@@ -90,6 +156,21 @@ function enterApp() {
   document.getElementById('bnav').classList.add('show');
   buildWarmup();
   refreshHome();
+  if (CU?.firstRun) {
+    showFirstRun();
+  } else {
+    goTo('s-home');
+  }
+}
+
+function showFirstRun() {
+  document.getElementById('firstrun-overlay').style.display = 'flex';
+}
+
+function dismissFirstRun() {
+  document.getElementById('firstrun-overlay').style.display = 'none';
+  CU.firstRun = false;
+  saveU(CU);
   goTo('s-home');
 }
 
@@ -1057,152 +1138,107 @@ function goHome() {
 
 document.addEventListener('DOMContentLoaded', () => {
   goTo('s-login');
-  _autoSeedKman();
 });
 
+
+
 // ═══════════════════════════════════════════
-//  AUTO-SEED: kman test account
-//  Runs once on load. If 'kman' already exists, does nothing.
-//  Username: kman  PIN: 1234  HCP: 11-15
-//  8 sessions — clear weakness profile for Phase 2 testing
+//  EXPORT / IMPORT / TEST DATA
 // ═══════════════════════════════════════════
-function _autoSeedKman() {
-  if (localStorage.getItem('range_kman')) return; // already seeded
+function exportData() {
+  if (!CU) return;
+  const blob = new Blob([JSON.stringify(CU, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = `range-${CU.username}-${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!data.username || !data.pin) throw new Error('Invalid file');
+        if (!confirm('This will overwrite your current data. Continue?')) return;
+        saveU(data);
+        CU = data;
+        applyTheme(CU.theme || 'dark');
+        refreshHome();
+        buildProfile();
+        document.getElementById('import-status').textContent = '✅ Data restored successfully.';
+        document.getElementById('import-status').style.color = 'var(--gr)';
+      } catch {
+        document.getElementById('import-status').textContent = '❌ Invalid file. Export from The Range only.';
+        document.getElementById('import-status').style.color = 'var(--re)';
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function loadTestData() {
+  if (!CU) return;
+  if (!confirm('Load demo session data into your account? This adds 8 practice sessions for testing.')) return;
 
   const DAY = 86400000;
   const now = Date.now();
-
-  // Putting station score helper
-  const ps = (shots, score) => ({ score, shotResults: shots, club: '', feltSlope: '', actualSlope: '' });
-  // Chipping station score helper — auto-calculate pts
+  const ps = (shots, score) => ({ score, shotResults: shots, club: '', feltSlope: '', actualSlope: '', isGate: false });
   const ZONE_PTS = { z1:5, z2:3, z3:1, z4:0 };
-  const cs = (shots, club) => {
-    const score = shots.reduce((a, z) => a + (ZONE_PTS[z] || 0), 0);
-    return { score, shotResults: shots, club, feltSlope: '', actualSlope: '' };
-  };
+  const cs = (shots, club) => ({ score: shots.reduce((a,z)=>a+(ZONE_PTS[z]||0),0), shotResults: shots, club, feltSlope:'', actualSlope:'' });
 
-  const sessions = [
-
-    // ── Session 1: short, 21 days ago ─────────────
-    { date: now - 21*DAY, ver:'short', results:[
-      { cid:'putting', score:7, stationScores:[
-        ps(['made','made'],2), ps(['made','S-L'],1), ps(['C-R','made'],1),
-        ps(['made','made'],2), ps(['S-C','made'],1), ps(['S-L','S-C'],0)
-      ]},
-      { cid:'chipping', score:27, stationScores:[
-        cs(['z1','z2'],'60'), cs(['z2','z3'],'SW'), cs(['z2','z1'],'SW'),
-        cs(['z3','z3'],'SW'), cs(['z2','z3'],'SW'), cs(['z4','z3'],'SW')
-      ]}
+  const testSessions = [
+    { date: now-21*DAY, ver:'short', sessionType:'standard', combineType:'skill', results:[
+      { cid:'putting', score:7, stationScores:[ps(['made','made'],2),ps(['made','S-L'],1),ps(['C-R','made'],1),ps(['made','made'],2),ps(['S-C','made'],1),ps(['S-L','S-C'],0)] },
+      { cid:'chipping', score:27, stationScores:[cs(['z1','z2'],'60'),cs(['z2','z3'],'SW'),cs(['z2','z1'],'SW'),cs(['z3','z3'],'SW'),cs(['z2','z3'],'SW'),cs(['z4','z3'],'SW')] }
     ]},
-
-    // ── Session 2: short, 18 days ago ─────────────
-    { date: now - 18*DAY, ver:'short', results:[
-      { cid:'putting', score:4, stationScores:[
-        ps(['made','made'],2), ps(['S-C','S-L'],0), ps(['L-R','C-R'],0),
-        ps(['made','C-L'],1), ps(['made','S-C'],1), ps(['S-L','L-L'],0)
-      ]},
-      { cid:'chipping', score:28, stationScores:[
-        cs(['z1','z1'],'60'), cs(['z2','z2'],'SW'), cs(['z1','z3'],'SW'),
-        cs(['z4','z3'],'SW'), cs(['z3','z2'],'52'), cs(['z3','z4'],'SW')
-      ]}
+    { date: now-18*DAY, ver:'short', sessionType:'standard', combineType:'skill', results:[
+      { cid:'putting', score:4, stationScores:[ps(['made','S-L'],1),ps(['S-C','S-C'],0),ps(['C-R','S-C'],0),ps(['made','made'],2),ps(['S-L','S-C'],0),ps(['S-C','made'],1)] },
+      { cid:'chipping', score:24, stationScores:[cs(['z2','z3'],'60'),cs(['z3','z3'],'SW'),cs(['z1','z3'],'SW'),cs(['z3','z4'],'SW'),cs(['z2','z3'],'SW'),cs(['z3','z4'],'SW')] }
     ]},
-
-    // ── Session 3: long, 15 days ago (12 stations, 3 shots) ──
-    { date: now - 15*DAY, ver:'long', results:[
-      { cid:'putting', score:13, stationScores:[
-        ps(['made','made','made'],3), ps(['made','S-L','S-C'],1),
-        ps(['C-R','made','L-R'],1),   ps(['made','made','C-L'],2),
-        ps(['S-C','made','S-L'],1),   ps(['S-L','S-C','S-R'],0),
-        ps(['made','C-R','S-R'],1),   ps(['made','made','S-L'],2),
-        ps(['S-C','made','L-C'],1),   ps(['S-L','S-C','L-L'],0),
-        ps(['C-R','L-R','S-R'],0),    ps(['S-L','made','C-L'],1)
-      ]},
-      { cid:'chipping', score:66, stationScores:[
-        cs(['z1','z1','z2'],'60'), cs(['z2','z3','z2'],'SW'), cs(['z1','z2','z1'],'SW'),
-        cs(['z3','z4','z3'],'SW'), cs(['z2','z2','z3'],'52'), cs(['z4','z3','z4'],'SW'),
-        cs(['z2','z3','z2'],'52'), cs(['z3','z4','z3'],'52'), cs(['z2','z3','z2'],'52'),
-        cs(['z3','z2','z4'],'PW'), cs(['z4','z3','z4'],'PW'), cs(['z3','z3','z4'],'PW')
-      ]}
+    { date: now-15*DAY, ver:'short', sessionType:'standard', combineType:'skill', results:[
+      { cid:'putting', score:8, stationScores:[ps(['made','made'],2),ps(['made','made'],2),ps(['C-R','made'],1),ps(['made','made'],2),ps(['S-C','made'],1),ps(['S-L','S-C'],0)] },
+      { cid:'chipping', score:29, stationScores:[cs(['z1','z1'],'60'),cs(['z2','z2'],'SW'),cs(['z2','z2'],'SW'),cs(['z2','z3'],'SW'),cs(['z3','z3'],'SW'),cs(['z3','z4'],'SW')] }
     ]},
-
-    // ── Session 4: short, 12 days ago ─────────────
-    { date: now - 12*DAY, ver:'short', results:[
-      { cid:'putting', score:7, stationScores:[
-        ps(['made','made'],2), ps(['made','S-R'],1), ps(['S-R','made'],1),
-        ps(['made','L-L'],1), ps(['made','made'],2), ps(['S-L','S-C'],0)
-      ]},
-      { cid:'chipping', score:32, stationScores:[
-        cs(['z1','z2'],'60'), cs(['z3','z2'],'SW'), cs(['z1','z1'],'SW'),
-        cs(['z3','z2'],'SW'), cs(['z2','z3'],'52'), cs(['z3','z3'],'SW')
-      ]}
+    { date: now-12*DAY, ver:'long', sessionType:'standard', combineType:'performance', results:[
+      { cid:'putting', score:13, stationScores:[ps(['made','made','made'],3),ps(['made','S-L','made'],2),ps(['C-R','made','made'],2),ps(['made','made','made'],3),ps(['S-C','made','S-L'],1),ps(['S-L','S-C','made'],1),ps(['made','S-R','made'],2),ps(['S-L','S-C','S-L'],0)] },
+      { cid:'chipping', score:55, stationScores:[cs(['z1','z2','z1'],'60'),cs(['z2','z2','z3'],'SW'),cs(['z1','z2','z2'],'SW'),cs(['z3','z2','z3'],'SW'),cs(['z2','z3','z3'],'SW'),cs(['z4','z3','z3'],'SW'),cs(['z1','z2','z2'],'52'),cs(['z2','z3','z3'],'52')] }
     ]},
-
-    // ── Session 5: short, 9 days ago ──────────────
-    { date: now - 9*DAY, ver:'short', results:[
-      { cid:'putting', score:6, stationScores:[
-        ps(['made','made'],2), ps(['S-L','made'],1), ps(['C-R','C-R'],0),
-        ps(['made','made'],2), ps(['S-L','made'],1), ps(['L-L','S-C'],0)
-      ]},
-      { cid:'chipping', score:27, stationScores:[
-        cs(['z2','z1'],'60'), cs(['z2','z3'],'SW'), cs(['z2','z2'],'SW'),
-        cs(['z3','z3'],'SW'), cs(['z1','z3'],'52'), cs(['z4','z3'],'SW')
-      ]}
+    { date: now-9*DAY, ver:'short', sessionType:'standard', combineType:'skill', results:[
+      { cid:'putting', score:9, stationScores:[ps(['made','made'],2),ps(['made','made'],2),ps(['made','made'],2),ps(['made','made'],2),ps(['S-C','made'],1),ps(['S-L','S-C'],0)] },
+      { cid:'chipping', score:31, stationScores:[cs(['z1','z1'],'60'),cs(['z2','z2'],'SW'),cs(['z2','z1'],'SW'),cs(['z2','z2'],'SW'),cs(['z3','z2'],'SW'),cs(['z3','z4'],'SW')] }
     ]},
-
-    // ── Session 6: long, 6 days ago (12 stations, 3 shots) ───
-    { date: now - 6*DAY, ver:'long', results:[
-      { cid:'putting', score:16, stationScores:[
-        ps(['made','made','made'],3), ps(['S-L','made','S-C'],1),
-        ps(['made','C-R','L-R'],1),   ps(['made','made','made'],3),
-        ps(['made','S-C','made'],2),  ps(['S-C','S-L','made'],1),
-        ps(['C-R','made','S-R'],1),   ps(['made','made','L-L'],2),
-        ps(['L-C','S-C','made'],1),   ps(['S-L','L-L','S-C'],0),
-        ps(['L-R','C-R','S-R'],0),    ps(['made','S-L','C-L'],1)
-      ]},
-      { cid:'chipping', score:69, stationScores:[
-        cs(['z1','z2','z1'],'60'), cs(['z2','z2','z3'],'SW'), cs(['z1','z1','z2'],'SW'),
-        cs(['z3','z3','z2'],'SW'), cs(['z2','z3','z2'],'52'), cs(['z3','z4','z3'],'SW'),
-        cs(['z2','z2','z3'],'52'), cs(['z4','z3','z3'],'52'), cs(['z3','z2','z3'],'52'),
-        cs(['z2','z3','z3'],'PW'), cs(['z4','z4','z3'],'PW'), cs(['z3','z4','z3'],'PW')
-      ]}
+    { date: now-7*DAY, ver:'short', sessionType:'skillimprove', combineType:'skill', results:[
+      { cid:'putting', score:6, stationScores:[ps(['made','made'],2),ps(['S-L','made'],1),ps(['made','made'],2),ps(['made','S-L'],1),ps(['S-C','S-C'],0),ps(['S-L','S-C'],0)] },
+      { cid:'chipping', score:28, stationScores:[cs(['z1','z2'],'60'),cs(['z2','z3'],'SW'),cs(['z2','z2'],'SW'),cs(['z3','z3'],'SW'),cs(['z2','z3'],'52'),cs(['z3','z4'],'SW')] }
     ]},
-
-    // ── Session 7: short, 3 days ago ──────────────
-    { date: now - 3*DAY, ver:'short', results:[
-      { cid:'putting', score:7, stationScores:[
-        ps(['made','made'],2), ps(['S-C','made'],1), ps(['made','S-R'],1),
-        ps(['made','made'],2), ps(['S-L','S-C'],0), ps(['S-L','made'],1)
-      ]},
-      { cid:'chipping', score:31, stationScores:[
-        cs(['z1','z1'],'60'), cs(['z2','z3'],'SW'), cs(['z1','z2'],'SW'),
-        cs(['z3','z4'],'SW'), cs(['z2','z2'],'52'), cs(['z3','z3'],'SW')
-      ]}
+    { date: now-4*DAY, ver:'short', sessionType:'skillimprove', combineType:'skill', results:[
+      { cid:'putting', score:10, stationScores:[ps(['made','made'],2),ps(['made','made'],2),ps(['made','made'],2),ps(['made','made'],2),ps(['S-C','made'],1),ps(['S-L','made'],1)] },
+      { cid:'chipping', score:33, stationScores:[cs(['z1','z1'],'60'),cs(['z2','z2'],'SW'),cs(['z1','z2'],'SW'),cs(['z2','z2'],'SW'),cs(['z2','z2'],'52'),cs(['z3','z3'],'SW')] }
     ]},
-
-    // ── Session 8: short, 1 day ago ───────────────
-    { date: now - 1*DAY, ver:'short', results:[
-      { cid:'putting', score:8, stationScores:[
-        ps(['made','made'],2), ps(['made','S-L'],1), ps(['C-R','made'],1),
-        ps(['made','made'],2), ps(['made','S-C'],1), ps(['S-L','S-C'],0) // slight improvement on p4!
-      ]},
-      { cid:'chipping', score:34, stationScores:[
-        cs(['z1','z2'],'60'), cs(['z2','z2'],'SW'), cs(['z1','z2'],'SW'),
-        cs(['z2','z3'],'SW'), cs(['z2','z3'],'52'), cs(['z3','z4'],'SW')
-      ]}
+    { date: now-2*DAY, ver:'short', sessionType:'skillimprove', combineType:'skill', results:[
+      { cid:'putting', score:10, stationScores:[ps(['made','made'],2),ps(['made','S-L'],1),ps(['C-R','made'],1),ps(['made','made'],2),ps(['made','S-C'],1),ps(['S-L','S-C'],0)] },
+      { cid:'chipping', score:34, stationScores:[cs(['z1','z2'],'60'),cs(['z2','z2'],'SW'),cs(['z1','z2'],'SW'),cs(['z2','z3'],'SW'),cs(['z2','z3'],'52'),cs(['z3','z4'],'SW')] }
     ]}
-
   ];
 
-  const data = {
-    username: 'kman', name: 'Kevin', hcp: 12,
-    pin: hashPin('1234'), sessions,
-    aimpointMode: false,
-    clubPrefs: { 5:'60', 10:'SW', 20:'52', 30:'PW' },
-    created: now - 22*DAY
-  };
-
-  localStorage.setItem('range_kman', JSON.stringify(data));
-  console.log('✅ kman test account seeded — sign in: kman / 1234');
+  CU.sessions = [...(CU.sessions || []), ...testSessions];
+  if (!CU.clubPrefs) CU.clubPrefs = { 5:'60', 10:'SW', 20:'52', 30:'PW' };
+  saveU(CU);
+  refreshHome();
+  buildProfile();
+  document.getElementById('import-status').textContent = '✅ 8 test sessions loaded.';
+  document.getElementById('import-status').style.color = 'var(--gr)';
 }
 
 // ── SWIPE DOWN TO REFRESH ─────────────────────────────────────────────────────
