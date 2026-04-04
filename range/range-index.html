@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="The Range">
+<meta name="theme-color" content="#0d2340" id="theme-meta">
+<title>The Range</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="range-style.css">
+</head>
+<body>
+<div id="app">
+
+<!-- ══ LOGIN ══ -->
+<div id="s-login" class="scr on" style="padding-bottom:0;overflow-y:auto">
+  <div class="lbrand"><div class="llogo">THE RANGE</div><div class="lsub">Golf Practice Tracker</div></div>
+  <div class="lbox" style="margin:0 24px 40px">
+    <div class="ltabs">
+      <div class="ltab on" id="lt-in" onclick="switchTab('in')">Sign In</div>
+      <div class="ltab" id="lt-new" onclick="switchTab('new')">Create Account</div>
+    </div>
+    <div id="lf-in">
+      <div class="fld"><label>Username</label><input class="inp" id="li-u" type="text" placeholder="username" autocomplete="off" autocapitalize="none"></div>
+      <div class="fld"><label>PIN</label><input class="inp" id="li-p" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off"></div>
+      <div class="lerr" id="li-e"></div>
+      <button class="btn" onclick="doLogin()">Sign In</button>
+    </div>
+    <div id="lf-new" style="display:none">
+      <div class="fld"><label>Your Name</label><input class="inp" id="ca-n" type="text" placeholder="First name" autocomplete="off"></div>
+      <div class="fld"><label>Username</label><input class="inp" id="ca-u" type="text" placeholder="choose a username" autocomplete="off" autocapitalize="none"></div>
+      <div class="fld"><label>Handicap Index</label>
+        <select class="sel" id="ca-h">
+          <option value="0">+3 to 0 (Scratch or better)</option>
+          <option value="3">1 – 5</option><option value="7">6 – 10</option>
+          <option value="12" selected>11 – 15</option><option value="17">16 – 20</option>
+          <option value="22">21 – 25</option><option value="27">26 – 30</option><option value="35">31+</option>
+        </select>
+      </div>
+      <div class="fld"><label>4-Digit PIN</label><input class="inp" id="ca-p" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off"></div>
+      <div class="fld"><label>Confirm PIN</label><input class="inp" id="ca-p2" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off"></div>
+      <div class="lerr" id="ca-e"></div>
+      <button class="btn" onclick="doCreate()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HOME ══ -->
+<div id="s-home" class="scr">
+  <div class="hd"><div class="logo">THE <span>RANGE</span></div><div class="hm" id="hdate"></div></div>
+  <div class="sb">
+    <div class="hhero">
+      <div class="hgreet">Welcome, <em id="hname">—</em></div>
+      <div class="hsub" id="hhcp"></div>
+    </div>
+    <div class="sgrid">
+      <div class="stile"><div class="sval" id="h-ses">0</div><div class="slb2">Sessions</div></div>
+      <div class="stile"><div class="sval" id="h-str">0</div><div class="slb2">Day Streak</div></div>
+      <div class="stile"><div class="sval" id="h-bp">—</div><div class="slb2">Best Putting</div></div>
+      <div class="stile"><div class="sval" id="h-bc">—</div><div class="slb2">Best Chipping</div></div>
+    </div>
+    <div id="resume-banner"></div>
+    <div id="thresh-notice"></div>
+    <div id="skill-profile-section"></div>
+    <div class="div"></div>
+    <div class="slbl">COMBINES</div>
+    <div id="home-combines"></div>
+  </div>
+</div>
+
+<!-- ══ SESSION SETUP ══ -->
+<div id="s-practice" class="scr">
+  <div class="hd"><div class="logo">THE <span>RANGE</span></div><div class="hm">SESSION SETUP</div></div>
+  <div class="sb" style="padding-top:14px">
+    <div id="rx-section"></div>
+
+    <!-- COMBINES accordion -->
+    <div class="accord" id="acc-combines">
+      <div class="accord-hdr" onclick="toggleAccord('acc-combines')">
+        <div class="accord-hdr-left">
+          <div class="accord-ico">⛳</div>
+          <div>
+            <div class="accord-title">Combines</div>
+            <div class="accord-sub" id="acc-combines-sub">Select to start tracking</div>
+          </div>
+        </div>
+        <div class="accord-arr">▼</div>
+      </div>
+      <div class="accord-body">
+        <!-- Session type toggle (shown after threshold) -->
+        <div id="stype-section" style="display:none">
+          <div class="stype-wrap">
+            <div class="stype-lbl">Session Type</div>
+            <div class="stype-tog">
+              <button class="stype-btn on" id="st-improve" onclick="setSessionType('skillimprove')">🎯 Skill Improve<br><span style="font-size:10px;font-weight:400">Targets your weaknesses</span></button>
+              <button class="stype-btn" id="st-standard" onclick="setSessionType('standard')">📊 Assessment<br><span style="font-size:10px;font-weight:400">Full standard combine</span></button>
+            </div>
+            <div class="stype-desc" id="stype-desc">8 stations · 3 shots each · weakness-weighted</div>
+          </div>
+        </div>
+        <!-- Combine type toggle -->
+        <div style="margin-bottom:14px;padding-top:10px;border-top:1px solid rgba(232,184,75,.1)" id="ctype-section">
+          <div style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--d);margin-bottom:8px">Putting Format</div>
+          <div class="ctype-tog">
+            <button class="ctype-btn on" id="ct-skill" onclick="setCombineType('skill')">🎯 Skill Combine<br><span style="font-size:10px;font-weight:400">Gate drill · no hole</span></button>
+            <button class="ctype-btn" id="ct-perf" onclick="setCombineType('performance')">📊 Performance<br><span style="font-size:10px;font-weight:400">Hole in play · makes tracked</span></button>
+          </div>
+          <div style="font-family:var(--fb);font-size:12px;color:var(--d);margin-top:6px;line-height:1.4" id="ctype-desc">Gate drill — 2 tees + back tee. Scores line and pace independently. Best for diagnosis.</div>
+        </div>
+        <!-- Putting row -->
+        <div class="accord-check-row" onclick="togCombine('putting')">
+          <div class="chkbox" id="chk-putting"><span class="chkmark" style="display:none">✓</span></div>
+          <div class="accord-check-ico">⛳</div>
+          <div style="flex:1">
+            <div class="accord-check-name">Putting Combine</div>
+            <div class="accord-check-meta">Slope, break, distance tracking</div>
+          </div>
+          <div style="font-family:var(--fm);font-size:12px;color:var(--d)" id="dur-putting">—</div>
+        </div>
+        <!-- Chipping row -->
+        <div class="accord-check-row" onclick="togCombine('chipping')">
+          <div class="chkbox" id="chk-chipping"><span class="chkmark" style="display:none">✓</span></div>
+          <div class="accord-check-ico">🏌️</div>
+          <div style="flex:1">
+            <div class="accord-check-name">Chipping Combine</div>
+            <div class="accord-check-meta">Distance, lie, club selection</div>
+          </div>
+          <div style="font-family:var(--fm);font-size:12px;color:var(--d)" id="dur-chipping">—</div>
+        </div>
+        <!-- Session length at bottom -->
+        <div id="ver-section" style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(232,184,75,.1)">
+          <div style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--d);margin-bottom:8px">Session Length</div>
+          <div class="vertog">
+            <button class="verbtn on" id="vs" onclick="setVer('short')">Short</button>
+            <button class="verbtn" id="vl" onclick="setVer('long')">Full</button>
+          </div>
+          <div class="verdesc" id="verdesc">6 stations · 2 shots each · ~20–25 min total</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE accordion -->
+    <div class="accord" id="acc-practice">
+      <div class="accord-hdr" onclick="toggleAccord('acc-practice')">
+        <div class="accord-hdr-left">
+          <div class="accord-ico">🔥</div>
+          <div>
+            <div class="accord-title">Warmup</div>
+            <div class="accord-sub">TPI mobility routine · ~8 min</div>
+          </div>
+        </div>
+        <div class="accord-arr">▼</div>
+      </div>
+      <div class="accord-body">
+        <p style="font-family:var(--fb);font-size:13px;color:var(--d);line-height:1.5;margin-bottom:12px">TPI recommends an 8-minute mobility routine before every session. Prime your body for rotational power and reduce injury risk.</p>
+        <button class="btn ol" onclick="goTo('s-warmup')" style="font-size:14px;padding:11px">View TPI Warmup →</button>
+      </div>
+    </div>
+
+    <!-- Start button + time estimate -->
+    <div style="padding:4px 16px 8px">
+      <div class="sestim" id="sestim">Select a combine above to begin</div>
+      <button class="btn" id="start-btn" onclick="startSession()" style="opacity:.4;pointer-events:none">Start Session</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ WARMUP ══ -->
+<div id="s-warmup" class="scr">
+  <div class="hd"><button class="bk" onclick="goTo('s-practice')">←</button><div class="logo" style="font-size:17px">TPI WARMUP</div><div class="hm">~8 min</div></div>
+  <div class="sb">
+    <div style="padding:12px 16px 8px;font-family:var(--fb);font-size:13px;color:var(--d);line-height:1.6">Based on the Titleist Performance Institute protocol. These movements prime your body for rotational power and reduce injury risk.</div>
+    <div id="warmup-list"></div>
+    <div style="padding:0 16px 16px"><button class="btn" onclick="goTo('s-practice')">Done — Back to Session</button></div>
+  </div>
+</div>
+
+<!-- ══ COMBINE RUNNER ══ -->
+<div id="s-runner" class="scr" style="padding-bottom:0">
+  <div class="rhdr">
+    <button class="bk" onclick="confirmQuit()">✕</button>
+    <div class="rtit" id="run-title">COMBINE</div>
+    <div class="rprog" id="run-prog">1/6</div>
+  </div>
+  <div class="prog"><div class="pf" id="run-pf" style="width:0%"></div></div>
+  <div class="sb" style="padding-bottom:20px">
+    <div id="station-wrap"></div>
+    <div class="brow">
+      <button class="btn gh sm" id="btn-prev" onclick="prevStn()" style="display:none">← Back</button>
+      <button class="btn sm" id="btn-next" onclick="nextStn()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RESULTS ══ -->
+<div id="s-results" class="scr">
+  <div class="hd"><div class="logo">SESSION <span>RESULTS</span></div></div>
+  <div class="sb">
+    <div class="reshero">
+      <div class="resbig" id="res-score">—</div>
+      <div class="resmax" id="res-max"></div>
+      <div class="resdate" id="res-date"></div>
+    </div>
+    <div id="res-combines"></div>
+    <div class="brow">
+      <button class="btn ol sm" onclick="shareResults()">📤 Share</button>
+      <button class="btn sm" onclick="goHome()">Home</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HISTORY ══ -->
+<div id="s-history" class="scr">
+  <div class="hd"><div class="logo">THE <span>RANGE</span></div><div class="hm">HISTORY</div></div>
+  <div class="sb" style="padding-top:8px"><div id="hist-list"></div></div>
+</div>
+
+<!-- ══ PROFILE ══ -->
+<div id="s-profile" class="scr">
+  <div class="hd"><div class="logo">THE <span>RANGE</span></div><div class="hm">PROFILE</div></div>
+  <div class="sb">
+    <div class="profav" id="prof-av"></div>
+    <div class="profnam" id="prof-nm"></div>
+    <div class="profmt" id="prof-mt"></div>
+    <div class="card">
+      <div class="ct">Settings</div>
+      <div class="trow">
+        <div class="tinfo"><div class="tlbl">AimPoint Mode</div><div class="tsub">Log slope % per putting station for green reading calibration</div></div>
+        <div class="tsw" id="ap-tog" onclick="togAimpoint()"><div class="tknob"></div></div>
+      </div>
+      <div class="trow" style="border-top:1px solid rgba(255,255,255,.07);margin-top:10px;padding-top:10px">
+        <div class="tinfo"><div class="tlbl" id="theme-lbl">🌙 Light Mode</div><div class="tsub" id="theme-sub">Off — tap to switch for outdoor use</div></div>
+        <div class="tsw" id="theme-tog" onclick="togTheme()"><div class="tknob"></div></div>
+      </div>
+    </div>
+    <div class="card" id="ap-stats-card" style="display:none">
+      <div class="ct">📐 AimPoint Calibration Stats</div>
+      <div id="ap-stats-body"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Update Handicap</div>
+      <div class="fld"><label>Handicap Index</label>
+        <select class="sel" id="prof-hcp">
+          <option value="0">+3 to 0 (Scratch)</option><option value="3">1–5</option><option value="7">6–10</option>
+          <option value="12">11–15</option><option value="17">16–20</option><option value="22">21–25</option>
+          <option value="27">26–30</option><option value="35">31+</option>
+        </select>
+      </div>
+      <button class="btn sm" onclick="saveHcp()">Save Handicap</button>
+    </div>
+    <div class="card">
+      <div class="ct">Change PIN</div>
+      <div class="fld"><label>New PIN</label><input class="inp" id="pin1" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div>
+      <div class="fld"><label>Confirm PIN</label><input class="inp" id="pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div>
+      <button class="btn sm" onclick="savePin()">Update PIN</button>
+    </div>
+    <div class="brow"><button class="btn dn" onclick="doLogout()">Sign Out</button></div>
+  </div>
+</div>
+
+<!-- ══ BOTTOM NAV ══ -->
+<nav id="bnav">
+  <button class="nb on" data-s="s-home" onclick="navTo('s-home',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span class="nl">Home</span>
+  </button>
+  <button class="nb" data-s="s-practice" onclick="navTo('s-practice',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+    <span class="nl">Practice</span>
+  </button>
+  <button class="nb" onclick="openGames()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/></svg>
+    <span class="nl">Games</span>
+  </button>
+  <button class="nb" data-s="s-history" onclick="navTo('s-history',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <span class="nl">History</span>
+  </button>
+  <button class="nb" data-s="s-profile" onclick="navTo('s-profile',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span class="nl">Profile</span>
+  </button>
+</nav>
+</div>
+
+<script src="range-data.js"></script>
+<script src="range-engine.js"></script>
+<script src="range-app.js"></script>
+</body>
+</html>
