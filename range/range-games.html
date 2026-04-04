@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Range — Games</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>kmansgolf · The Range — Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap&font-display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy:       #0d2340;
-  --navy-mid:   #152e50;
-  --navy-light: #1e3d66;
-  --navy-card:  #1a3558;
+  --navy:       #000000;
+  --navy-mid:   #1c1c1e;
+  --navy-light: #3a3a3c;
+  --navy-card:  #2c2c2e;
   --gold:       #e8b84b;
   --gold-light: #f5d070;
   --gold-dim:   #a07d28;
-  --off-white:  #f5f0e8;
-  --text-dim:   #8ba4c0;
-  --green:      #2ecc71;
-  --green-dim:  #1a7a43;
+  --off-white:  #f5f5f7;
+  --text-dim:   #6e6e73;
+  --green:      #3ddc84;
+  --green-dim:  #27a85e;
   --red:        #e74c3c;
   --orange:     #f39c12;
   --blue:       #3498db;
@@ -50,11 +50,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid var(--gold);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   position: sticky; top: 0; z-index: 100;
   flex-shrink: 0;
 }
-.rng-logo { font-family: var(--font-cond); font-size: 22px; font-weight: 700; letter-spacing: 1px; color: var(--gold); }
+.rng-logo { font-family: var(--font-cond); font-size: 22px; font-weight: 700; letter-spacing: 1px; color: var(--green); }
 .rng-logo span { color: var(--off-white); font-weight: 400; }
 .back-btn { background: none; border: none; color: var(--text-dim); font-size: 22px; cursor: pointer; padding: 4px 8px 4px 0; }
 .scroll-content { flex: 1; overflow-y: auto; padding-bottom: 24px; }
@@ -71,18 +71,18 @@ body {
 }
 .rng-card-title {
   font-family: var(--font-cond); font-size: 13px; font-weight: 600;
-  letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--green); margin-bottom: 12px;
 }
 
 /* ── BUTTONS ── */
 .rng-btn {
-  background: var(--gold); color: var(--navy); border: none; border-radius: 8px;
+  background: var(--green); color: #000; border: none; border-radius: 8px;
   padding: 13px 20px; font-family: var(--font-cond); font-size: 16px; font-weight: 700;
   letter-spacing: 1px; text-transform: uppercase; cursor: pointer; width: 100%;
   transition: background 0.2s, transform 0.1s;
 }
-.rng-btn:active { transform: scale(0.98); background: var(--gold-light); }
-.rng-btn.outline { background: transparent; border: 2px solid var(--gold); color: var(--gold); }
+.rng-btn:active { transform: scale(0.98); background: var(--green-dim); }
+.rng-btn.outline { background: transparent; border: 2px solid var(--green); color: var(--green); }
 .rng-btn.sm { padding: 9px 16px; font-size: 14px; width: auto; }
 .rng-btn.danger { background: transparent; border: 2px solid var(--red); color: var(--red); }
 .rng-btn.green-btn { background: var(--green); color: white; }
@@ -91,7 +91,7 @@ body {
   border-radius: 8px; padding: 12px 14px; font-family: var(--font-body); font-size: 16px;
   color: var(--off-white); outline: none; transition: border-color 0.2s;
 }
-.rng-input:focus { border-color: var(--gold); }
+.rng-input:focus { border-color: var(--green); }
 .rng-input::placeholder { color: var(--text-dim); }
 .rng-label { font-family: var(--font-cond); font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; display: block; }
 
@@ -107,7 +107,7 @@ body {
   letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim);
   cursor: pointer; white-space: nowrap; transition: all 0.2s; flex-shrink: 0;
 }
-.cat-tab.active { border-color: var(--gold); color: var(--gold); background: rgba(232,184,75,0.06); }
+.cat-tab.active { border-color: var(--green); color: var(--green); background: rgba(61,220,132,0.08); }
 
 /* ── GAME CARD ── */
 .game-card {
@@ -115,7 +115,7 @@ body {
   border: 1px solid rgba(232,184,75,0.15); overflow: hidden; cursor: pointer;
   transition: border-color 0.2s;
 }
-.game-card:active { border-color: var(--gold); }
+.game-card:active { border-color: var(--green); }
 .game-card-header { padding: 16px 16px 12px; display: flex; gap: 14px; align-items: flex-start; }
 .game-icon { font-size: 32px; width: 48px; text-align: center; flex-shrink: 0; line-height: 1; margin-top: 2px; }
 .game-info { flex: 1; }
@@ -137,7 +137,7 @@ body {
 /* ── GAME DETAIL ── */
 .game-detail-hero {
   background: var(--navy-mid); padding: 24px 18px 20px;
-  border-bottom: 2px solid var(--gold);
+  border-bottom: 1px solid rgba(61,220,132,0.3);
   display: flex; gap: 16px; align-items: center;
 }
 .game-detail-icon { font-size: 52px; }
@@ -150,7 +150,7 @@ body {
   line-height: 1.5; display: flex; gap: 10px;
 }
 .rules-list li:last-child { border-bottom: none; }
-.rules-list li::before { content: "→"; color: var(--gold); flex-shrink: 0; font-weight: 700; }
+.rules-list li::before { content: "→"; color: var(--green); flex-shrink: 0; font-weight: 700; }
 .scoring-row {
   display: flex; justify-content: space-between; align-items: center;
   padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -162,7 +162,7 @@ body {
   background: rgba(232,184,75,0.08); border: 2px solid rgba(232,184,75,0.3);
   border-radius: 10px; padding: 14px 16px; margin: 0 16px 12px;
 }
-.exit-box-label { font-family: var(--font-cond); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+.exit-box-label { font-family: var(--font-cond); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 6px; }
 .exit-box-text { font-family: var(--font-body); font-size: 14px; color: var(--off-white); line-height: 1.5; }
 .watch-btn {
   display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -236,7 +236,7 @@ body {
   width: 220px; height: 220px; margin: 0 auto 20px;
   position: relative; border-radius: 50%;
   border: 3px solid rgba(232,184,75,0.2);
-  background: radial-gradient(circle, rgba(30,61,102,0.8) 0%, rgba(13,35,64,0.9) 100%);
+  background: radial-gradient(circle, rgba(28,28,30,0.92) 0%, rgba(0,0,0,0.96) 100%);
 }
 .clock-hole {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -423,6 +423,38 @@ body {
 .rng-nav-btn.active { color: var(--gold); }
 .rng-nav-btn svg { width: 20px; height: 20px; }
 .rng-nav-label { font-family: var(--font-cond); font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+/* ══ LIGHT THEME — dark chrome header + warm cream content ══ */
+body[data-theme="light"] {
+  --navy:      #faf8f4;
+  --navy-mid:  #1c1c1e;
+  --navy-card: #ffffff;
+  --off-white: #1a1a1a;
+  --text-dim:  #6e6e73;
+  --gold:      #c8960c;
+  --green:     #1e9e5e;
+  --green-dim: #166a3e;
+  background:  #faf8f4;
+  color:       #1a1a1a;
+}
+body[data-theme="light"] .screen { background: #faf8f4; }
+body[data-theme="light"] .card-section,
+body[data-theme="light"] .game-card,
+body[data-theme="light"] .rules-card,
+body[data-theme="light"] .exit-box,
+body[data-theme="light"] .player-score-row { background: #ffffff; border-color: rgba(0,0,0,.08); box-shadow: 0 1px 6px rgba(0,0,0,.07); }
+body[data-theme="light"] .rng-input { background: #f5f3ef; border-color: rgba(0,0,0,.15); color: #1a1a1a; }
+body[data-theme="light"] .cat-tab { background: #f5f3ef; border-color: rgba(0,0,0,.1); color: #6e6e73; }
+body[data-theme="light"] .cat-tab.active { background: rgba(30,158,94,.08); border-color: var(--green); color: var(--green); }
+body[data-theme="light"] .score-action-btn,
+body[data-theme="light"] .dart-zone-btn,
+body[data-theme="light"] .dollar-ball-btn,
+body[data-theme="light"] .wolf-pick-btn,
+body[data-theme="light"] .ff-btn { background: #f5f3ef; border-color: rgba(0,0,0,.12); color: #1a1a1a; }
+body[data-theme="light"] .player-list-row { border-bottom-color: rgba(0,0,0,.06); }
+body[data-theme="light"] .player-score-row.active-player { background: rgba(200,150,12,.06); border-color: rgba(200,150,12,.25); }
+body[data-theme="light"] .result-row { border-bottom-color: rgba(0,0,0,.06); }
+body[data-theme="light"] #winner-overlay { background: rgba(0,0,0,.55); }
 </style>
 </head>
 <body>
@@ -431,7 +463,7 @@ body {
 <!-- ══ GAMES BROWSE ══ -->
 <div id="screen-games" class="screen active">
   <div class="rng-header">
-    <div class="rng-logo">THE <span>RANGE</span></div>
+    <a href="/" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#f5f5f7">kmans</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#3ddc84">golf</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span></a><div class="rng-logo" style="font-size:14px;letter-spacing:0.5px">THE <span>RANGE</span></div>
     <div style="font-family:var(--font-cond);font-size:13px;color:var(--text-dim)">PRESSURE GAMES</div>
   </div>
   <div class="scroll-content">
@@ -1648,6 +1680,12 @@ function shareGame(type) {
 // ══════════════════════════════════════════
 
 renderGamesList();
+
+// ── THEME — syncs with range.html via localStorage ───────────────────────────
+(function() {
+  const saved = localStorage.getItem('range_theme') || 'dark';
+  if (saved === 'light') document.body.setAttribute('data-theme', 'light');
+})();
 </script>
 </body>
 </html>

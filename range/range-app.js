@@ -1,3 +1,24 @@
+
+// ── UNSAVED DATA GUARD ────────────────────────────────────────────────────────
+window.addEventListener('beforeunload', function(e) {
+  if (sessionInProgress) {
+    e.preventDefault();
+    e.returnValue = 'You have an active session. Leave and lose your data?';
+    return e.returnValue;
+  }
+});
+// Intercept kmansgolf logo tap mid-session
+document.addEventListener('click', function(e) {
+  const link = e.target.closest('a[href="/"]');
+  if (link && sessionInProgress) {
+    e.preventDefault();
+    if (confirm('You have an active session in progress. Leave and lose your data?')) {
+      sessionInProgress = false;
+      window.location.href = '/';
+    }
+  }
+});
+
 // range-app.js — App state, auth, navigation, session flow, UI
 // ═══════════════════════════════════════════
 //  STATE
@@ -993,6 +1014,7 @@ function applyTheme(theme) {
   }
 
   if (tog) tog.classList.toggle('on', isLight);
+  localStorage.setItem('range_theme', theme);
 }
 
 function togAimpoint() {
@@ -1182,3 +1204,28 @@ function _autoSeedKman() {
   localStorage.setItem('range_kman', JSON.stringify(data));
   console.log('✅ kman test account seeded — sign in: kman / 1234');
 }
+
+// ── SWIPE DOWN TO REFRESH ─────────────────────────────────────────────────────
+(function(){
+  const REFRESH_SCREENS = ['s-home','s-history'];
+  let ty=0, ready=false;
+  const ind=document.createElement('div');
+  ind.style.cssText='position:fixed;top:0;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:center;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:2px;color:#3ddc84;background:rgba(0,0,0,0.92);transform:translateY(-44px);transition:transform 0.2s ease;z-index:9999;pointer-events:none;';
+  ind.textContent='↓ RELEASE TO REFRESH';
+  document.body.appendChild(ind);
+  document.addEventListener('touchstart',e=>{ty=e.touches[0].clientY;},{passive:true});
+  document.addEventListener('touchmove',e=>{
+    const active=document.querySelector('.scr.on');
+    if(!active||!REFRESH_SCREENS.includes(active.id)) return;
+    const scroll=active.querySelector('.sb');
+    if(scroll&&scroll.scrollTop>0) return;
+    const dy=e.touches[0].clientY-ty;
+    if(dy>60){ind.style.transform='translateY(0)';ready=true;}
+    else{ind.style.transform='translateY(-44px)';ready=false;}
+  },{passive:true});
+  document.addEventListener('touchend',()=>{
+    ind.style.transform='translateY(-44px)';
+    if(ready){ready=false;setTimeout(()=>location.reload(),200);}
+  });
+})();
+
