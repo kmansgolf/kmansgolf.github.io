@@ -210,6 +210,10 @@ function goToPractice() {
   goTo('s-practice');
 }
 
+
+function toggleAccord(id) {
+  document.getElementById(id).classList.toggle('open');
+}
 function setSessionType(type) {
   sessionType = type;
   document.getElementById('st-improve')?.classList.toggle('on', type === 'skillimprove');

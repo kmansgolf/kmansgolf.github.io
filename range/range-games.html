@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Range — Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:       #0d2340;
+  --navy-mid:   #152e50;
+  --navy-light: #1e3d66;
+  --navy-card:  #1a3558;
+  --gold:       #e8b84b;
+  --gold-light: #f5d070;
+  --gold-dim:   #a07d28;
+  --off-white:  #f5f0e8;
+  --text-dim:   #8ba4c0;
+  --green:      #2ecc71;
+  --green-dim:  #1a7a43;
+  --red:        #e74c3c;
+  --orange:     #f39c12;
+  --blue:       #3498db;
+  --font-cond:  'Barlow Condensed', sans-serif;
+  --font-body:  'Barlow', sans-serif;
+  --font-mono:  'DM Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--navy);
+  color: var(--off-white);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+/* ── SCREENS ── */
+#app { display: flex; flex-direction: column; min-height: 100vh; }
+.screen { display: none; flex-direction: column; min-height: 100vh; }
+.screen.active { display: flex; }
+
+/* ── HEADER ── */
+.rng-header {
+  background: var(--navy-mid);
+  padding: 14px 18px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--gold);
+  position: sticky; top: 0; z-index: 100;
+  flex-shrink: 0;
+}
+.rng-logo { font-family: var(--font-cond); font-size: 22px; font-weight: 700; letter-spacing: 1px; color: var(--gold); }
+.rng-logo span { color: var(--off-white); font-weight: 400; }
+.back-btn { background: none; border: none; color: var(--text-dim); font-size: 22px; cursor: pointer; padding: 4px 8px 4px 0; }
+.scroll-content { flex: 1; overflow-y: auto; padding-bottom: 24px; }
+
+/* ── TYPOGRAPHY ── */
+.section-label {
+  font-family: var(--font-cond); font-size: 11px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim);
+  padding: 16px 16px 8px;
+}
+.rng-card {
+  background: var(--navy-card); border-radius: 10px; padding: 16px;
+  margin: 0 16px 12px; border: 1px solid rgba(232,184,75,0.15);
+}
+.rng-card-title {
+  font-family: var(--font-cond); font-size: 13px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+}
+
+/* ── BUTTONS ── */
+.rng-btn {
+  background: var(--gold); color: var(--navy); border: none; border-radius: 8px;
+  padding: 13px 20px; font-family: var(--font-cond); font-size: 16px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; cursor: pointer; width: 100%;
+  transition: background 0.2s, transform 0.1s;
+}
+.rng-btn:active { transform: scale(0.98); background: var(--gold-light); }
+.rng-btn.outline { background: transparent; border: 2px solid var(--gold); color: var(--gold); }
+.rng-btn.sm { padding: 9px 16px; font-size: 14px; width: auto; }
+.rng-btn.danger { background: transparent; border: 2px solid var(--red); color: var(--red); }
+.rng-btn.green-btn { background: var(--green); color: white; }
+.rng-input {
+  width: 100%; background: var(--navy-mid); border: 2px solid rgba(232,184,75,0.2);
+  border-radius: 8px; padding: 12px 14px; font-family: var(--font-body); font-size: 16px;
+  color: var(--off-white); outline: none; transition: border-color 0.2s;
+}
+.rng-input:focus { border-color: var(--gold); }
+.rng-input::placeholder { color: var(--text-dim); }
+.rng-label { font-family: var(--font-cond); font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; display: block; }
+
+/* ── CATEGORY TABS ── */
+.cat-tabs {
+  display: flex; gap: 8px; padding: 12px 16px 4px; overflow-x: auto;
+  scrollbar-width: none;
+}
+.cat-tabs::-webkit-scrollbar { display: none; }
+.cat-tab {
+  background: var(--navy-mid); border: 2px solid transparent; border-radius: 20px;
+  padding: 7px 16px; font-family: var(--font-cond); font-size: 13px; font-weight: 600;
+  letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim);
+  cursor: pointer; white-space: nowrap; transition: all 0.2s; flex-shrink: 0;
+}
+.cat-tab.active { border-color: var(--gold); color: var(--gold); background: rgba(232,184,75,0.06); }
+
+/* ── GAME CARD ── */
+.game-card {
+  background: var(--navy-card); border-radius: 12px; margin: 0 16px 12px;
+  border: 1px solid rgba(232,184,75,0.15); overflow: hidden; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.game-card:active { border-color: var(--gold); }
+.game-card-header { padding: 16px 16px 12px; display: flex; gap: 14px; align-items: flex-start; }
+.game-icon { font-size: 32px; width: 48px; text-align: center; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+.game-info { flex: 1; }
+.game-name { font-family: var(--font-cond); font-size: 20px; font-weight: 800; letter-spacing: 0.5px; color: var(--off-white); }
+.game-tagline { font-family: var(--font-body); font-size: 13px; color: var(--text-dim); margin-top: 3px; line-height: 1.4; }
+.game-badges { padding: 0 16px 14px; display: flex; gap: 6px; flex-wrap: wrap; }
+.badge {
+  border-radius: 12px; padding: 3px 10px; font-family: var(--font-cond); font-size: 11px;
+  font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.badge-solo { background: rgba(52,152,219,0.2); color: var(--blue); }
+.badge-multi { background: rgba(46,204,113,0.2); color: var(--green); }
+.badge-time { background: rgba(232,184,75,0.15); color: var(--gold); }
+.badge-putting { background: rgba(52,152,219,0.15); color: #7ec8e3; }
+.badge-chipping { background: rgba(46,204,113,0.15); color: #7ed99e; }
+.badge-range { background: rgba(231,76,60,0.15); color: #f5a99f; }
+.badge-pressure { background: rgba(231,76,60,0.2); color: var(--red); }
+
+/* ── GAME DETAIL ── */
+.game-detail-hero {
+  background: var(--navy-mid); padding: 24px 18px 20px;
+  border-bottom: 2px solid var(--gold);
+  display: flex; gap: 16px; align-items: center;
+}
+.game-detail-icon { font-size: 52px; }
+.game-detail-title { font-family: var(--font-cond); font-size: 28px; font-weight: 800; color: var(--off-white); line-height: 1; }
+.game-detail-sub { font-family: var(--font-body); font-size: 14px; color: var(--text-dim); margin-top: 6px; }
+.rules-list { list-style: none; }
+.rules-list li {
+  padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-family: var(--font-body); font-size: 14px; color: var(--off-white);
+  line-height: 1.5; display: flex; gap: 10px;
+}
+.rules-list li:last-child { border-bottom: none; }
+.rules-list li::before { content: "→"; color: var(--gold); flex-shrink: 0; font-weight: 700; }
+.scoring-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.scoring-row:last-child { border-bottom: none; }
+.scoring-label { font-family: var(--font-cond); font-size: 14px; color: var(--text-dim); }
+.scoring-value { font-family: var(--font-mono); font-size: 14px; }
+.exit-box {
+  background: rgba(232,184,75,0.08); border: 2px solid rgba(232,184,75,0.3);
+  border-radius: 10px; padding: 14px 16px; margin: 0 16px 12px;
+}
+.exit-box-label { font-family: var(--font-cond); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+.exit-box-text { font-family: var(--font-body); font-size: 14px; color: var(--off-white); line-height: 1.5; }
+.watch-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: rgba(231,76,60,0.15); border: 2px solid rgba(231,76,60,0.4);
+  border-radius: 8px; padding: 12px; cursor: pointer; text-decoration: none;
+  transition: background 0.2s;
+}
+.watch-btn:active { background: rgba(231,76,60,0.25); }
+.watch-icon { font-size: 20px; }
+.watch-label { font-family: var(--font-cond); font-size: 15px; font-weight: 700; letter-spacing: 1px; color: #ff6b6b; }
+
+/* ── PLAYER SETUP ── */
+.player-setup-row {
+  display: flex; gap: 10px; align-items: center; margin-bottom: 10px;
+}
+.player-number {
+  width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-family: var(--font-cond); font-size: 15px; font-weight: 700;
+  flex-shrink: 0;
+}
+.player-number.p1 { background: var(--gold); color: var(--navy); }
+.player-number.p2 { background: var(--green); color: white; }
+.player-number.p3 { background: var(--blue); color: white; }
+.player-number.p4 { background: var(--orange); color: white; }
+.player-color-p1 { color: var(--gold); }
+.player-color-p2 { color: var(--green); }
+.player-color-p3 { color: var(--blue); }
+.player-color-p4 { color: var(--orange); }
+.add-player-btn {
+  display: flex; align-items: center; gap: 10px; background: none;
+  border: 2px dashed rgba(232,184,75,0.25); border-radius: 8px; padding: 10px 14px;
+  cursor: pointer; width: 100%; transition: border-color 0.2s;
+}
+.add-player-btn:active { border-color: var(--gold); }
+.add-player-label { font-family: var(--font-cond); font-size: 14px; color: var(--text-dim); letter-spacing: 0.5px; }
+
+/* ══════════════════════════════════
+   SCORECARD STYLES
+══════════════════════════════════ */
+
+/* PAR 18 SCORECARD */
+.par18-hole-row {
+  display: grid; grid-template-columns: 28px 1fr repeat(4, 44px);
+  gap: 4px; align-items: center; padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.par18-hole-row.header { padding-bottom: 6px; }
+.par18-cell { font-family: var(--font-mono); font-size: 13px; text-align: center; }
+.par18-hole-num { font-family: var(--font-cond); font-size: 14px; color: var(--text-dim); font-weight: 600; }
+.par18-desc { font-family: var(--font-cond); font-size: 12px; color: var(--text-dim); padding-left: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.par18-header-cell { font-family: var(--font-cond); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); text-align: center; }
+.par18-score-btn {
+  width: 44px; height: 36px; border-radius: 6px; border: none; cursor: pointer;
+  font-family: var(--font-mono); font-size: 16px; font-weight: 500;
+  transition: all 0.15s; background: var(--navy-mid); color: var(--text-dim);
+  display: flex; align-items: center; justify-content: center;
+}
+.par18-score-btn.birdie { background: rgba(46,204,113,0.25); color: var(--green); border: 1px solid var(--green); }
+.par18-score-btn.par { background: rgba(232,184,75,0.15); color: var(--gold); border: 1px solid var(--gold); }
+.par18-score-btn.bogey { background: rgba(231,76,60,0.2); color: var(--red); border: 1px solid var(--red); }
+.par18-score-btn.double { background: rgba(231,76,60,0.35); color: #ff4444; border: 1px solid #ff4444; }
+.par18-score-btn.active-hole { border: 2px solid var(--gold) !important; }
+.par18-total-row {
+  display: grid; grid-template-columns: 28px 1fr repeat(4, 44px);
+  gap: 4px; align-items: center; padding: 10px 0 2px;
+  border-top: 2px solid rgba(232,184,75,0.3);
+}
+
+/* CLOCK FACE SCORECARD */
+.clock-face {
+  width: 220px; height: 220px; margin: 0 auto 20px;
+  position: relative; border-radius: 50%;
+  border: 3px solid rgba(232,184,75,0.2);
+  background: radial-gradient(circle, rgba(30,61,102,0.8) 0%, rgba(13,35,64,0.9) 100%);
+}
+.clock-hole {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 28px; height: 28px; border-radius: 50%; background: var(--navy-mid);
+  border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+}
+.clock-dot {
+  position: absolute; width: 36px; height: 36px; border-radius: 50%;
+  border: 2px solid rgba(232,184,75,0.3); background: var(--navy-mid);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transform: translate(-50%, -50%); transition: all 0.2s;
+  font-family: var(--font-mono); font-size: 11px; color: var(--text-dim);
+}
+.clock-dot.made { background: var(--green); border-color: var(--green); color: white; font-size: 16px; }
+.clock-dot.missed { background: rgba(231,76,60,0.3); border-color: var(--red); }
+.clock-dot.active { border-color: var(--gold); border-width: 3px; }
+.clock-streak {
+  text-align: center; font-family: var(--font-mono); font-size: 48px;
+  color: var(--gold); line-height: 1;
+}
+.clock-streak-label { text-align: center; font-family: var(--font-cond); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+.restart-count { text-align: center; font-family: var(--font-cond); font-size: 13px; color: var(--text-dim); margin-top: 8px; }
+
+/* LADDER SCORECARD */
+.ladder-wrap { padding: 8px 0; }
+.ladder-rung {
+  display: flex; align-items: center; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;
+}
+.ladder-rung:last-child { border-bottom: none; }
+.ladder-distance {
+  font-family: var(--font-mono); font-size: 16px; font-weight: 500;
+  width: 44px; color: var(--text-dim);
+}
+.ladder-bar { flex: 1; height: 8px; background: var(--navy-mid); border-radius: 4px; overflow: hidden; }
+.ladder-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.ladder-status {
+  width: 36px; height: 36px; border-radius: 50%; border: 2px solid rgba(232,184,75,0.2);
+  background: var(--navy-mid); display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; transition: all 0.2s;
+}
+.ladder-status.made { background: var(--green); border-color: var(--green); }
+.ladder-status.active { border-color: var(--gold); border-width: 3px; }
+.ladder-status.locked { opacity: 0.3; }
+
+/* DOLLAR SIGNS SCORECARD */
+.bankroll-display {
+  text-align: center; padding: 16px 0 8px;
+}
+.bankroll-amount {
+  font-family: var(--font-mono); font-size: 52px; line-height: 1;
+  transition: color 0.3s;
+}
+.bankroll-amount.positive { color: var(--green); }
+.bankroll-amount.negative { color: var(--red); }
+.bankroll-amount.zero { color: var(--text-dim); }
+.bankroll-label { font-family: var(--font-cond); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+.dollar-spot {
+  background: var(--navy-mid); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.dollar-spot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.dollar-spot-name { font-family: var(--font-cond); font-size: 14px; font-weight: 600; color: var(--off-white); }
+.dollar-spot-total { font-family: var(--font-mono); font-size: 14px; }
+.dollar-balls { display: flex; gap: 6px; }
+.dollar-ball-btn {
+  flex: 1; padding: 8px 4px; border-radius: 6px; border: none; cursor: pointer;
+  font-family: var(--font-cond); font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+  text-transform: uppercase; transition: all 0.15s; background: var(--navy-card); color: var(--text-dim);
+}
+.dollar-ball-btn.chip-in { background: rgba(46,204,113,0.2); color: var(--green); }
+.dollar-ball-btn.close { background: rgba(232,184,75,0.15); color: var(--gold); }
+.dollar-ball-btn.on-green { background: rgba(52,152,219,0.15); color: var(--blue); }
+.dollar-ball-btn.miss { background: rgba(231,76,60,0.15); color: var(--red); }
+
+/* MULTIPLAYER / 7UP & 21 */
+.players-scoreboard {
+  display: grid; gap: 2px; margin-bottom: 12px;
+}
+.player-score-row {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  background: var(--navy-mid); border-radius: 8px; transition: background 0.2s;
+}
+.player-score-row.active-player { background: rgba(232,184,75,0.1); border: 1px solid rgba(232,184,75,0.3); }
+.player-score-indicator { width: 6px; height: 36px; border-radius: 3px; flex-shrink: 0; }
+.player-score-name { flex: 1; font-family: var(--font-cond); font-size: 17px; font-weight: 700; }
+.player-score-pts { font-family: var(--font-mono); font-size: 28px; font-weight: 500; }
+.player-score-target { font-family: var(--font-cond); font-size: 12px; color: var(--text-dim); text-align: right; }
+.score-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.score-action-btn {
+  padding: 14px; border-radius: 10px; border: none; cursor: pointer;
+  font-family: var(--font-cond); font-size: 13px; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.15s;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.score-action-btn .pts { font-family: var(--font-mono); font-size: 22px; }
+.score-action-btn.hole-in-one { background: rgba(46,204,113,0.2); color: var(--green); }
+.score-action-btn.birdie { background: rgba(232,184,75,0.2); color: var(--gold); }
+.score-action-btn.par { background: rgba(52,152,219,0.15); color: var(--blue); }
+.score-action-btn.bogey { background: rgba(231,76,60,0.15); color: var(--red); }
+
+/* FAIRWAY FINDER */
+.ff-hole-row {
+  background: var(--navy-mid); border-radius: 8px; padding: 12px 14px;
+  margin-bottom: 8px; display: flex; gap: 12px; align-items: center;
+}
+.ff-hole-num { font-family: var(--font-cond); font-size: 22px; font-weight: 700; color: var(--gold); width: 32px; flex-shrink: 0; }
+.ff-hole-info { flex: 1; }
+.ff-club { font-family: var(--font-cond); font-size: 13px; color: var(--text-dim); margin-bottom: 4px; }
+.ff-hit-miss { display: flex; gap: 6px; }
+.ff-btn {
+  flex: 1; padding: 7px; border-radius: 6px; border: none; cursor: pointer;
+  font-family: var(--font-cond); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.15s;
+}
+.ff-btn.fairway { background: rgba(46,204,113,0.15); color: var(--green); }
+.ff-btn.fairway.selected { background: var(--green); color: white; }
+.ff-btn.miss { background: rgba(231,76,60,0.1); color: var(--red); }
+.ff-btn.miss.selected { background: var(--red); color: white; }
+.ff-pts { font-family: var(--font-mono); font-size: 20px; color: var(--gold); width: 32px; text-align: right; flex-shrink: 0; }
+
+/* DARTS SCORECARD */
+.darts-chip-row {
+  background: var(--navy-mid); border-radius: 8px; padding: 10px 14px;
+  margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
+}
+.dart-num { font-family: var(--font-cond); font-size: 18px; font-weight: 700; color: var(--text-dim); width: 28px; flex-shrink: 0; }
+.dart-zones { display: flex; gap: 6px; flex: 1; }
+.dart-zone-btn {
+  flex: 1; padding: 8px 4px; border-radius: 6px; border: none; cursor: pointer;
+  font-family: var(--font-cond); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.3px; text-transform: uppercase; transition: all 0.15s;
+  background: var(--navy-card); color: var(--text-dim); text-align: center;
+}
+.dart-zone-btn.z1 { }
+.dart-zone-btn.z1.sel { background: rgba(46,204,113,0.3); color: var(--green); }
+.dart-zone-btn.z2.sel { background: rgba(232,184,75,0.3); color: var(--gold); }
+.dart-zone-btn.z3.sel { background: rgba(52,152,219,0.25); color: var(--blue); }
+.dart-zone-btn.z4.sel { background: rgba(231,76,60,0.2); color: var(--red); }
+.dart-pts { font-family: var(--font-mono); font-size: 16px; color: var(--gold); width: 28px; text-align: right; flex-shrink: 0; }
+.darts-total-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--navy-card); border-radius: 8px; padding: 12px 16px; margin-top: 4px;
+  border: 1px solid rgba(232,184,75,0.2);
+}
+.darts-total-label { font-family: var(--font-cond); font-size: 13px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+.darts-total-pts { font-family: var(--font-mono); font-size: 28px; color: var(--gold); }
+
+/* WINNER OVERLAY */
+.winner-overlay {
+  position: fixed; inset: 0; background: rgba(13,35,64,0.95);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 500; padding: 32px;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+.winner-trophy { font-size: 72px; margin-bottom: 16px; }
+.winner-title { font-family: var(--font-cond); font-size: 16px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.winner-name { font-family: var(--font-cond); font-size: 42px; font-weight: 800; color: var(--gold); text-align: center; }
+.winner-score { font-family: var(--font-mono); font-size: 20px; color: var(--off-white); margin-top: 8px; margin-bottom: 32px; }
+.winner-buttons { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+
+/* PROGRESS BAR */
+.progress-bar-wrap { height: 4px; background: var(--navy-light); flex-shrink: 0; }
+.progress-bar-fill { height: 100%; background: var(--gold); transition: width 0.4s ease; }
+
+/* MISC */
+.divider { height: 1px; background: rgba(232,184,75,0.1); margin: 4px 16px 12px; }
+.empty-state { text-align: center; padding: 40px 24px; color: var(--text-dim); }
+.empty-icon { font-size: 40px; margin-bottom: 10px; }
+.empty-title { font-family: var(--font-cond); font-size: 18px; color: var(--off-white); margin-bottom: 6px; }
+
+/* BOTTOM NAV */
+.rng-nav {
+  background: var(--navy-mid); border-top: 2px solid var(--gold);
+  display: flex; flex-shrink: 0;
+}
+.rng-nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 10px 0 8px; background: none; border: none; color: var(--text-dim);
+  cursor: pointer; transition: color 0.2s; gap: 3px;
+}
+.rng-nav-btn.active { color: var(--gold); }
+.rng-nav-btn svg { width: 20px; height: 20px; }
+.rng-nav-label { font-family: var(--font-cond); font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ══ GAMES BROWSE ══ -->
+<div id="screen-games" class="screen active">
+  <div class="rng-header">
+    <div class="rng-logo">THE <span>RANGE</span></div>
+    <div style="font-family:var(--font-cond);font-size:13px;color:var(--text-dim)">PRESSURE GAMES</div>
+  </div>
+  <div class="scroll-content">
+    <div style="padding:12px 16px 4px;font-family:var(--font-body);font-size:14px;color:var(--text-dim);line-height:1.5">
+      Games with consequences. Every shot counts. You don't leave until you hit your number.
+    </div>
+    <div class="cat-tabs">
+      <div class="cat-tab active" onclick="filterGames('all', this)">All Games</div>
+      <div class="cat-tab" onclick="filterGames('putting', this)">⛳ Putting</div>
+      <div class="cat-tab" onclick="filterGames('chipping', this)">🏌️ Chipping</div>
+      <div class="cat-tab" onclick="filterGames('range', this)">🎯 Range</div>
+      <div class="cat-tab" onclick="filterGames('multi', this)">👥 Multiplayer</div>
+    </div>
+    <div id="games-list" style="padding-top:8px"></div>
+  </div>
+  <nav class="rng-nav">
+    <button class="rng-nav-btn" onclick="alert('Home tab')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="rng-nav-label">Home</span>
+    </button>
+    <button class="rng-nav-btn" onclick="alert('Practice tab')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+      <span class="rng-nav-label">Practice</span>
+    </button>
+    <button class="rng-nav-btn active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/></svg>
+      <span class="rng-nav-label">Games</span>
+    </button>
+    <button class="rng-nav-btn" onclick="alert('History tab')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span class="rng-nav-label">History</span>
+    </button>
+    <button class="rng-nav-btn" onclick="alert('Profile tab')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="rng-nav-label">Profile</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ══ GAME DETAIL ══ -->
+<div id="screen-detail" class="screen">
+  <div class="rng-header">
+    <button class="back-btn" onclick="showScreen('games')">←</button>
+    <div class="rng-logo" style="font-size:16px" id="detail-header-title">GAME DETAILS</div>
+    <div style="width:40px"></div>
+  </div>
+  <div class="scroll-content">
+    <div class="game-detail-hero">
+      <div class="game-detail-icon" id="detail-icon"></div>
+      <div>
+        <div class="game-detail-title" id="detail-title"></div>
+        <div class="game-detail-sub" id="detail-sub"></div>
+        <div class="game-badges" style="padding:8px 0 0" id="detail-badges"></div>
+      </div>
+    </div>
+    <div style="height:12px"></div>
+    <div class="rng-card">
+      <div class="rng-card-title">How to Play</div>
+      <ul class="rules-list" id="detail-rules"></ul>
+    </div>
+    <div class="rng-card">
+      <div class="rng-card-title">Scoring</div>
+      <div id="detail-scoring"></div>
+    </div>
+    <div class="exit-box">
+      <div class="exit-box-label">🏁 Exit Requirement</div>
+      <div class="exit-box-text" id="detail-exit"></div>
+    </div>
+    <div style="padding:0 16px 12px">
+      <a id="detail-watch-btn" href="#" target="_blank" class="watch-btn">
+        <span class="watch-icon">▶</span>
+        <span class="watch-label">Watch How to Play on YouTube</span>
+      </a>
+    </div>
+    <div style="padding:0 16px 16px">
+      <button class="rng-btn" onclick="goToPlayerSetup()">Play This Game</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PLAYER SETUP ══ -->
+<div id="screen-setup" class="screen">
+  <div class="rng-header">
+    <button class="back-btn" onclick="showScreen('detail')">←</button>
+    <div class="rng-logo" style="font-size:16px">PLAYER SETUP</div>
+    <div style="width:40px"></div>
+  </div>
+  <div class="scroll-content">
+    <div style="padding:16px 16px 8px;font-family:var(--font-body);font-size:14px;color:var(--text-dim);line-height:1.5" id="setup-desc"></div>
+    <div class="rng-card">
+      <div class="rng-card-title">Players</div>
+      <div id="player-rows"></div>
+      <button class="add-player-btn" id="add-player-btn" onclick="addPlayer()">
+        <div style="font-size:20px;color:var(--text-dim)">+</div>
+        <div class="add-player-label">Add Player (up to 4)</div>
+      </button>
+    </div>
+    <div style="padding:0 16px 16px">
+      <button class="rng-btn" id="start-game-btn" onclick="startGame()">Start Game</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAR 18 SCORECARD ══ -->
+<div id="screen-par18" class="screen">
+  <div class="rng-header">
+    <button class="back-btn" onclick="confirmQuit()">✕</button>
+    <div class="rng-logo" style="font-size:16px">⛳ PAR 18</div>
+    <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-dim)" id="par18-total-header">0 / 18</div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="par18-progress" style="width:0%"></div></div>
+  <div class="scroll-content">
+    <div style="padding:8px 16px 4px">
+      <div class="par18-hole-row header">
+        <div class="par18-header-cell">#</div>
+        <div></div>
+        <div class="par18-header-cell" id="par18-h1name" style="color:var(--gold)">P1</div>
+        <div class="par18-header-cell" id="par18-h2name" style="color:var(--green)">P2</div>
+        <div class="par18-header-cell" id="par18-h3name" style="color:var(--blue)">P3</div>
+        <div class="par18-header-cell" id="par18-h4name" style="color:var(--orange)">P4</div>
+      </div>
+      <div id="par18-rows"></div>
+      <div class="par18-total-row">
+        <div></div>
+        <div style="font-family:var(--font-cond);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);padding-left:4px">TOTAL</div>
+        <div class="par18-cell" id="par18-t1" style="color:var(--gold)">—</div>
+        <div class="par18-cell" id="par18-t2" style="color:var(--green)">—</div>
+        <div class="par18-cell" id="par18-t3" style="color:var(--blue)">—</div>
+        <div class="par18-cell" id="par18-t4" style="color:var(--orange)">—</div>
+      </div>
+    </div>
+    <div style="padding:12px 16px 16px;display:flex;gap:10px">
+      <button class="rng-btn outline sm" onclick="shareGame('par18')">📤 Share</button>
+      <button class="rng-btn sm" onclick="checkPar18Winner()">Finish Game</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CLOCK FACE SCORECARD ══ -->
+<div id="screen-clock" class="screen">
+  <div class="rng-header">
+    <button class="back-btn" onclick="confirmQuit()">✕</button>
+    <div class="rng-logo" style="font-size:16px">🕐 CLOCK FACE</div>
+    <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-dim)" id="clock-attempt-label">Attempt 1</div>
+  </div>
+  <div class="scroll-content">
+    <div style="padding:16px">
+      <div class="clock-streak" id="clock-streak">0</div>
+      <div class="clock-streak-label">CONSECUTIVE MAKES</div>
+      <div class="restart-count" id="clock-restarts">0 restarts</div>
+    </div>
+    <div class="clock-face" id="clock-face"></div>
+    <div style="padding:12px 16px 8px;font-family:var(--font-cond);font-size:13px;color:var(--text-dim);text-align:center" id="clock-status-text">
+      Tap each ball as you putt it. Make all 12 in a row to complete the drill.
+    </div>
+    <div style="padding:8px 16px 16px">
+      <button class="rng-btn outline" onclick="resetClock()">↺ Restart Drill</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LADDER SCORECARD ══ -->
+<div id="screen-ladder" class="screen">
+  <div class="rng-header">
+    <button class="back-btn" onclick="confirmQuit()">✕</button>
+    <div class="rng-logo" style="font-size:16px">🪜 LADDER</div>
+    <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-dim)" id="ladder-attempt-label">Attempt 1</div>
+  </div>
+  <div class="scroll-content">
+    <div class="rng-card" style="margin-top:16px">
+      <div class="rng-card-title">Current Rung</div>
+      <div style="font-family:var(--font-cond);font-size:32px;font-weight:800;color:var(--gold)" id="ladder-current-dist">3 ft</div>
+      <div style="font-family:var(--font-body);font-size:13px;color:var(--text-dim);margin-top:4px">Make this putt to advance. Miss and you restart.</div>
+    </div>
+    <div class="rng-card">
+      <div class="rng-card-title">Rungs</div>
+      <div class="ladder-wrap" id="ladder-rungs"></div>
+    </div>
+    <div style="padding:0 16px 8px;display:flex;gap:10px">
+      <button class="rng-btn danger sm" onclick="missedLadder()">✕ Missed</button>
+      <button class="rng-btn sm" onclick="madeLadder()">✓ Made It</button>
+    </div>
+    <div style="padding:0 16px 16px">
+      <div style="font-family:var(--font-cond);font-size:13px;color:var(--text-dim);text-align:center" id="ladder-stats"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DOLLAR SIGNS SCORECARD ══ -->
+<div id="screen-dollar" class="screen">
+  <div class="rng-header">
+    <button class="back-btn" onclick="confirmQuit()">✕</button>
+    <div class="rng-logo" style="font-size:16px">💰 DOLLAR SIGNS</div>
+    <div style="font-family:var(--font-mono);font-size:13px" id="dollar-bankroll-header">$0</div>
+  </div>
+  <div class="scroll-content">
+    <div class="rng-card" style="margin-top:16px">
+      <div class="bankroll-display">
+        <div class="bankroll-amount zero" id="dollar-bankroll">$0</div>
+        <div class="bankroll-label">Running Bankroll</div>
+      </div>
+    </div>
+    <div style="padding:0 16px 4px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px;text-align:center">
+        <div style="font-size:10px;font-family:var(--font-cond);color:var(--green)">Chip-In<br><span style="font-family:var(--font-mono)">+$10</span></div>
+        <div style="font-size:10px;font-family:var(--font-cond);color:var(--gold)">&lt;3ft<br><span style="font-family:var(--font-mono)">+$2</span></div>
+        <div style="font-size:10px;font-family:var(--font-cond);color:var(--blue)">On Green<br><span style="font-family:var(--font-mono)">$0</span></div>
+        <div style="font-size:10px;font-family:var(--font-cond);color:var(--red)">Miss Green<br><span style="font-family:var(--font-mono)">-$5</span></div>
+      </div>
+    </div>
+    <div style="padding:0 16px 16px" id="dollar-spots"></div>
+  </div>
+</div>
+
+<!-- ══ 7 UP / 21 SCORECARD ══ -->
+<div id="screen-points" class="screen">
+  <div class="rng-header">
+    <button class="back-btn" onclick="confirmQuit()">✕</button>
+    <div class="rng-logo" style="font-size:16px" id="points-game-name">7 UP</div>
+    <div style="font-family:var(--font-cond);font-size:13px;color:var(--text-dim)" id="points-hole-label">Hole 1</div>
+  </div>
+  <div class="scroll-content">
+    <div style="padding:12px 16px 8px">
+      <div class="players-scoreboard" id="points-players"></div>
+    </div>
+    <div class="rng-card">
+      <div class="rng-card-title" id="points-current-player-label">SCORING FOR —</div>
+      <div class="score-buttons" id="points-score-buttons"></div>
+      <div style="font-family:var(--font-body);font-size:13px;color:var(--text-dim);text-align:center" id="points-instruction"></div>
+    </div>
+    <div style="padding:0 16px 16px">
+      <button class="rng-btn outline sm" onclick="shareGame('points')">📤 Share Scores</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FAIRWAY FINDER SCORECARD ══ -->
+<div id="screen-fairway" class="screen">
+  <div class="rng-header">
+    <button class="back-btn" onclick="confirmQuit()">✕</button>
+    <div class="rng-logo" style="font-size:16px">🎯 FAIRWAY FINDER</div>
+    <div style="font-family:var(--font-mono);font-size:13px;color:var(--gold)" id="ff-score-header">0 pts</div>
+  </div>
+  <div class="scroll-content">
+    <div style="padding:12px 16px 4px;font-family:var(--font-cond);font-size:13px;color:var(--text-dim)">
+      Tap your result for each hole. Driver = 3 pts, Hybrid/FW = 2 pts, Iron = 1 pt in the fairway.
+    </div>
+    <div id="ff-holes" style="padding:8px 16px 16px"></div>
+  </div>
+</div>
+
+<!-- ══ DARTS SCORECARD ══ -->
+<div id="screen-darts" class="screen">
+  <div class="rng-header">
+    <button class="back-btn" onclick="confirmQuit()">✕</button>
+    <div class="rng-logo" style="font-size:16px">🎯 DARTS</div>
+    <div style="font-family:var(--font-mono);font-size:13px;color:var(--gold)" id="darts-score-header">0 pts</div>
+  </div>
+  <div class="scroll-content">
+    <div style="padding:12px 16px 4px;font-family:var(--font-cond);font-size:13px;color:var(--text-dim)">
+      Hit 10 chips. Tap your proximity zone for each shot.
+    </div>
+    <div id="darts-chips" style="padding:8px 16px 8px"></div>
+    <div style="padding:0 16px 16px">
+      <div class="darts-total-bar">
+        <div class="darts-total-label">Total Points</div>
+        <div class="darts-total-pts" id="darts-total">0 / 50</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WINNER OVERLAY ══ -->
+<div id="winner-overlay" style="display:none" class="winner-overlay">
+  <div class="winner-trophy">🏆</div>
+  <div class="winner-title">Winner</div>
+  <div class="winner-name" id="winner-name"></div>
+  <div class="winner-score" id="winner-score"></div>
+  <div class="winner-buttons">
+    <button class="rng-btn" onclick="playAgain()">Play Again</button>
+    <button class="rng-btn outline" onclick="shareWinner()">📤 Share Result</button>
+    <button class="rng-btn" style="background:transparent;border:2px solid rgba(255,255,255,0.2);color:var(--text-dim)" onclick="returnToGames()">Back to Games</button>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ══════════════════════════════════════════
+//  GAME DEFINITIONS
+// ══════════════════════════════════════════
+
+const GAMES = [
+  {
+    id: 'clock',
+    name: 'Clock Face',
+    icon: '🕐',
+    tagline: 'Make all 12 putts in a row around the hole. Miss one — start over.',
+    category: 'putting',
+    solo: true, multi: false,
+    time: '15 min',
+    rules: [
+      'Place 12 balls in a circle around the hole at 3 feet — one on each hour.',
+      'Putt each ball in sequence around the clock, clockwise or counterclockwise.',
+      'Make all 12 in a row without missing.',
+      'Miss any putt and restart from ball 1.',
+      'Track how many attempts it takes to complete the drill.',
+    ],
+    scoring: [
+      { label: 'Complete the drill', value: '12/12 ✓' },
+      { label: 'Restart counter', value: 'Tracked' },
+      { label: 'Best score', value: 'Fewest attempts' },
+    ],
+    exit: 'Do not leave until you complete all 12 in a row at least once. Tour pros target completing it in under 3 attempts.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=clock+face+putting+drill+golf',
+    screen: 'clock',
+  },
+  {
+    id: 'ladder',
+    name: 'Ladder',
+    icon: '🪜',
+    tagline: 'Start at 3 feet. Make it, step back. Miss, restart from the beginning.',
+    category: 'putting',
+    solo: true, multi: false,
+    time: '15 min',
+    rules: [
+      'Place a tee at 3 feet, 6 feet, and 10 feet from a hole.',
+      'Start at 3 feet. Make it — advance to 6 feet.',
+      'Make it — advance to 10 feet.',
+      'Make all three in sequence to complete the ladder.',
+      'Miss at any distance — restart from 3 feet.',
+    ],
+    scoring: [
+      { label: '3 ft made', value: 'Advance →' },
+      { label: '6 ft made', value: 'Advance →' },
+      { label: '10 ft made', value: 'Complete ✓' },
+      { label: 'Any miss', value: 'Restart from 3ft' },
+    ],
+    exit: 'Complete the full 3→6→10 foot sequence without missing. Track attempts. Goal: complete in under 5 attempts.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=golf+ladder+putting+drill+pressure+3+6+10+feet',
+    screen: 'ladder',
+  },
+  {
+    id: 'molinari',
+    name: "Molinari's 8",
+    icon: '🎖️',
+    tagline: 'Make 8 consecutive 5-foot putts. Used by Francesco Molinari before The Open.',
+    category: 'putting',
+    solo: true, multi: false,
+    time: '10 min',
+    rules: [
+      'Place a tee at 5 feet from the hole.',
+      'Putt one ball at a time through your full pre-shot routine.',
+      'Make 8 consecutive putts without missing.',
+      'Miss any putt — restart the count from 0.',
+      'Record how many attempts to reach 8 in a row.',
+    ],
+    scoring: [
+      { label: 'Target streak', value: '8 in a row' },
+      { label: 'Miss', value: 'Restart count' },
+      { label: 'Best score', value: 'Fewest attempts' },
+    ],
+    exit: "Complete 8 consecutive 5-foot putts. Molinari did it in 9 attempts before winning The Open. What's your number?",
+    youtubeSearch: 'https://www.youtube.com/results?search_query=Molinari+consecutive+5+foot+putts+drill+golf+pressure',
+    screen: 'clock',
+  },
+  {
+    id: 'sevenup',
+    name: '7 Up',
+    icon: '7️⃣',
+    tagline: 'Lag putting competition. Get closest to the hole or make it to score. First to 7 wins.',
+    category: 'putting',
+    solo: false, multi: true,
+    time: '20 min',
+    rules: [
+      'Each player lags from 20+ feet to a hole.',
+      'The player closest to the pin after all putts "controls" the hole.',
+      'If the closest player can win a point if another player 3-putts.',
+      'Hole-out on the first putt = 2 points instantly.',
+      'First player to reach exactly 7 points wins.',
+    ],
+    scoring: [
+      { label: 'Hole-out (1 putt)', value: '+2 pts' },
+      { label: 'Closest + other 3-putts', value: '+1 pt' },
+      { label: 'Target', value: 'Exactly 7 pts' },
+    ],
+    exit: 'First to reach exactly 7 points wins the game.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=7+up+golf+putting+game+multiplayer',
+    screen: 'points',
+  },
+  {
+    id: 'twentyone',
+    name: '21',
+    icon: '🃏',
+    tagline: 'Putt between two holes. Made putt = 3 pts, 2-putt = 1 pt. First to exactly 21.',
+    category: 'putting',
+    solo: false, multi: true,
+    time: '20 min',
+    rules: [
+      'Pick two holes on the practice green.',
+      'All players putt from one hole toward the other.',
+      'Hole-out on first putt = 3 points.',
+      'Two-putt = 1 point.',
+      'Three-putt or worse = 0 points.',
+      'After each player holes out, rotate and putt the other direction.',
+      'First player to reach EXACTLY 21 wins. Go over — you bust and drop to 15.',
+    ],
+    scoring: [
+      { label: '1-putt (hole-out)', value: '+3 pts' },
+      { label: '2-putt', value: '+1 pt' },
+      { label: '3-putt+', value: '0 pts' },
+      { label: 'Bust over 21', value: 'Drop to 15' },
+    ],
+    exit: 'First player to reach exactly 21 wins.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=golf+putting+game+21+points+two+holes',
+    screen: 'points',
+  },
+  {
+    id: 'par18',
+    name: 'Par 18',
+    icon: '⛳',
+    tagline: 'Play 9 holes of par-2 chip-and-putt. Shoot 18 or better to win.',
+    category: 'chipping',
+    solo: true, multi: true,
+    time: '25 min',
+    rules: [
+      'Select 9 locations around the green — 3 easy, 3 medium, 3 hard.',
+      'Each location is a par 2: chip on, then putt out.',
+      'Play one ball, go through your full routine on every shot.',
+      'Chip-in = birdie (1). Up-and-down = par (2). Three shots = bogey (3).',
+      'With a partner, alternate who picks each location.',
+      'Add up your total strokes across all 9 holes.',
+    ],
+    scoring: [
+      { label: 'Chip-in (birdie)', value: '1 stroke' },
+      { label: 'Up-and-down (par)', value: '2 strokes' },
+      { label: 'Miss putt (bogey)', value: '3 strokes' },
+      { label: 'Par score', value: '18 total' },
+    ],
+    exit: 'Goal is to shoot 18 (even par) or better. Play once per session — no mulligans. Score counts.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=par+18+chipping+game+golf+practice',
+    screen: 'par18',
+  },
+  {
+    id: 'dollar',
+    name: 'Dollar Signs',
+    icon: '💰',
+    tagline: 'Chip for imaginary money. Get it close to win, miss the green to lose.',
+    category: 'chipping',
+    solo: true, multi: false,
+    time: '20 min',
+    rules: [
+      'Pick 5 chipping spots around the green.',
+      'Hit 3 chips from each spot (15 shots total).',
+      'Start with a $0 bankroll and track your running total.',
+      'Chip-in = +$10. Inside 3 feet = +$2. On green = $0. Miss green = -$5.',
+      'Goal: finish with a positive bankroll.',
+    ],
+    scoring: [
+      { label: 'Chip-in', value: '+$10 💰' },
+      { label: 'Inside 3 feet', value: '+$2' },
+      { label: 'On green, outside 3ft', value: '$0' },
+      { label: 'Miss the green', value: '-$5 ❌' },
+    ],
+    exit: 'Finish all 15 shots with a positive bankroll. If you go negative, run it again.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=dollar+signs+chipping+game+golf+practice',
+    screen: 'dollar',
+  },
+  {
+    id: 'darts',
+    name: 'Darts',
+    icon: '🎯',
+    tagline: 'Score points based on how close you chip to the pin. Aim for the bullseye.',
+    category: 'chipping',
+    solo: true, multi: true,
+    time: '15 min',
+    rules: [
+      'Scatter 10 balls at various distances and locations around the green.',
+      'Chip each ball toward a single pin target.',
+      'Score is based on proximity to the hole.',
+      'First to 50 points wins in multiplayer.',
+      'Solo: track your score and try to beat it each session.',
+    ],
+    scoring: [
+      { label: 'Inside 3 feet', value: '5 pts 🎯' },
+      { label: 'Inside 6 feet', value: '3 pts' },
+      { label: 'Inside 12 feet', value: '1 pt' },
+      { label: 'Miss green', value: '-2 pts' },
+      { label: 'Max possible', value: '50 pts' },
+    ],
+    exit: 'Solo: score 30+ points out of 50. Multiplayer: first to 50 total points across rounds.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=darts+chipping+game+golf+proximity+scoring',
+    screen: 'darts',
+  },
+  {
+    id: 'fairway',
+    name: 'Fairway Finder',
+    icon: '🏌️',
+    tagline: 'Create an imaginary fairway. Hit 9 shots. Score points for hitting it.',
+    category: 'range',
+    solo: true, multi: true,
+    time: '20 min',
+    rules: [
+      'Imagine a 40-yard wide fairway using distant targets as your boundaries.',
+      'Play 9 imaginary holes, choosing your club for each tee shot.',
+      'Score points for finding the fairway. More points for harder clubs.',
+      'Driver in fairway = 3 pts. Hybrid/fairway wood = 2 pts. Iron = 1 pt.',
+      'Miss the fairway = 0 pts. In imaginary water = -1 pt.',
+    ],
+    scoring: [
+      { label: 'Driver in fairway', value: '3 pts' },
+      { label: 'Hybrid/FW in fairway', value: '2 pts' },
+      { label: 'Iron in fairway', value: '1 pt' },
+      { label: 'Miss fairway', value: '0 pts' },
+      { label: 'Water/OB', value: '-1 pt' },
+    ],
+    exit: 'Solo: score 18+ points out of 27. Multiplayer: highest score after 9 holes wins.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=fairway+finder+driving+range+game+golf+pressure+drill',
+    screen: 'fairway',
+  },
+  {
+    id: 'horse',
+    name: 'H-O-R-S-E',
+    icon: '🐴',
+    tagline: 'Call the shot. Everyone has to match it. Miss — get a letter.',
+    category: 'range',
+    solo: false, multi: true,
+    time: '25 min',
+    rules: [
+      'Player 1 calls a shot — club, target, shape (e.g. "fade 7-iron to the 150 flag").',
+      'Everyone hits that exact shot.',
+      'Player 1 sets the standard — only gets a letter if they miss their own call.',
+      'Any other player who misses the shot gets a letter.',
+      'First player to spell H-O-R-S-E is eliminated.',
+      'Works with chipping, putting, or full swing shots.',
+    ],
+    scoring: [
+      { label: 'Miss the called shot', value: 'Get a letter' },
+      { label: 'Make the called shot', value: 'No letter' },
+      { label: 'Spell H-O-R-S-E', value: 'Eliminated' },
+      { label: 'Winner', value: 'Last player standing' },
+    ],
+    exit: 'Last player without spelling H-O-R-S-E wins. No time limit — play as long as it takes.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=HORSE+game+golf+driving+range+multiplayer',
+    screen: 'points',
+  },
+];
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+
+let currentGame = null;
+let players = ['Me'];
+let gameState = {};
+
+// ══════════════════════════════════════════
+//  SCREEN MANAGEMENT
+// ══════════════════════════════════════════
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const s = document.getElementById('screen-' + name);
+  if (s) s.classList.add('active');
+}
+
+function confirmQuit() {
+  if (confirm('Quit this game? Your score will not be saved.')) showScreen('games');
+}
+
+// ══════════════════════════════════════════
+//  GAMES LIST
+// ══════════════════════════════════════════
+
+let activeFilter = 'all';
+
+function filterGames(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderGamesList();
+}
+
+function renderGamesList() {
+  const container = document.getElementById('games-list');
+  const filtered = GAMES.filter(g => {
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'multi') return g.multi;
+    return g.category === activeFilter;
+  });
+  container.innerHTML = '';
+  filtered.forEach(g => {
+    const badges = [];
+    if (g.solo) badges.push('<span class="badge badge-solo">Solo</span>');
+    if (g.multi) badges.push('<span class="badge badge-multi">Multiplayer</span>');
+    badges.push(`<span class="badge badge-time">⏱ ${g.time}</span>`);
+    const catBadge = g.category === 'putting' ? 'badge-putting' : g.category === 'chipping' ? 'badge-chipping' : 'badge-range';
+    const catLabel = g.category === 'putting' ? '⛳ Putting' : g.category === 'chipping' ? '🏌️ Chipping' : '🎯 Range';
+    badges.push(`<span class="badge ${catBadge}">${catLabel}</span>`);
+    container.innerHTML += `
+      <div class="game-card" onclick="openGame('${g.id}')">
+        <div class="game-card-header">
+          <div class="game-icon">${g.icon}</div>
+          <div class="game-info">
+            <div class="game-name">${g.name}</div>
+            <div class="game-tagline">${g.tagline}</div>
+          </div>
+        </div>
+        <div class="game-badges">${badges.join('')}</div>
+      </div>`;
+  });
+}
+
+// ══════════════════════════════════════════
+//  GAME DETAIL
+// ══════════════════════════════════════════
+
+function openGame(id) {
+  currentGame = GAMES.find(g => g.id === id);
+  document.getElementById('detail-header-title').textContent = currentGame.name.toUpperCase();
+  document.getElementById('detail-icon').textContent = currentGame.icon;
+  document.getElementById('detail-title').textContent = currentGame.name;
+  document.getElementById('detail-sub').textContent = currentGame.tagline;
+
+  const badges = [];
+  if (currentGame.solo) badges.push('<span class="badge badge-solo">Solo</span>');
+  if (currentGame.multi) badges.push('<span class="badge badge-multi">Multiplayer</span>');
+  badges.push(`<span class="badge badge-time">⏱ ${currentGame.time}</span>`);
+  document.getElementById('detail-badges').innerHTML = badges.join('');
+
+  document.getElementById('detail-rules').innerHTML = currentGame.rules.map(r => `<li>${r}</li>`).join('');
+  document.getElementById('detail-scoring').innerHTML = currentGame.scoring.map(s =>
+    `<div class="scoring-row"><div class="scoring-label">${s.label}</div><div class="scoring-value" style="color:var(--gold)">${s.value}</div></div>`
+  ).join('');
+  document.getElementById('detail-exit').textContent = currentGame.exit;
+  document.getElementById('detail-watch-btn').href = currentGame.youtubeSearch;
+
+  showScreen('detail');
+}
+
+// ══════════════════════════════════════════
+//  PLAYER SETUP
+// ══════════════════════════════════════════
+
+const PLAYER_COLORS = ['p1','p2','p3','p4'];
+const PLAYER_COLOR_HEX = ['#e8b84b','#2ecc71','#3498db','#f39c12'];
+let playerCount = 1;
+let playerNames = [''];
+
+function goToPlayerSetup() {
+  playerCount = 1;
+  playerNames = [''];
+  const isSolo = !currentGame.multi;
+
+  document.getElementById('setup-desc').textContent = isSolo
+    ? `${currentGame.name} is a solo game. Enter your name and start.`
+    : `${currentGame.name} supports 2–4 players. Enter everyone's name before starting.`;
+
+  renderPlayerRows();
+  document.getElementById('add-player-btn').style.display = (!isSolo && playerCount < 4) ? 'flex' : 'none';
+  showScreen('setup');
+}
+
+function renderPlayerRows() {
+  const container = document.getElementById('player-rows');
+  container.innerHTML = '';
+  for (let i = 0; i < playerCount; i++) {
+    container.innerHTML += `
+      <div class="player-setup-row">
+        <div class="player-number ${PLAYER_COLORS[i]}">${i+1}</div>
+        <input class="rng-input" id="player-name-${i}" type="text" placeholder="Player ${i+1} name"
+          value="${playerNames[i]||''}" autocomplete="off" oninput="playerNames[${i}]=this.value">
+        ${i > 0 ? `<button onclick="removePlayer(${i})" style="background:none;border:none;color:var(--red);font-size:20px;cursor:pointer;padding:4px">✕</button>` : ''}
+      </div>`;
+  }
+  document.getElementById('add-player-btn').style.display =
+    (currentGame.multi && playerCount < 4) ? 'flex' : 'none';
+}
+
+function addPlayer() {
+  if (playerCount < 4) { playerCount++; playerNames.push(''); renderPlayerRows(); }
+}
+
+function removePlayer(i) {
+  playerNames.splice(i, 1); playerCount--;
+  renderPlayerRows();
+}
+
+function startGame() {
+  // collect names
+  players = [];
+  for (let i = 0; i < playerCount; i++) {
+    const n = document.getElementById(`player-name-${i}`)?.value?.trim() || `Player ${i+1}`;
+    players.push(n);
+  }
+
+  if (currentGame.screen === 'par18') initPar18();
+  else if (currentGame.id === 'clock' || currentGame.id === 'molinari') initClock();
+  else if (currentGame.id === 'ladder') initLadder();
+  else if (currentGame.id === 'dollar') initDollar();
+  else if (currentGame.id === 'sevenup') initPoints('7up');
+  else if (currentGame.id === 'twentyone') initPoints('21');
+  else if (currentGame.id === 'horse') initPoints('horse');
+  else if (currentGame.id === 'fairway') initFairway();
+  else if (currentGame.id === 'darts') initDarts();
+  else alert('Scorecard coming soon!');
+}
+
+// ══════════════════════════════════════════
+//  PAR 18 SCORECARD
+// ══════════════════════════════════════════
+
+const PAR18_HOLES = [
+  'Easy – short chip', 'Easy – fringe', 'Easy – 10 yds',
+  'Mid – 15 yds', 'Mid – rough', 'Mid – sidehill',
+  'Hard – 20 yds', 'Hard – downhill', 'Hard – tight lie'
+];
+
+let par18Scores = [];
+
+function initPar18() {
+  par18Scores = players.map(() => new Array(9).fill(null));
+  const colors = ['var(--gold)','var(--green)','var(--blue)','var(--orange)'];
+
+  // Update headers
+  for (let p = 0; p < 4; p++) {
+    const el = document.getElementById(`par18-h${p+1}name`);
+    el.textContent = p < players.length ? players[p].substring(0,4).toUpperCase() : '—';
+    el.style.opacity = p < players.length ? '1' : '0.3';
+  }
+
+  renderPar18();
+  showScreen('par18');
+}
+
+function renderPar18() {
+  const container = document.getElementById('par18-rows');
+  container.innerHTML = '';
+  const colors = ['var(--gold)','var(--green)','var(--blue)','var(--orange)'];
+
+  PAR18_HOLES.forEach((desc, h) => {
+    let rowHTML = `<div class="par18-hole-row">
+      <div class="par18-hole-num">${h+1}</div>
+      <div class="par18-desc">${desc}</div>`;
+
+    for (let p = 0; p < 4; p++) {
+      if (p < players.length) {
+        const score = par18Scores[p][h];
+        const cls = score===1?'birdie':score===2?'par':score===3?'bogey':score>=4?'double':'';
+        const label = score ? score : '—';
+        rowHTML += `<button class="par18-score-btn ${cls}" onclick="cyclePar18(${p},${h})">${label}</button>`;
+      } else {
+        rowHTML += `<div class="par18-score-btn" style="opacity:0.2">—</div>`;
+      }
+    }
+    rowHTML += `</div>`;
+    container.innerHTML += rowHTML;
+  });
+
+  // Totals
+  for (let p = 0; p < 4; p++) {
+    const el = document.getElementById(`par18-t${p+1}`);
+    if (p < players.length) {
+      const total = par18Scores[p].reduce((a,v) => a + (v||0), 0);
+      el.textContent = total || '—';
+      el.style.color = total <= 18 ? 'var(--green)' : total <= 22 ? 'var(--gold)' : 'var(--red)';
+    } else {
+      el.textContent = '—';
+    }
+  }
+
+  // Progress
+  const filled = par18Scores[0].filter(v => v !== null).length;
+  document.getElementById('par18-progress').style.width = (filled/9*100)+'%';
+  document.getElementById('par18-total-header').textContent = filled+' / 9';
+}
+
+function cyclePar18(player, hole) {
+  const cur = par18Scores[player][hole];
+  par18Scores[player][hole] = cur === null ? 1 : cur >= 5 ? null : cur + 1;
+  renderPar18();
+}
+
+function checkPar18Winner() {
+  const totals = players.map((p,i) => ({ name: p, score: par18Scores[i].reduce((a,v)=>a+(v||0),0) }));
+  const winner = totals.reduce((a,b) => a.score <= b.score ? a : b);
+  showWinner(winner.name, `Shot ${winner.score} (Par 18)`, totals.map(t => `${t.name}: ${t.score}`).join(' · '));
+}
+
+// ══════════════════════════════════════════
+//  CLOCK FACE
+// ══════════════════════════════════════════
+
+let clockMade = [];
+let clockRestarts = 0;
+let clockStreak = 0;
+
+function initClock() {
+  const total = currentGame.id === 'molinari' ? 8 : 12;
+  clockMade = new Array(total).fill(null);
+  clockRestarts = 0; clockStreak = 0;
+  renderClock();
+  showScreen('clock');
+}
+
+function renderClock() {
+  const total = clockMade.length;
+  const face = document.getElementById('clock-face');
+  face.innerHTML = '<div class="clock-hole">⛳</div>';
+  const radius = 82;
+  for (let i = 0; i < total; i++) {
+    const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+    const x = 50 + (radius / 110) * 50 * Math.cos(angle);
+    const y = 50 + (radius / 110) * 50 * Math.sin(angle);
+    const dot = document.createElement('div');
+    dot.className = 'clock-dot' + (clockMade[i] === true ? ' made' : clockMade[i] === false ? ' missed' : '');
+    dot.style.left = x + '%'; dot.style.top = y + '%';
+    dot.textContent = clockMade[i] === true ? '✓' : (i+1);
+    dot.onclick = () => tapClockDot(i);
+    face.appendChild(dot);
+  }
+  document.getElementById('clock-streak').textContent = clockStreak;
+  document.getElementById('clock-restarts').textContent = clockRestarts + ' restart' + (clockRestarts !== 1 ? 's' : '');
+  document.getElementById('clock-attempt-label').textContent = `Attempt ${clockRestarts+1}`;
+  const allMade = clockMade.every(v => v === true);
+  document.getElementById('clock-status-text').textContent = allMade
+    ? `✅ Complete! ${clockRestarts} restart${clockRestarts!==1?'s':''}. Outstanding!`
+    : `Tap each ball as you putt it — made or missed. Make all ${total} in a row.`;
+}
+
+function tapClockDot(i) {
+  const nextIdx = clockMade.findIndex(v => v === null);
+  if (nextIdx !== i) return; // must go in order
+  const made = confirm(`Ball ${i+1}: Did you make it?`);
+  clockMade[i] = made;
+  if (made) {
+    clockStreak++;
+    if (clockMade.every(v => v === true)) {
+      renderClock();
+      return;
+    }
+  } else {
+    clockStreak = 0; clockRestarts++;
+    setTimeout(() => { clockMade = new Array(clockMade.length).fill(null); renderClock(); }, 400);
+  }
+  renderClock();
+}
+
+function resetClock() { clockMade = new Array(clockMade.length).fill(null); clockStreak = 0; clockRestarts++; renderClock(); }
+
+// ══════════════════════════════════════════
+//  LADDER
+// ══════════════════════════════════════════
+
+const LADDER_RUNGS = [3, 6, 10];
+let ladderIndex = 0;
+let ladderAttempts = 0;
+let ladderStatus = [null, null, null];
+
+function initLadder() {
+  ladderIndex = 0; ladderAttempts = 1; ladderStatus = [null, null, null];
+  renderLadder(); showScreen('ladder');
+}
+
+function renderLadder() {
+  const container = document.getElementById('ladder-rungs');
+  container.innerHTML = '';
+  LADDER_RUNGS.forEach((dist, i) => {
+    const status = ladderStatus[i];
+    const isActive = i === ladderIndex;
+    const isLocked = i > ladderIndex;
+    let cls = 'ladder-status';
+    if (status === true) cls += ' made';
+    else if (isActive) cls += ' active';
+    else if (isLocked) cls += ' locked';
+    const barWidth = status === true ? 100 : isActive ? 50 : 0;
+    const barColor = status === true ? 'var(--green)' : 'var(--gold)';
+    container.innerHTML += `
+      <div class="ladder-rung">
+        <div class="ladder-distance">${dist}ft</div>
+        <div class="ladder-bar"><div class="ladder-bar-fill" style="width:${barWidth}%;background:${barColor}"></div></div>
+        <div class="${cls}">${status===true?'✓':isActive?'→':isLocked?'🔒':''}</div>
+      </div>`;
+  });
+  document.getElementById('ladder-current-dist').textContent = ladderIndex < LADDER_RUNGS.length ? LADDER_RUNGS[ladderIndex] + ' ft' : '✅ Complete!';
+  document.getElementById('ladder-attempt-label').textContent = `Attempt ${ladderAttempts}`;
+  document.getElementById('ladder-stats').textContent = ladderIndex > 0 ? `${ladderIndex}/${LADDER_RUNGS.length} rungs cleared` : 'Make your first putt to start climbing.';
+}
+
+function madeLadder() {
+  ladderStatus[ladderIndex] = true;
+  ladderIndex++;
+  if (ladderIndex >= LADDER_RUNGS.length) {
+    renderLadder();
+    showWinner(players[0], `Completed in ${ladderAttempts} attempts`, 'Ladder complete! 3ft → 6ft → 10ft ✓');
+  } else { renderLadder(); }
+}
+
+function missedLadder() {
+  ladderAttempts++;
+  ladderIndex = 0;
+  ladderStatus = [null, null, null];
+  renderLadder();
+}
+
+// ══════════════════════════════════════════
+//  DOLLAR SIGNS
+// ══════════════════════════════════════════
+
+const DOLLAR_SPOT_NAMES = ['Spot 1 — Short Chip', 'Spot 2 — Medium Chip', 'Spot 3 — Rough Lie', 'Spot 4 — Uphill', 'Spot 5 — Tight Lie'];
+const DOLLAR_ACTIONS = [
+  { label: 'Chip-In', cls: 'chip-in', value: 10 },
+  { label: '< 3 ft', cls: 'close', value: 2 },
+  { label: 'On Green', cls: 'on-green', value: 0 },
+  { label: 'Miss Green', cls: 'miss', value: -5 },
+];
+let dollarBankroll = 0;
+let dollarResults = [];
+
+function initDollar() {
+  dollarBankroll = 0;
+  dollarResults = Array(5).fill(null).map(() => [null, null, null]);
+  renderDollar();
+  showScreen('dollar');
+}
+
+function renderDollar() {
+  const container = document.getElementById('dollar-spots');
+  container.innerHTML = '';
+  dollarResults.forEach((spot, si) => {
+    let spotTotal = spot.reduce((a, v) => a + (v !== null ? DOLLAR_ACTIONS[v].value : 0), 0);
+    const totalColor = spotTotal > 0 ? 'var(--green)' : spotTotal < 0 ? 'var(--red)' : 'var(--text-dim)';
+    let ballsHTML = spot.map((ball, bi) => {
+      const btnCls = ball !== null ? DOLLAR_ACTIONS[ball].cls : '';
+      return `<div style="display:flex;flex-direction:column;gap:4px;flex:1">
+        ${DOLLAR_ACTIONS.map((a,ai) =>
+          `<button class="dollar-ball-btn ${a.cls} ${ball===ai?'selected':''}" onclick="setDollarBall(${si},${bi},${ai})">${a.label}</button>`
+        ).join('')}
+      </div>`;
+    }).join('');
+    container.innerHTML += `
+      <div class="dollar-spot">
+        <div class="dollar-spot-header">
+          <div class="dollar-spot-name">${DOLLAR_SPOT_NAMES[si]}</div>
+          <div class="dollar-spot-total" style="color:${totalColor}">${spotTotal > 0 ? '+' : ''}$${spotTotal}</div>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:4px">
+          <div style="font-family:var(--font-cond);font-size:11px;color:var(--text-dim);flex:1;text-align:center">Ball 1</div>
+          <div style="font-family:var(--font-cond);font-size:11px;color:var(--text-dim);flex:1;text-align:center">Ball 2</div>
+          <div style="font-family:var(--font-cond);font-size:11px;color:var(--text-dim);flex:1;text-align:center">Ball 3</div>
+        </div>
+        <div style="display:flex;gap:6px">${ballsHTML}</div>
+      </div>`;
+  });
+
+  dollarBankroll = dollarResults.flat().reduce((a, v) => a + (v !== null ? DOLLAR_ACTIONS[v].value : 0), 0);
+  const bankEl = document.getElementById('dollar-bankroll');
+  bankEl.textContent = (dollarBankroll >= 0 ? '+' : '') + '$' + dollarBankroll;
+  bankEl.className = 'bankroll-amount ' + (dollarBankroll > 0 ? 'positive' : dollarBankroll < 0 ? 'negative' : 'zero');
+  document.getElementById('dollar-bankroll-header').textContent = (dollarBankroll >= 0 ? '+' : '') + '$' + dollarBankroll;
+  document.getElementById('dollar-bankroll-header').style.color = dollarBankroll >= 0 ? 'var(--green)' : 'var(--red)';
+}
+
+function setDollarBall(spot, ball, action) {
+  dollarResults[spot][ball] = dollarResults[spot][ball] === action ? null : action;
+  renderDollar();
+}
+
+// ══════════════════════════════════════════
+//  POINTS GAMES (7 UP, 21, HORSE)
+// ══════════════════════════════════════════
+
+let pointsScores = [];
+let pointsTarget = 7;
+let pointsMode = '7up';
+let pointsActivePlayer = 0;
+let pointsHole = 1;
+const HORSE_LETTERS = ['H','O','R','S','E'];
+
+function initPoints(mode) {
+  pointsMode = mode;
+  pointsScores = players.map(() => 0);
+  pointsActivePlayer = 0;
+  pointsHole = 1;
+  pointsTarget = mode === '7up' ? 7 : mode === '21' ? 21 : 5;
+  document.getElementById('points-game-name').textContent = mode === '7up' ? '7️⃣ 7 UP' : mode === '21' ? '🃏 21' : '🐴 H-O-R-S-E';
+  renderPoints();
+  showScreen('points');
+}
+
+function renderPoints() {
+  const container = document.getElementById('points-players');
+  container.innerHTML = '';
+  const colors = ['var(--gold)','var(--green)','var(--blue)','var(--orange)'];
+
+  players.forEach((name, i) => {
+    const isActive = i === pointsActivePlayer;
+    const score = pointsScores[i];
+    let displayScore, targetDisplay;
+    if (pointsMode === 'horse') {
+      displayScore = HORSE_LETTERS.slice(0, score).join('') || '—';
+      targetDisplay = 'HORSE';
+    } else {
+      displayScore = score;
+      targetDisplay = 'Target: ' + pointsTarget;
+    }
+    container.innerHTML += `
+      <div class="player-score-row ${isActive ? 'active-player' : ''}">
+        <div class="player-score-indicator" style="background:${colors[i]}"></div>
+        <div class="player-score-name">${name}</div>
+        <div>
+          <div class="player-score-pts" style="color:${colors[i]}">${displayScore}</div>
+          <div class="player-score-target">${targetDisplay}</div>
+        </div>
+      </div>`;
+  });
+
+  document.getElementById('points-current-player-label').textContent = `SCORING FOR ${players[pointsActivePlayer].toUpperCase()}`;
+  document.getElementById('points-hole-label').textContent = pointsMode === 'horse' ? `Call ${pointsHole}` : `Hole ${pointsHole}`;
+
+  const btnContainer = document.getElementById('points-score-buttons');
+  btnContainer.innerHTML = '';
+
+  if (pointsMode === '7up') {
+    [{ label: 'Hole-Out', pts: '+2', cls: 'hole-in-one' }, { label: 'Won Hole', pts: '+1', cls: 'birdie' }, { label: 'No Points', pts: '0', cls: 'par' }]
+      .forEach(b => {
+        btnContainer.innerHTML += `<button class="score-action-btn ${b.cls}" onclick="addPointsScore(${b.pts.replace('+','')})">
+          <div class="pts">${b.pts}</div><div>${b.label}</div></button>`;
+      });
+    document.getElementById('points-instruction').textContent = 'Lag to hole. Closest controls the hole. Hole-out = 2 pts instant.';
+  } else if (pointsMode === '21') {
+    [{ label: '1-Putt', pts: '+3', cls: 'hole-in-one' }, { label: '2-Putt', pts: '+1', cls: 'birdie' }, { label: '3-Putt+', pts: '0', cls: 'par' }]
+      .forEach(b => {
+        btnContainer.innerHTML += `<button class="score-action-btn ${b.cls}" onclick="addPointsScore(${b.pts.replace('+','')})">
+          <div class="pts">${b.pts}</div><div>${b.label}</div></button>`;
+      });
+    document.getElementById('points-instruction').textContent = 'Go over 21 — drop to 15. First to exactly 21 wins.';
+  } else if (pointsMode === 'horse') {
+    [{ label: 'Made It', pts: '0', cls: 'birdie' }, { label: 'Missed', pts: '1', cls: 'bogey' }]
+      .forEach((b,i) => {
+        btnContainer.innerHTML += `<button class="score-action-btn ${b.cls}" onclick="horseResult(${i===1})">
+          <div class="pts">${i===0?'✓':'✕'}</div><div>${b.label}</div></button>`;
+      });
+    document.getElementById('points-instruction').textContent = 'Miss the called shot — get a letter. Spell H-O-R-S-E to be eliminated.';
+  }
+}
+
+function addPointsScore(pts) {
+  pointsScores[pointsActivePlayer] += pts;
+  if (pointsMode === '21' && pointsScores[pointsActivePlayer] > 21) pointsScores[pointsActivePlayer] = 15;
+  checkPointsWinner();
+}
+
+function horseResult(missed) {
+  if (missed) pointsScores[pointsActivePlayer]++;
+  if (pointsScores[pointsActivePlayer] >= 5) {
+    showWinner(players.find((p,i) => pointsScores[i] < 5) || players[0], 'Last player standing', 'H-O-R-S-E Champion 🐴');
+    return;
+  }
+  nextPointsPlayer();
+}
+
+function checkPointsWinner() {
+  const score = pointsScores[pointsActivePlayer];
+  if ((pointsMode === '7up' && score >= 7) || (pointsMode === '21' && score === 21)) {
+    showWinner(players[pointsActivePlayer],
+      `${score} points`, pointsMode === '7up' ? '7 Up Champion!' : '21 Champion!');
+    return;
+  }
+  nextPointsPlayer();
+}
+
+function nextPointsPlayer() {
+  pointsActivePlayer = (pointsActivePlayer + 1) % players.length;
+  if (pointsActivePlayer === 0) pointsHole++;
+  renderPoints();
+}
+
+// ══════════════════════════════════════════
+//  FAIRWAY FINDER
+// ══════════════════════════════════════════
+
+const FF_CLUBS = ['Driver','Driver','Hybrid','3-Wood','Driver','Iron','Driver','Hybrid','Driver'];
+let ffResults = new Array(9).fill(null);
+let ffClubUsed = new Array(9).fill(null);
+
+function initFairway() {
+  ffResults = new Array(9).fill(null);
+  ffClubUsed = [...FF_CLUBS];
+  renderFairway();
+  showScreen('fairway');
+}
+
+function renderFairway() {
+  const container = document.getElementById('ff-holes');
+  container.innerHTML = '';
+  const PTS = { driver: 3, hybrid: 2, iron: 1, miss: 0, water: -1 };
+  let total = 0;
+
+  for (let i = 0; i < 9; i++) {
+    const res = ffResults[i];
+    const club = ffClubUsed[i];
+    let pts = '';
+    if (res === 'fairway') {
+      const p = club === 'Driver' ? 3 : club === 'Hybrid' || club === '3-Wood' ? 2 : 1;
+      pts = '+' + p; total += p;
+    } else if (res === 'water') { pts = '-1'; total -= 1; }
+    else if (res === 'miss') { pts = '0'; }
+
+    container.innerHTML += `
+      <div class="ff-hole-row">
+        <div class="ff-hole-num">${i+1}</div>
+        <div class="ff-hole-info">
+          <div class="ff-club">${club}</div>
+          <div class="ff-hit-miss">
+            <button class="ff-btn fairway ${res==='fairway'?'selected':''}" onclick="setFF(${i},'fairway')">Fairway</button>
+            <button class="ff-btn miss ${res==='miss'?'selected':''}" onclick="setFF(${i},'miss')">Miss</button>
+            <button class="ff-btn miss ${res==='water'?'selected':''}" style="${res==='water'?'background:var(--red);color:white':''}" onclick="setFF(${i},'water')">Water</button>
+          </div>
+        </div>
+        <div class="ff-pts">${pts || '—'}</div>
+      </div>`;
+  }
+
+  document.getElementById('ff-score-header').textContent = total + ' pts';
+  document.getElementById('ff-score-header').style.color = total >= 18 ? 'var(--green)' : 'var(--gold)';
+}
+
+function setFF(hole, result) {
+  ffResults[hole] = ffResults[hole] === result ? null : result;
+  renderFairway();
+}
+
+// ══════════════════════════════════════════
+//  DARTS
+// ══════════════════════════════════════════
+
+const DART_ZONES = [
+  { label: '< 3ft', pts: 5, cls: 'z1' },
+  { label: '< 6ft', pts: 3, cls: 'z2' },
+  { label: '< 12ft', pts: 1, cls: 'z3' },
+  { label: 'Miss', pts: -2, cls: 'z4' },
+];
+let dartSelections = new Array(10).fill(null);
+
+function initDarts() {
+  dartSelections = new Array(10).fill(null);
+  renderDarts();
+  showScreen('darts');
+}
+
+function renderDarts() {
+  const container = document.getElementById('darts-chips');
+  container.innerHTML = '';
+  let total = 0;
+  dartSelections.forEach((sel, i) => {
+    const pts = sel !== null ? DART_ZONES[sel].pts : 0;
+    if (sel !== null) total += pts;
+    const zonesHTML = DART_ZONES.map((z, zi) =>
+      `<button class="dart-zone-btn ${z.cls} ${sel===zi?'sel':''}" onclick="setDart(${i},${zi})">${z.label}<br><span style="font-family:var(--font-mono);font-size:12px">${z.pts>0?'+':''}${z.pts}</span></button>`
+    ).join('');
+    container.innerHTML += `
+      <div class="darts-chip-row">
+        <div class="dart-num">${i+1}</div>
+        <div class="dart-zones">${zonesHTML}</div>
+        <div class="dart-pts">${sel!==null ? (DART_ZONES[sel].pts>0?'+':'')+DART_ZONES[sel].pts : '—'}</div>
+      </div>`;
+  });
+  document.getElementById('darts-total').textContent = total + ' / 50';
+  document.getElementById('darts-score-header').textContent = total + ' pts';
+  document.getElementById('darts-score-header').style.color = total >= 30 ? 'var(--green)' : 'var(--gold)';
+}
+
+function setDart(chip, zone) {
+  dartSelections[chip] = dartSelections[chip] === zone ? null : zone;
+  renderDarts();
+}
+
+// ══════════════════════════════════════════
+//  WINNER
+// ══════════════════════════════════════════
+
+let lastWinnerData = {};
+
+function showWinner(name, score, detail) {
+  lastWinnerData = { name, score, detail };
+  document.getElementById('winner-name').textContent = name;
+  document.getElementById('winner-score').textContent = score;
+  document.getElementById('winner-overlay').style.display = 'flex';
+}
+
+function playAgain() {
+  document.getElementById('winner-overlay').style.display = 'none';
+  startGame();
+}
+
+function returnToGames() {
+  document.getElementById('winner-overlay').style.display = 'none';
+  showScreen('games');
+}
+
+function shareWinner() {
+  const text = `⛳ The Range — ${currentGame?.name}\n🏆 Winner: ${lastWinnerData.name}\n📊 ${lastWinnerData.score}\n${lastWinnerData.detail}\n\nkmansgolf.github.io/range`;
+  window.open(`sms:?body=${encodeURIComponent(text)}`, '_blank');
+}
+
+function shareGame(type) {
+  const text = `⛳ The Range — ${currentGame?.name} in progress\nkmansgolf.github.io/range`;
+  window.open(`sms:?body=${encodeURIComponent(text)}`, '_blank');
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+
+renderGamesList();
+</script>
+</body>
+</html>
