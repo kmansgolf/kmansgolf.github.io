@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,7 +55,32 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--text);
 #root{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 .fw-root{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 .fw-shell-fixed{flex-shrink:0;}
-.fw-shell-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+/* ── PULL TO REFRESH ── */
+.ptr-indicator{
+  position:absolute;top:0;left:0;right:0;
+  display:flex;align-items:center;justify-content:center;
+  gap:8px;
+  height:52px;
+  transform:translateY(-52px);
+  transition:transform .2s ease;
+  pointer-events:none;
+  z-index:30;
+}
+.ptr-indicator.visible{transform:translateY(0);}
+.ptr-spinner{
+  width:20px;height:20px;
+  border:2px solid rgba(240,192,64,0.3);
+  border-top-color:var(--gold);
+  border-radius:50%;
+}
+.ptr-spinner.spin{animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ptr-text{
+  font-family:var(--font-ui);
+  font-size:11px;letter-spacing:2px;font-weight:700;
+  color:var(--gold);opacity:0.7;
+}
+.fw-shell-scroll{position:relative;}
 
 /* ── PC MAX WIDTH ── */
 @media(min-width:600px){
@@ -192,6 +218,31 @@ textarea{font-family:var(--font-mono);resize:none;}
 
 /* ── TAB CONTENT ── */
 .fw-tab-content{padding:12px 10px;}
+
+/* ── GUEST BANNER ── */
+.fw-guest-banner{
+  background:rgba(240,192,64,0.07);
+  border-bottom:1px solid rgba(240,192,64,0.15);
+  padding:7px 12px;
+  display:flex;align-items:center;gap:8px;
+  flex-shrink:0;
+}
+.fw-guest-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:.6;flex-shrink:0;}
+.fw-guest-text{font-family:var(--font-ui);font-size:11px;letter-spacing:1px;color:var(--muted);}
+.fw-guest-cta{font-family:var(--font-ui);font-size:11px;font-weight:700;letter-spacing:1px;color:var(--gold);margin-left:auto;cursor:pointer;white-space:nowrap;}
+
+/* ── PAIRINGS NOTE ── */
+.fw-pairings-note{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-left:3px solid var(--gold);
+  border-radius:var(--r-sm);
+  padding:10px 12px;
+  margin-bottom:12px;
+  display:flex;align-items:center;gap:10px;
+}
+.fw-pairings-note-text{font-size:12px;color:var(--slate);line-height:1.4;}
+.fw-pairings-note-text strong{color:var(--text);font-weight:600;}
 
 /* ── CARDS ── */
 .fw-card{
@@ -473,6 +524,7 @@ const h = React.createElement;
 
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
 const ALL_TOUR_OPTIONS = [
+  {value:"", label:"Select Tour"},
   {value:"regular.columbus", label:"Regular Tour"},
   {value:"senior.columbus",  label:"Senior Tour"},
 ];
@@ -1063,6 +1115,12 @@ Return ONLY the JSON array.`;
   }
 
   return h("div", {className:"fw-tab-content"},
+    !playerId && pairings?.posted && h("div",{className:"fw-pairings-note"},
+      h("span",{style:{fontSize:16}},"👥"),
+      h("div",{className:"fw-pairings-note-text"},
+        h("span",null,"Showing "),h("strong",null,"all groups"),h("span",null," — search your name above to highlight your pairing")
+      )
+    ),
     h("div", {style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
       h("div", null,
         h("div", {style:{fontSize:16,fontWeight:700,color:"var(--navy)"}}, todayEvent.course),
@@ -1327,11 +1385,11 @@ function App(){
   const [searchInput,   setSearchInput]   = useState(()=>ls("gw_searchInput",""));
   const [playerId,      setPlayerId]      = useState(()=>ls("gw_playerId",""));
   const [playerName,    setPlayerName]    = useState(()=>ls("gw_playerName",""));
-  const [tourKey,       setTourKey]       = useState(()=>ls("gw_tourKey","regular.columbus"));
+  const [tourKey,       setTourKey]       = useState(()=>ls("gw_tourKey",""));
   const [tab,           setTab]           = useState("pairings");
   const [suggestions,   setSuggestions]   = useState([]);
 
-  const tourType = tourKey.split(".")[0];
+  const tourType = (tourKey||"regular.columbus").split(".")[0];
   const todayEvent = getTodayTournament(tourType);
 
   useEffect(()=>{lsSet("gw_searchInput",searchInput);},[searchInput]);
@@ -1435,6 +1493,12 @@ function App(){
       TABS.map(t=>h("button",{key:t.key,onClick:()=>setTab(t.key),
         className:"fw-tab "+(tab===t.key?"fw-tab--active":"")},t.label))
     ),
+      // Guest banner
+      !playerName && h("div",{className:"fw-guest-banner"},
+        h("div",{className:"fw-guest-dot"}),
+        h("div",{className:"fw-guest-text"},"Viewing as guest"),
+        h("div",{className:"fw-guest-cta",onClick:()=>document.querySelector('.fw-input')?.focus()},"ADD YOUR NAME →")
+      ),
     ), // end fw-shell-fixed
 
     // Scrollable content
@@ -1448,6 +1512,60 @@ function App(){
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(h(App,null));
+
+// ── PULL TO REFRESH ──
+(function(){
+  const scrollEl = document.querySelector('.fw-shell-scroll');
+  if(!scrollEl) return;
+
+  // Inject indicator
+  const indicator = document.createElement('div');
+  indicator.className = 'ptr-indicator';
+  indicator.innerHTML = '<div class="ptr-spinner" id="ptrSpinner"></div><div class="ptr-text" id="ptrText">PULL TO REFRESH</div>';
+  scrollEl.prepend(indicator);
+
+  let startY = 0;
+  let pulling = false;
+  let triggered = false;
+  const threshold = 72;
+
+  scrollEl.addEventListener('touchstart', e => {
+    if(scrollEl.scrollTop === 0){
+      startY = e.touches[0].clientY;
+      pulling = true;
+      triggered = false;
+    }
+  }, {passive:true});
+
+  scrollEl.addEventListener('touchmove', e => {
+    if(!pulling) return;
+    const dist = e.touches[0].clientY - startY;
+    if(dist > 10 && scrollEl.scrollTop === 0){
+      const progress = Math.min(dist, threshold * 1.3);
+      indicator.style.transform = `translateY(${Math.min(progress - 52, 0)}px)`;
+      if(dist >= threshold && !triggered){
+        triggered = true;
+        document.getElementById('ptrText').textContent = 'RELEASE TO REFRESH';
+        document.getElementById('ptrSpinner').classList.add('spin');
+      } else if(dist < threshold){
+        document.getElementById('ptrText').textContent = 'PULL TO REFRESH';
+        document.getElementById('ptrSpinner').classList.remove('spin');
+      }
+    }
+  }, {passive:true});
+
+  scrollEl.addEventListener('touchend', () => {
+    if(!pulling) return;
+    pulling = false;
+    if(triggered){
+      indicator.classList.add('visible');
+      document.getElementById('ptrText').textContent = 'REFRESHING…';
+      setTimeout(() => { window.location.reload(); }, 500);
+    } else {
+      indicator.style.transform = '';
+    }
+  }, {passive:true});
+})();
 </script>
 </body>
 </html>
