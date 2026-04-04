@@ -1,0 +1,55 @@
+{
+  "name": "kmansgolf",
+  "short_name": "kmansgolf",
+  "description": "Golf practice tracker and tournament tools for the Golfweek Amateur Tour",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/kmansgolf-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "The Range",
+      "short_name": "Range",
+      "description": "Practice tracker and combines",
+      "url": "/range/",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "The Bunker",
+      "short_name": "Bunker",
+      "description": "Side games and money tracking",
+      "url": "/bunker/",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "The Fairway",
+      "short_name": "Fairway",
+      "description": "Tournament scores and standings",
+      "url": "/fairway/fairway.html",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "categories": ["sports", "utilities"],
+  "lang": "en-US"
+}
