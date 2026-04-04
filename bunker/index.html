@@ -1,2612 +1,394 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0d2340">
-<title>The Bunker</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --navy:        #000000;
-  --navy-mid:    #1c1c1e;
-  --navy-light:  #3a3a3c;
-  --gold:        #e8b84b;
-  --gold-dim:    rgba(232,184,75,0.15);
-  --gold-border: rgba(232,184,75,0.4);
-  --blue-soft:   #6e6e73;
-  --green:       #2ecc71;
-  --green-bg:    rgba(46,204,113,0.15);
-  --red:         #e74c3c;
-  --red-bg:      rgba(231,76,60,0.15);
-  --amber:       #f39c12;
-  --amber-bg:    rgba(243,156,18,0.15);
-  --slate:       #8ba4c0;
-  --muted:       #6e6e73;
-  --border:      rgba(255,255,255,0.1);
-  --surface:     rgba(255,255,255,0.04);
-  --white:       #152e50;
-  --text:        #f5f5f7;
-  --green-win:   #2ecc71;
-  --sand:        #6e6e73;
-  --green-accent: #3ddc84;
-  --font-display:'Barlow Condensed', sans-serif;
-  --font-body:   'Barlow', sans-serif;
-  --font-mono:   'DM Mono', monospace;
-  --r:    6px; --r-md: 10px; --r-lg: 14px;
-  --shadow-sm:   0 2px 8px rgba(0,0,0,0.3);
-  --shadow-md:   0 4px 16px rgba(0,0,0,0.4);
-  --shadow-gold: 0 2px 8px rgba(232,184,75,0.2);
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;}
-body{font-family:var(--font-body);background:var(--navy);color:var(--text);min-height:100vh;}
-input,select,button{font-family:var(--font-body);}
-input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
-input[type=number]{-moz-appearance:textfield;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>kmansgolf · Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap&font-display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #000000;
+      --card:    #111113;
+      --card-2:  #161618;
+      --border:  rgba(255,255,255,0.08);
+      --text:    #f0ece4;
+      --muted:   #5a5a60;
+      --dim:     #2e2e33;
+      --green:   #3ddc84;
+      --green-2: #00c8a0;
+      --gold:    #e8b84b;
+      --radius:  20px;
+    }
 
-.view{display:none;min-height:100vh;}
-.view.active{display:flex;flex-direction:column;}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-#setup{padding:0 0 60px;max-width:520px;margin:0 auto;width:100%;}
-.logo{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-mid) 100%);padding:22px 20px 18px;text-align:center;}
-.logo .flag{font-size:2.4rem;margin-bottom:6px;display:block;}
-.logo h1{font-family:var(--font-display);font-size:2.8rem;font-weight:800;letter-spacing:6px;color:var(--gold);line-height:1;}
-.logo p{font-family:var(--font-display);color:var(--blue-soft);font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;margin-top:4px;font-weight:600;}
-.setup-section{padding:18px 16px 0;}
-.section-title{font-family:var(--font-display);font-size:0.6rem;letter-spacing:2.5px;font-weight:700;text-transform:uppercase;color:var(--green-accent);border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:6px;margin-bottom:12px;}
+    html { background: var(--bg); }
 
-.player-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.player-input-wrap{position:relative;}
-.player-num{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-family:var(--font-display);font-size:0.65rem;color:var(--muted);font-weight:700;}
-input[type="text"],input[type="number"]{width:100%;background:var(--navy-mid);border:1.5px solid var(--border);color:var(--text);border-radius:var(--r);font-family:var(--font-body);font-size:0.95rem;outline:none;transition:border-color .15s,box-shadow .15s;}
-input[type="text"]{padding:10px 10px 10px 30px;}
-input[type="number"]{padding:9px 10px;}
-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,184,75,0.15);}
-input::placeholder{color:var(--muted);}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      min-height: 100svh;
+      padding-bottom: env(safe-area-inset-bottom, 24px);
+      -webkit-font-smoothing: antialiased;
+    }
 
-.games-grid{display:grid;gap:8px;}
-.game-toggle{background:var(--navy-mid);border:1.5px solid var(--border);border-radius:var(--r-md);padding:13px 14px;cursor:pointer;transition:all .15s;user-select:none;display:flex;align-items:flex-start;gap:12px;box-shadow:var(--shadow-sm);}
-.game-toggle.selected{border-color:var(--amber);box-shadow:var(--shadow-gold);}
-.game-toggle .gt-icon{font-size:1.4rem;flex-shrink:0;margin-top:1px;}
-.game-toggle .gt-info h3{font-size:0.92rem;font-weight:700;color:var(--text);}
-.game-toggle .gt-info p{font-size:0.76rem;color:var(--muted);margin-top:2px;line-height:1.4;}
-.game-toggle .gt-check{margin-left:auto;width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;}
-.game-toggle.selected .gt-check{background:var(--amber);border-color:var(--amber);color:var(--white);font-size:11px;}
-.game-config{display:none;padding:10px 0 0 46px;}
-.game-toggle.selected .game-config{display:block;}
-.bet-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.bet-row label{font-size:0.78rem;color:var(--slate);white-space:nowrap;}
-.bet-row input{width:76px;}
-.bet-row .dollar{color:var(--amber);font-size:0.88rem;font-weight:600;}
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 0.5px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 10;
+    }
 
-.start-btn{width:100%;padding:15px;background:var(--green-accent);color:#000;font-family:var(--font-display);font-size:1.2rem;font-weight:700;border:none;border-radius:var(--r-md);cursor:pointer;letter-spacing:3px;transition:opacity .15s;margin-top:8px;}
-.start-btn:hover{opacity:.9;}
-.start-btn:disabled{opacity:.4;cursor:not-allowed;}
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--green); }
 
-.course-search-wrap{position:relative;margin-bottom:8px;}
-.course-search-wrap input{padding-left:34px !important;}
-.course-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:0.9rem;pointer-events:none;}
-.course-list{display:grid;gap:6px;max-height:260px;overflow-y:auto;padding-right:2px;}
-.course-list::-webkit-scrollbar{width:4px;}
-.course-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-.course-item{background:var(--navy-mid);border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-sm);}
-.course-item:hover{border-color:var(--gold);}
-.course-item.selected{border-color:var(--amber);box-shadow:var(--shadow-gold);}
-.course-emoji{font-size:1.1rem;flex-shrink:0;}
-.course-info{flex:1;min-width:0;}
-.course-name{font-size:0.88rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);}
-.course-loc{font-size:0.7rem;color:var(--muted);margin-top:1px;}
-.course-check{color:var(--amber);font-size:1rem;flex-shrink:0;opacity:0;transition:opacity .12s;}
-.course-item.selected .course-check{opacity:1;}
-.tee-picker-wrap{margin-top:8px;}
-.tee-label{font-family:var(--font-display);font-size:0.6rem;color:var(--slate);margin-bottom:6px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
-.tee-options{display:flex;flex-wrap:wrap;gap:6px;}
-.tee-btn{padding:5px 13px;border-radius:20px;font-size:0.8rem;cursor:pointer;font-family:var(--font-body);border:1.5px solid var(--border);background:var(--white);color:var(--slate);transition:all .12s;font-weight:500;}
-.tee-btn.active{font-weight:700;color:var(--white);border-color:transparent;}
-.course-skip{font-size:0.73rem;color:var(--muted);text-align:center;margin-top:8px;cursor:pointer;text-decoration:underline;}
-.course-skip:hover{color:var(--slate);}
+    .nav-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
 
-/* ── PLAYER DROPDOWNS ── */
-.player-slot-wrap{position:relative;}
-.player-slot-label{font-family:var(--font-display);font-size:0.58rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px;}
-.player-select-row{display:flex;gap:6px;align-items:center;}
-.player-select{flex:1;width:100%;background:var(--navy-mid);border:1.5px solid var(--border);color:var(--text);border-radius:var(--r);font-family:var(--font-body);font-size:0.9rem;outline:none;padding:9px 10px;transition:border-color .15s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
-.player-select:focus{border-color:var(--navy-light);box-shadow:0 0 0 3px rgba(30,58,95,0.1);}
-.player-custom-input{display:none;width:100%;background:var(--navy-mid);border:1.5px solid var(--amber);color:var(--text);border-radius:var(--r);font-family:var(--font-body);font-size:0.9rem;outline:none;padding:9px 10px;margin-top:5px;}
-.player-custom-input:focus{box-shadow:0 0 0 3px rgba(217,119,6,0.12);}
-.player-color-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 64px 24px 52px;
+    }
 
-/* ── HISTORY TAB ── */
-.history-leaderboard{background:var(--navy-mid);border-radius:var(--r-md);padding:14px;margin-bottom:16px;}
-.history-leaderboard-title{font-family:var(--font-display);font-size:0.58rem;letter-spacing:2.5px;color:var(--blue-soft);font-weight:700;text-transform:uppercase;margin-bottom:12px;}
-.leaderboard-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
-.leaderboard-row:last-child{border-bottom:none;}
-.lb-rank{font-family:var(--font-display);font-size:1.3rem;font-weight:800;width:32px;color:var(--gold);}
-.lb-name{flex:1;font-size:0.95rem;font-weight:600;color:#e2e8f0;}
-.lb-stat{text-align:right;}
-.lb-money{font-family:var(--font-display);font-size:1.1rem;font-weight:800;}
-.lb-strokes{font-size:0.7rem;color:var(--muted);margin-top:1px;}
-.lb-money.pos{color:#86efac;}.lb-money.neg{color:#fca5a5;}.lb-money.zero{color:var(--blue-soft);}
-.lb-rounds{font-size:0.65rem;color:var(--muted);font-style:italic;margin-top:1px;}
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.1s forwards;
+    }
 
-.history-section-label{font-family:var(--font-display);font-size:0.6rem;letter-spacing:2.5px;color:var(--blue-soft);font-weight:700;text-transform:uppercase;border-bottom:2px solid rgba(255,255,255,0.1);padding-bottom:6px;margin-bottom:10px;}
-.round-card{background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:10px;box-shadow:var(--shadow-sm);overflow:hidden;}
-.round-card-header{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;user-select:none;}
-.round-card-header:active{background:rgba(255,255,255,0.05);}
-.round-course{font-size:0.92rem;font-weight:700;color:var(--text);}
-.round-meta{font-size:0.72rem;color:var(--muted);margin-top:2px;}
-.round-chevron{color:var(--muted);font-size:0.7rem;transition:transform .2s;flex-shrink:0;}
-.round-card.open .round-chevron{transform:rotate(180deg);}
-.round-card-body{display:none;border-top:1px solid rgba(255,255,255,0.08);}
-.round-card.open .round-card-body{display:block;}
-.round-money-row{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(255,255,255,0.06);}
-.round-money-row:last-child{border-bottom:none;}
-.round-player-name{font-size:0.88rem;font-weight:600;display:flex;align-items:center;gap:7px;color:var(--text);}
-.round-player-money{font-family:var(--font-display);font-size:1rem;font-weight:800;}
-.round-player-score{font-size:0.72rem;color:var(--muted);}
-.round-game-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;border-top:1px solid var(--border);}
-.round-game-chip{font-family:var(--font-display);font-size:0.6rem;font-weight:700;letter-spacing:.5px;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--blue-soft);border:1px solid rgba(255,255,255,0.1);}
-.round-sc-wrap{overflow-x:auto;padding:10px 14px;border-top:1px solid var(--border);}
-.round-sc-wrap table{font-size:0.75rem;min-width:420px;}
-.round-sc-wrap thead th{font-size:0.55rem;padding:5px 4px;background:var(--navy);}
-.round-sc-wrap tbody td{padding:5px 4px;}
-.round-sc-wrap tfoot td{padding:5px 4px;font-size:0.75rem;background:var(--navy);}
-.history-empty{text-align:center;padding:40px 20px;color:var(--muted);}
-.history-empty-icon{font-size:2.5rem;margin-bottom:8px;}
-.clear-history-btn{display:block;width:100%;padding:10px;background:rgba(231,76,60,0.15);color:var(--red);border:none;border-radius:var(--r-md);font-family:var(--font-display);font-size:0.85rem;font-weight:700;letter-spacing:1px;cursor:pointer;margin-top:10px;}
-#play.active{display:flex;}
-/* ── SHARED HEADER ── */
-#app-header{background:var(--navy);width:100%;box-sizing:border-box;position:sticky;top:0;z-index:100;}
-.header-top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;border-bottom:1px solid rgba(255,255,255,0.08);}
-.header-logo{font-family:var(--font-display);font-size:1.25rem;font-weight:800;letter-spacing:3px;color:var(--green-accent);line-height:1;white-space:nowrap;}
-.header-sub{font-size:0.68rem;color:var(--blue-soft);font-family:var(--font-display);letter-spacing:1px;margin-top:2px;}
-/* File-folder tabs */
-.tab-bar{display:flex;align-items:flex-end;padding:0 10px;gap:3px;background:var(--navy);border-bottom:2px solid var(--green-accent);}
-.tab-btn{flex:1;padding:7px 4px 6px;font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;text-align:center;color:rgba(147,197,253,0.7);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-bottom:none;border-radius:5px 5px 0 0;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;bottom:-3px;}
-.tab-btn:hover{color:var(--gold);background:rgba(255,255,255,0.1);}
-.tab-btn.active{background:var(--green-accent);color:#000;border-color:var(--green-accent);font-weight:800;bottom:0;padding-bottom:9px;}
-.tab-btn.disabled{opacity:0.35;cursor:default;pointer-events:none;}
-/* views no longer have their own headers */
-.play-header{display:none!important;}
-.header-hole{display:none;}
-.play-content{flex:1;overflow-y:auto;padding:14px;max-width:600px;width:100%;margin:0 auto;}
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(52px, 14vw, 72px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 0.95;
+      color: var(--text);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.2s forwards;
+    }
 
-.hole-nav{display:flex;align-items:center;justify-content:space-between;background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 8px;margin-bottom:12px;box-shadow:var(--shadow-sm);}
-.hole-nav-center{text-align:center;flex:1;}
-.hole-nav-center .hole-num{font-family:var(--font-display);font-size:1.6rem;font-weight:800;color:var(--gold);letter-spacing:1px;line-height:1;}
-.hole-nav-center .hole-par{font-family:var(--font-display);font-size:0.68rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
-.nav-btn{background:var(--navy-light);color:#f5f5f7;border:none;border-radius:var(--r);font-size:1.3rem;width:48px;height:48px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .15s;flex-shrink:0;}
-.nav-btn:hover:not(:disabled){opacity:.85;}
-.nav-btn:disabled{opacity:.3;cursor:default;}
+    .hero-title .accent {
+      background: linear-gradient(90deg, var(--green), var(--green-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-.par-selector{display:flex;gap:6px;justify-content:center;margin-bottom:14px;}
-.par-btn{background:var(--navy-mid);border:1.5px solid var(--border);color:var(--blue-soft);padding:6px 18px;border-radius:20px;font-size:0.85rem;cursor:pointer;font-family:var(--font-body);transition:all .12s;font-weight:500;}
-.par-btn.active{background:var(--green-accent);color:#000;border-color:var(--green-accent);font-weight:700;}
+    .hero-sub {
+      font-size: 16px;
+      color: var(--muted);
+      font-weight: 400;
+      line-height: 1.5;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.3s forwards;
+    }
 
-.score-card{background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow-sm);}
-.score-header{display:grid;grid-template-columns:1fr auto auto;padding:8px 14px;background:var(--navy);font-family:var(--font-display);font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--blue-soft);}
-.score-row{display:grid;grid-template-columns:1fr auto auto;padding:10px 14px;align-items:center;border-top:1px solid rgba(255,255,255,0.06);}
-.score-row:first-child{border-top:none;}
-.player-name-cell{font-size:0.92rem;font-weight:600;display:flex;align-items:center;gap:8px;color:var(--text);}
-.player-badge{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.score-stepper{display:flex;align-items:center;gap:6px;}
-.stepper-btn{background:var(--navy);border:1.5px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:var(--r);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:all .1s;flex-shrink:0;font-weight:700;}
-.stepper-btn:active{background:var(--navy-mid);color:var(--gold);border-color:var(--navy-mid);}
-.score-val{min-width:38px;text-align:center;font-size:1.2rem;font-weight:700;color:var(--text);padding:0 2px;}
-.score-rel{text-align:center;font-size:0.72rem;font-weight:700;min-width:50px;padding-left:8px;}
-.score-rel.under{color:var(--green);}
-.score-rel.over{color:var(--red);}
-.score-rel.even{color:var(--muted);}
-.score-rel.eagle{color:var(--amber);}
-.score-rel.hole-in-one{color:var(--gold);}
+    /* ── GRID ── */
+    .apps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 14px;
+      max-width: 540px;
+      margin: 0 auto;
+    }
 
-.game-panel{background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-bottom:10px;box-shadow:var(--shadow-sm);}
-.game-panel-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--navy);border-bottom:1px solid rgba(255,255,255,0.08);cursor:pointer;user-select:none;}
-.game-panel-header .gp-icon{font-size:1.1rem;}
-.game-panel-header .gp-title{font-family:var(--font-display);font-size:0.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;flex:1;color:var(--blue-soft);}
-.game-panel-header .gp-summary{font-size:0.73rem;color:var(--muted);}
-.game-panel-header .gp-chevron{color:var(--blue-soft);font-size:0.7rem;transition:transform .2s;}
-.game-panel.open .gp-chevron{transform:rotate(180deg);}
-.game-panel-body{display:none;padding:12px 14px;}
-.game-panel.open .game-panel-body{display:block;}
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 20px 22px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards;
+    }
 
-.status-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
-.status-row:last-child{border-bottom:none;}
-.status-player{font-size:0.88rem;display:flex;align-items:center;gap:8px;color:var(--text);}
-.status-amount{font-size:0.88rem;font-weight:700;}
-.status-amount.pos{color:var(--green);}
-.status-amount.neg{color:var(--red);}
-.status-amount.zero{color:var(--muted);}
-.status-tag{font-family:var(--font-display);font-size:0.62rem;padding:2px 7px;border-radius:10px;font-weight:700;letter-spacing:.5px;}
-.tag-holds{background:rgba(240,192,64,0.15);color:var(--amber);}
-.tag-wolf{background:rgba(22,101,52,0.1);color:var(--green);}
-.tag-skin{background:var(--red-bg);color:var(--red);}
-.payout-notice{background:rgba(243,156,18,0.1);border:1px solid rgba(243,156,18,0.3);border-radius:var(--r);padding:9px 13px;margin-top:10px;font-size:0.8rem;color:var(--amber);text-align:center;font-weight:600;}
+    .card:nth-child(1) { animation-delay: 0.35s; }
+    .card:nth-child(2) { animation-delay: 0.42s; }
+    .card:nth-child(3) { animation-delay: 0.49s; }
 
-.totals-bar{background:var(--navy-mid);border:none;border-radius:var(--r-md);padding:12px 14px;margin-bottom:12px;}
-.totals-bar h4{font-family:var(--font-display);font-size:0.58rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--blue-soft);margin-bottom:10px;font-weight:700;}
-.totals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
-.total-cell{text-align:center;}
-.total-cell .tc-name{font-family:var(--font-display);font-size:0.65rem;color:var(--blue-soft);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.5px;font-weight:600;}
-.total-cell .tc-amount{font-family:var(--font-display);font-size:1.4rem;font-weight:800;}
-.tc-amount.pos{color:#86efac;}
-.tc-amount.neg{color:#fca5a5;}
-.tc-amount.zero{color:var(--blue-soft);}
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), transparent);
+      pointer-events: none;
+    }
 
-#scorecard-view{display:none;flex-direction:column;}
-#scorecard-view.active{display:flex;}
+    .card:hover {
+      transform: translateY(-2px) scale(1.01);
+      background: var(--card-2);
+      border-color: rgba(255,255,255,0.14);
+    }
 
-.sc-table-wrap{overflow-x:auto;padding:14px;}
-table{width:100%;border-collapse:collapse;min-width:500px;}
-thead th{background:var(--navy);padding:8px;font-family:var(--font-display);font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);border:1px solid rgba(255,255,255,0.08);text-align:center;}
-thead th:first-child{text-align:left;padding-left:12px;}
-tbody td{padding:9px 8px;border:1px solid rgba(255,255,255,0.08);text-align:center;font-size:0.88rem;color:var(--text);}
-tbody td:first-child{text-align:left;padding-left:12px;font-weight:600;}
-tbody tr:nth-child(even){background:rgba(255,255,255,0.04);}
-.cell-eagle{background:rgba(243,156,18,0.2);color:var(--amber);font-weight:700;}
-.cell-birdie{background:rgba(46,204,113,0.2);color:var(--green);font-weight:700;}
-.cell-par{color:var(--text);}
-.cell-bogey{background:rgba(231,76,60,0.15);color:var(--red);}
-.cell-double{background:rgba(231,76,60,0.25);color:#ff8080;font-weight:700;}
-.cell-empty{color:var(--muted);}
-tfoot td{background:var(--navy);color:var(--gold);font-family:var(--font-display);font-weight:700;font-size:0.88rem;padding:9px 8px;border:1px solid rgba(255,255,255,0.08);text-align:center;}
-tfoot td:first-child{text-align:left;padding-left:12px;}
+    .card:active { transform: scale(0.98); }
 
-.wolf-ui{margin-top:8px;}
-.wolf-label{font-family:var(--font-display);font-size:0.6rem;color:var(--slate);margin-bottom:6px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
-.wolf-picker{display:flex;gap:6px;flex-wrap:wrap;}
-.wolf-pick-btn{padding:6px 14px;border-radius:20px;font-size:0.82rem;cursor:pointer;font-family:var(--font-body);border:1.5px solid var(--border);background:var(--navy-mid);color:var(--blue-soft);transition:all .12s;font-weight:500;}
-.wolf-pick-btn.picked{background:rgba(61,220,132,.15);border-color:#3ddc84;color:#3ddc84;font-weight:700;}
-.wolf-pick-btn.lone{background:var(--red-bg);border-color:#f87171;color:var(--red);font-weight:700;}
-.wolf-pick-btn.wolf-is{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);font-weight:700;}
+    /* Icon */
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 24px;
+    }
+    .icon-fairway { background: linear-gradient(135deg, #1a5c35, #2a8a50); }
+    .icon-bunker  { background: linear-gradient(135deg, #7a5518, #b8892e); }
+    .icon-range   { background: linear-gradient(135deg, #163370, #2550b0); }
 
-#results-view{display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:0 0 60px;}
-#results-view.active{display:flex;}
-.results-header{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-mid) 100%);border-bottom:3px solid var(--gold);width:100%;padding:22px 20px 18px;text-align:center;margin-bottom:20px;}
-#results-view h2{font-family:var(--font-display);font-size:2.2rem;font-weight:800;letter-spacing:4px;color:var(--gold);margin-bottom:4px;}
-.results-sub{color:var(--blue-soft);font-family:var(--font-display);font-size:0.7rem;letter-spacing:3px;}
-.results-body{width:100%;max-width:440px;padding:0 14px;}
-.results-card{background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--r-md);width:100%;overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow-sm);}
-.results-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.06);}
-.results-row:last-child{border-bottom:none;}
-.results-row .rr-rank{font-family:var(--font-display);font-size:1.4rem;font-weight:800;width:28px;color:var(--amber);}
-.results-row .rr-name{font-size:0.95rem;font-weight:600;flex:1;color:var(--text);}
-.results-row .rr-score{font-size:0.82rem;color:var(--muted);margin-right:14px;}
-.results-row .rr-money{font-family:var(--font-display);font-size:1.4rem;font-weight:800;}
-.new-round-btn{background:var(--green-accent);color:#000;font-family:var(--font-display);font-size:1rem;font-weight:700;letter-spacing:2px;border:none;border-radius:var(--r-md);padding:14px 40px;cursor:pointer;margin-top:8px;}
+    .card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
 
-.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:0.75rem;font-weight:800;border:2px solid var(--border);color:var(--muted);background:var(--navy-mid);transition:all .2s;flex-shrink:0;}
-.step-dot.active{background:var(--green-accent);border-color:var(--green-accent);color:#000;}
-.step-dot.done{background:var(--green-bg);border-color:var(--green);color:var(--green);}
-.step-line{flex:1;height:2px;background:var(--border);max-width:50px;transition:background .2s;}
-.step-line.done{background:var(--green);}
-.wizard-step{display:none;padding-bottom:10px;}
-.wizard-step.active{display:block;}
-@media print{
-  #app-header{display:none!important;}
-  body{background:white!important;}
-  .print-card{box-shadow:none!important;border:1px solid #ccc!important;}
-}
+    .card-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
 
-/* ── LIGHT THEME OVERRIDES ── */
-body[data-theme="light"]{background:#f2f2f4;}
-body[data-theme="light"]{
-  --navy:#f2f2f4;--navy-mid:#ffffff;--navy-light:#e8e8ec;--white:#ffffff;--text:#1a1a2e;
-  --border:#e2e8f0;--surface:#f8fafc;--muted:#6e6e80;
-  --blue-soft:#475569;--slate:#475569;--gold:#d4a030;
-  --green:#27a85e;--green-accent:#27a85e;
-  --red:#c0392b;--amber:#d68910;
-  --green-bg:#dcfce7;--red-bg:#fee2e2;--amber-bg:#fef3c7;
-}
-body[data-theme="light"] .hole-nav-center .hole-num{color:var(--navy);}
-body[data-theme="light"] input[type="text"],body[data-theme="light"] input[type="number"],body[data-theme="light"] .player-select,body[data-theme="light"] .player-custom-input{background:#fff;border-color:#e2e8f0;}
-body[data-theme="light"] input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(30,58,95,0.1);}
-body[data-theme="light"] .score-card,body[data-theme="light"] .game-panel,body[data-theme="light"] .round-card,body[data-theme="light"] .results-card,body[data-theme="light"] .hole-nav,body[data-theme="light"] .course-item,body[data-theme="light"] .game-toggle{background:#fff;}
-body[data-theme="light"] .par-btn,body[data-theme="light"] .wolf-pick-btn,body[data-theme="light"] .step-dot{background:#fff;color:#475569;}
-body[data-theme="light"] .stepper-btn{background:#f1f5f9;color:#0d2340;}
-body[data-theme="light"] .score-row,body[data-theme="light"] .status-row,body[data-theme="light"] .round-money-row,body[data-theme="light"] .results-row{border-bottom-color:#e2e8f0;}
-body[data-theme="light"] tbody td{border-color:#e2e8f0;}
-body[data-theme="light"] tbody tr:nth-child(even){background:#f8fafc;}
-body[data-theme="light"] .round-card-body{border-top-color:#e2e8f0;}
-body[data-theme="light"] .round-game-chip{background:#f1f5f9;color:#475569;border-color:#e2e8f0;}
-body[data-theme="light"] .section-title,body[data-theme="light"] .history-section-label{border-bottom-color:#e2e8f0;color:#475569;}
-body[data-theme="light"] .cell-eagle{background:#fef3c7;}body[data-theme="light"] .cell-birdie{background:#dcfce7;}
-body[data-theme="light"] .cell-bogey{background:#fee2e2;}body[data-theme="light"] .cell-double{background:#fee2e2;color:#991b1b;}
-body[data-theme="light"] .payout-notice{background:#fef3c7;border-color:rgba(217,119,6,0.3);}
-body[data-theme="light"] .clear-history-btn{background:#fee2e2;}
-body[data-theme="light"] .course-item:hover{border-color:#1a3359;}
-body[data-theme="light"] #app-header{background:#0d2340;}
-</style>
+    .card-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .card-arrow {
+      position: absolute;
+      bottom: 18px;
+      right: 18px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.18s ease;
+    }
+    .card:hover .card-arrow { background: rgba(61,220,132,0.15); }
+    .card-arrow svg {
+      width: 11px; height: 11px;
+      stroke: var(--muted); fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      transition: stroke 0.18s ease;
+    }
+    .card:hover .card-arrow svg { stroke: var(--green); }
+
+    /* Wide card (Range) */
+    .card-wide {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 22px 20px;
+    }
+    .card-wide .card-icon { margin-bottom: 0; flex-shrink: 0; }
+    .card-wide .card-text { flex: 1; min-width: 0; }
+    .card-wide .card-arrow { position: static; flex-shrink: 0; }
+    .card-wide .card-name { font-size: 26px; }
+
+    /* Range — featured green border */
+    .card-featured {
+      border-color: rgba(61,220,132,0.2);
+    }
+    .card-featured:hover {
+      border-color: rgba(61,220,132,0.4);
+    }
+
+    /* ── DIVIDER + FOOTER ── */
+    .divider {
+      margin: 44px 14px 0;
+      border-top: 0.5px solid var(--border);
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px 24px 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── LIGHT THEME ── */
+    body[data-theme="light"] {
+      --bg:    #faf8f4;
+      --card:  #ffffff;
+      --card-2:#f5f3ef;
+      --border:rgba(0,0,0,0.08);
+      --text:  #1a1a1a;
+      --muted: #6e6e73;
+      --dim:   #e8e5e0;
+      --green: #1e9e5e;
+      --green-2:#00a882;
+      --gold:  #c8960c;
+    }
+    body[data-theme="light"] { background: #faf8f4; color: #1a1a1a; }
+    body[data-theme="light"] html { background: #faf8f4; }
+    body[data-theme="light"] nav {
+      background: rgba(0,0,0,0.88);  /* nav stays dark */
+    }
+    body[data-theme="light"] footer { color: #aaa; }
+
+    /* Theme toggle button */
+    #theme-toggle {
+      background: none;
+      border: 0.5px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      letter-spacing: 0.04em;
+    }
+    #theme-toggle:hover { border-color: var(--green); color: var(--green); }
+  </style>
+<meta name="theme-color" content="#000000" id="theme-meta">
 </head>
 <body>
-<div id="app">
 
-<!-- ═══════════════ SHARED APP HEADER ═══════════════ -->
-<div id="app-header">
-  <div class="header-top">
-    <div>
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-sub" id="header-subtitle">New Round Setup</div>
-    </div>
-    <button onclick="toggleTheme()" id="theme-btn" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:var(--green-accent);font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;">🌙 Light</button>
-  </div>
-  <div class="tab-bar">
-    <button class="tab-btn active" id="tab-setup"     onclick="navTo('setup')">⛳ New Round</button>
-    <button class="tab-btn disabled" id="tab-play"    onclick="navTo('play')">🏌 Scoring</button>
-    <button class="tab-btn disabled" id="tab-card"    onclick="navTo('scorecard-view')">📋 Card</button>
-    <button class="tab-btn disabled" id="tab-results" onclick="navTo('results-view')">💰 Results</button>
-    <button class="tab-btn" id="tab-history"          onclick="navTo('history-view')">🏆 Leaderboard</button>
-  </div>
-</div>
+  <nav>
+    <a href="/" class="nav-logo">kmans<span>golf</span></a>
+    <div style="display:flex;align-items:center;gap:12px"><div class="nav-meta">Columbus</div><button id="theme-toggle" onclick="toggleTheme()">☀️</button></div>
+  </nav>
 
-<!-- ═══════════════ SETUP WIZARD ═══════════════ -->
-<div id="setup" class="view active">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole">New Round Setup</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="showLastRound()">Last Round</button>
-      <button class="hdr-btn" onclick="showHistory()">Leaderboard</button>
-      <button class="hdr-btn" id="home-scorecard-btn" onclick="homeShowScorecard()" style="display:none;">Scorecard</button>
-      <button class="hdr-btn" id="home-resume-btn" onclick="homeResumeRound()" style="display:none;background:rgba(240,192,64,0.15);color:var(--gold);border-color:rgba(240,192,64,0.3);">▶ Resume Round</button>
-    </div>
-  </div>
+  <section class="hero">
+    <div class="hero-eyebrow"></div>
+    <div class="hero-title">Your game.<br><span class="accent">Tracked.</span></div>
+    <div class="hero-sub">Tools built for how you actually play.</div>
+  </section>
 
-  <!-- Step indicator -->
-  <div style="display:flex;align-items:center;justify-content:center;gap:0;padding:14px 24px;background:var(--white);border-bottom:1px solid var(--border);">
-    <div class="step-dot active" id="sd0">1</div>
-    <div class="step-line" id="sl01"></div>
-    <div class="step-dot" id="sd1">2</div>
-    <div class="step-line" id="sl12"></div>
-    <div class="step-dot" id="sd2">3</div>
-  </div>
+  <div class="apps">
 
-  <!-- Step 1: Course -->
-  <div class="wizard-step active" id="wstep0">
-    <div class="setup-section">
-      <div class="section-title">Step 1 — Select Course &amp; Tees</div>
-      <div class="course-search-wrap" style="margin-bottom:8px;">
-        <span class="course-search-icon">🔍</span>
-        <input type="text" id="course-search" placeholder="Search courses..." oninput="filterCourseDropdown()" autocomplete="off" style="padding-left:34px;">
+    <a href="/fairway/fairway.html" class="card">
+      <div class="card-icon icon-fairway">⛳</div>
+      <div class="card-label">The</div>
+      <div class="card-name">Fairway</div>
+      <div class="card-desc">Tournament scores &amp; standings</div>
+      <div class="card-arrow">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
-      <select id="course-select" onchange="selectCourse(this.value)" style="width:100%;background:var(--white);border:1.5px solid var(--border);color:var(--text);border-radius:var(--r);font-family:var(--font-body);font-size:0.95rem;padding:11px 30px 11px 12px;outline:none;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'8\' viewBox=\'0 0 12 8\'%3E%3Cpath d=\'M1 1l5 5 5-5\' stroke=\'%2394a3b8\' stroke-width=\'1.5\' fill=\'none\' stroke-linecap=\'round\'/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 10px center;box-shadow:var(--shadow-sm);">
-        <option value="">— Select a course —</option>
-      </select>
-      <div id="tee-picker-wrap" class="tee-picker-wrap" style="display:none;margin-top:10px;">
-        <div class="tee-label">Select tees:</div>
-        <div class="tee-options" id="tee-options"></div>
+    </a>
+
+    <a href="/bunker/" class="card">
+      <div class="card-icon icon-bunker">💰</div>
+      <div class="card-label">The</div>
+      <div class="card-name">Bunker</div>
+      <div class="card-desc">Side games &amp; money tracking</div>
+      <div class="card-arrow">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
-      <div class="course-skip" onclick="skipCourse()">Skip — enter pars manually during round</div>
-    </div>
-  </div>
+    </a>
 
-  <!-- Step 2: Games -->
-  <div class="wizard-step" id="wstep1">
-    <div class="setup-section">
-      <div class="section-title">Step 2 — Choose Games &amp; Bets</div>
-      <div class="games-grid">
-        <div class="game-toggle" data-game="skins" onclick="toggleGame(this)">
-          <span class="gt-icon">🎰</span>
-          <div class="gt-info"><h3>Skins</h3><p>Win a hole outright, win a skin. Ties carry forward.</p>
-            <div class="game-config"><div class="bet-row"><label>Skin value:</label><span class="dollar">$</span><input type="number" id="skins-bet" value="1" min="1" max="100" onclick="event.stopPropagation()"><label>per skin</label></div></div>
-          </div><div class="gt-check">✓</div>
-        </div>
-        <div class="game-toggle" data-game="rabbit" onclick="toggleGame(this)">
-          <span class="gt-icon">🐇</span>
-          <div class="gt-info"><h3>Rabbit</h3><p>Hold the rabbit. Win outright to steal it. Pays every 6 holes.</p>
-            <div class="game-config"><div class="bet-row"><label>Per segment:</label><span class="dollar">$</span><input type="number" id="rabbit-bet" value="2" min="1" max="100" onclick="event.stopPropagation()"><label>per player</label></div></div>
-          </div><div class="gt-check">✓</div>
-        </div>
-        <div class="game-toggle" data-game="wolf" onclick="toggleGame(this)">
-          <span class="gt-icon">🐺</span>
-          <div class="gt-info"><h3>Wolf</h3><p>Rotating Wolf picks a partner or goes Lone Wolf each hole.</p>
-            <div class="game-config"><div class="bet-row"><label>Point value:</label><span class="dollar">$</span><input type="number" id="wolf-bet" value="0.25" min="0.05" step="0.05" max="50" onclick="event.stopPropagation()"><label>per point</label></div></div>
-          </div><div class="gt-check">✓</div>
-        </div>
-        <div class="game-toggle" data-game="nassau" onclick="toggleGame(this)">
-          <span class="gt-icon">🏆</span>
-          <div class="gt-info"><h3>Nassau</h3><p>Three bets: front 9, back 9, overall 18. Low score wins each.</p>
-            <div class="game-config"><div class="bet-row"><label>Each bet:</label><span class="dollar">$</span><input type="number" id="nassau-bet" value="1" min="1" max="100" onclick="event.stopPropagation()"></div></div>
-          </div><div class="gt-check">✓</div>
-        </div>
+    <a href="/range/" class="card card-wide card-featured">
+      <div class="card-icon icon-range">🎯</div>
+      <div class="card-text">
+        <div class="card-label">The</div>
+        <div class="card-name">Range</div>
+        <div class="card-desc">Practice tracker, combines &amp; pressure games</div>
       </div>
-    </div>
-  </div>
-
-  <!-- Step 3: Players -->
-  <div class="wizard-step" id="wstep2">
-    <div class="setup-section">
-      <div class="section-title">Step 3 — Players</div>
-      <div class="player-grid">
-        <div class="player-slot" data-slot="0"></div>
-        <div class="player-slot" data-slot="1"></div>
-        <div class="player-slot" data-slot="2"></div>
-        <div class="player-slot" data-slot="3"></div>
+      <div class="card-arrow">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
-      <div id="wolf-order-note" style="display:none;margin-top:12px;font-size:0.78rem;color:var(--amber);background:var(--amber-bg);border:1px solid rgba(217,119,6,0.2);border-radius:var(--r);padding:10px 12px;line-height:1.5;">
-        🐺 <strong>Wolf order = tee order.</strong> Player 1 is Wolf on holes 1,5,9,13,17. Arrange players accordingly.
-      </div>
-    </div>
+    </a>
+
   </div>
 
-  <!-- Wizard nav -->
-  <div style="padding:16px;display:flex;gap:10px;">
-    <button id="wizard-back" onclick="wizardBack()" style="display:none;flex:0 0 auto;padding:14px 18px;background:var(--white);color:var(--navy-mid);border:1.5px solid var(--border);border-radius:var(--r-md);font-family:var(--font-display);font-size:1rem;font-weight:700;letter-spacing:1px;cursor:pointer;">← Back</button>
-    <button id="wizard-next" onclick="wizardNext()" style="flex:1;padding:14px;background:#3ddc84;color:#000;font-family:var(--font-display);font-size:1.1rem;font-weight:700;letter-spacing:3px;border:none;border-radius:var(--r-md);cursor:pointer;">Next →</button>
-  </div>
-</div>
+  <div class="divider"></div>
+  <footer>kmansgolf · Built for the Golfweek Amateur Tour</footer>
 
-<!-- ═══════════════ PLAY ═══════════════ -->
-<div id="play" class="view">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole" id="header-hole-label">Hole 1 of 18</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="showHistory()">Leaderboard</button>
-      <button class="hdr-btn" onclick="showScorecard()">Scorecard</button>
-      <button class="hdr-btn" onclick="showResults()">Finish ✓</button>
-    </div>
-  </div>
 
-  <div class="play-content" id="play-content"></div>
-</div>
+  <script>
+    // ── THEME ─────────────────────────────────────────────────────────────────
+    function applyTheme(t) {
+      const isLight = t === 'light';
+      document.body.setAttribute('data-theme', isLight ? 'light' : '');
+      const btn = document.getElementById('theme-toggle');
+      if (btn) btn.textContent = isLight ? '🌙' : '☀️';
+      const meta = document.getElementById('theme-meta');
+      if (meta) meta.setAttribute('content', isLight ? '#faf8f4' : '#000000');
+      localStorage.setItem('range_theme', t);
+    }
+    function toggleTheme() {
+      applyTheme((localStorage.getItem('range_theme') || 'dark') === 'light' ? 'dark' : 'light');
+    }
+    // Apply saved theme on load
+    applyTheme(localStorage.getItem('range_theme') || 'dark');
 
-<!-- ═══════════════ FULL SCORECARD ═══════════════ -->
-<div id="scorecard-view" class="view">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole">Scorecard</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="backToPlay()">← Back</button>
-      <button class="hdr-btn" onclick="showHistory()">Leaderboard</button>
-      <button class="hdr-btn" onclick="showPrintView()">Print</button>
-    </div>
-  </div>
-  <div class="sc-table-wrap" id="sc-table-wrap"></div>
-</div>
+    // ── SWIPE DOWN TO REFRESH ─────────────────────────────────────────────────
+    let touchStartY = 0;
+    let refreshReady = false;
+    const indicator = document.createElement('div');
+    indicator.style.cssText = 'position:fixed;top:0;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:center;font-family:DM Mono,monospace;font-size:11px;letter-spacing:2px;color:#3ddc84;background:rgba(0,0,0,0.9);transform:translateY(-44px);transition:transform 0.2s ease;z-index:999;pointer-events:none;';
+    indicator.textContent = '↓ RELEASE TO REFRESH';
+    document.body.appendChild(indicator);
 
-<!-- ═══════════════ RESULTS ═══════════════ -->
-<div id="results-view" class="view">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole">Review &amp; Confirm</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="showHistory()">Leaderboard</button>
-      <button class="hdr-btn" onclick="newRound()">New Round</button>
-    </div>
-  </div>
-  <div class="results-body">
-    <div id="results-content"></div>
-  </div>
-</div>
-
-<!-- ═══════════════ HISTORY ═══════════════ -->
-<div id="history-view" class="view">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole">Season Leaderboard</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="showLastRound()">Last Round</button>
-      <button class="hdr-btn" onclick="newRound()">New Round</button>
-    </div>
-  </div>
-  <div class="play-content" id="history-content"></div>
-</div>
-
-<!-- ═══════════════ PRINT VIEW ═══════════════ -->
-<div id="print-view" class="view">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole" id="print-sub">Print View</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="backToPlay()">← Back</button>
-      <button class="hdr-btn" onclick="showHistory()">Leaderboard</button>
-      <button class="hdr-btn" onclick="window.print()" style="background:rgba(240,192,64,0.15);color:var(--gold);border-color:rgba(240,192,64,0.3);">🖨 Print</button>
-    </div>
-  </div>
-  <div style="padding:14px;flex:1;overflow-y:auto;max-width:600px;width:100%;margin:0 auto;" id="print-body"></div>
-</div>
-
-<!-- ═══════════════ EDIT SCORE MODAL ═══════════════ -->
-<div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:300;align-items:flex-end;justify-content:center;">
-  <div style="background:var(--white);border-radius:14px 14px 0 0;padding:20px 16px 32px;width:100%;max-width:480px;">
-    <div style="font-family:var(--font-display);font-size:1rem;font-weight:800;letter-spacing:2px;color:var(--navy);margin-bottom:3px;" id="modal-title">Edit Hole Score</div>
-    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;" id="modal-sub"></div>
-    <div style="background:var(--amber-bg);border:1px solid rgba(217,119,6,0.25);border-radius:var(--r);padding:8px 12px;margin-bottom:14px;font-size:0.78rem;color:var(--amber);font-weight:600;">⚠️ Changing a score recalculates all game totals.</div>
-    <div id="modal-score-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;"></div>
-    <div style="display:flex;gap:10px;">
-      <button onclick="closeEditModal()" style="flex:1;padding:12px;background:var(--surface);color:var(--slate);border:1.5px solid var(--border);border-radius:var(--r-md);font-family:var(--font-display);font-size:0.95rem;font-weight:700;letter-spacing:1px;cursor:pointer;">Cancel</button>
-      <button onclick="saveEditModal()" style="flex:1;padding:12px;background:var(--navy-mid);color:var(--gold);border:none;border-radius:var(--r-md);font-family:var(--font-display);font-size:0.95rem;font-weight:700;letter-spacing:1px;cursor:pointer;">Save</button>
-    </div>
-  </div>
-</div>
-
-<script>
-// ═══ STATE ═══════════════════════════════════════════
-let state = {
-  players: [], games: [], bets: {}, currentHole: 0,
-  pars: Array(18).fill(4), yardages: Array(18).fill(null),
-  courseName: 'Round', teeName: '', roundDate: null,
-  rabbit: { holder: null },
-  wolf: { order: [0,1,2,3], picks: Array(18).fill(null) },
-  money: []
-};
-
-// ═══ WIZARD ══════════════════════════════════════════
-let wizardStep = 0;
-
-function wizardNext() {
-  if (wizardStep === 2) { startRound(); return; }
-  wizardStep++;
-  updateWizard();
-}
-function wizardBack() {
-  if (wizardStep > 0) { wizardStep--; updateWizard(); }
-}
-function updateWizard() {
-  document.querySelectorAll('.wizard-step').forEach((s,i) => s.classList.toggle('active', i===wizardStep));
-  [0,1,2].forEach(i => {
-    const dot = document.getElementById(`sd${i}`);
-    dot.classList.remove('active','done');
-    if (i < wizardStep) { dot.classList.add('done'); dot.textContent='✓'; }
-    else if (i === wizardStep) { dot.classList.add('active'); dot.textContent=i+1; }
-    else { dot.textContent=i+1; }
-  });
-  ['sl01','sl12'].forEach((id,i) => {
-    const line = document.getElementById(id);
-    if (line) line.classList.toggle('done', wizardStep > i);
-  });
-  document.getElementById('wizard-back').style.display = wizardStep > 0 ? 'block' : 'none';
-  const nextBtn = document.getElementById('wizard-next');
-  if (wizardStep === 2) { nextBtn.textContent = 'Tee It Up ⛳'; }
-  else { nextBtn.textContent = 'Next →'; }
-  // Wolf note on step 3
-  const wolfOn = [...document.querySelectorAll('.game-toggle.selected')].some(e=>e.dataset.game==='wolf');
-  const wolfNote = document.getElementById('wolf-order-note');
-  if (wolfNote) wolfNote.style.display = (wizardStep===2 && wolfOn) ? 'block' : 'none';
-}
-
-// ═══ PLAYER PRESETS ══════════════════════════════════
-const PRESET_PLAYERS = ['Kevin','Josh','Danny','Larry','Ryan'];
-const COLORS = ['#e74c3c','#3498db','#f39c12','#9b59b6'];
-
-function initPlayerSlots() {
-  document.querySelectorAll('.player-slot').forEach(slot => {
-    const i = +slot.dataset.slot;
-    const colors = ['#e74c3c','#3498db','#f39c12','#9b59b6'];
-    const savedName = localStorage.getItem(`player_slot_${i}`) || '';
-    slot.innerHTML = `
-      <div class="player-slot-wrap">
-        <div class="player-slot-label" style="display:flex;align-items:center;gap:6px;">
-          <span class="player-color-dot" style="background:${colors[i]}"></span>P${i+1}
-        </div>
-        <select class="player-select" id="psel${i}" onchange="onPlayerSelect(${i})">
-        </select>
-        <input class="player-custom-input" id="pcustom${i}" type="text" placeholder="Enter name…" maxlength="14"
-          value="${savedName&&!PRESET_PLAYERS.includes(savedName)?savedName:''}"
-          style="display:${savedName&&!PRESET_PLAYERS.includes(savedName)?'block':'none'}"
-          oninput="localStorage.setItem('player_slot_${i}',this.value)">
-      </div>`;
-  });
-  refreshAllPlayerDropdowns();
-}
-
-function getSelectedPresets() {
-  // Returns array of preset names currently chosen (one per slot, ignoring custom/empty)
-  return [0,1,2,3].map(i => {
-    const sel = document.getElementById(`psel${i}`);
-    return sel && PRESET_PLAYERS.includes(sel.value) ? sel.value : null;
-  });
-}
-
-function refreshAllPlayerDropdowns() {
-  const selected = getSelectedPresets();
-  [0,1,2,3].forEach(i => {
-    const sel = document.getElementById(`psel${i}`);
-    if (!sel) return;
-    const currentVal = sel.value;
-    const savedName = localStorage.getItem(`player_slot_${i}`) || '';
-    sel.innerHTML = '<option value="">— Select player —</option>';
-    PRESET_PLAYERS.forEach(n => {
-      // Show if: this slot's own pick, OR not picked by any other slot
-      const takenByOther = selected.some((v, idx) => idx !== i && v === n);
-      if (!takenByOther || currentVal === n) {
-        const opt = document.createElement('option');
-        opt.value = n;
-        opt.textContent = n;
-        if (currentVal === n || (savedName === n && !currentVal)) opt.selected = true;
-        sel.appendChild(opt);
-      }
+    document.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+    document.addEventListener('touchmove', e => {
+      if (window.scrollY > 0) return;
+      const dy = e.touches[0].clientY - touchStartY;
+      if (dy > 60) { indicator.style.transform = 'translateY(0)'; refreshReady = true; }
+      else { indicator.style.transform = 'translateY(-44px)'; refreshReady = false; }
+    }, { passive: true });
+    document.addEventListener('touchend', () => {
+      indicator.style.transform = 'translateY(-44px)';
+      if (refreshReady) { refreshReady = false; setTimeout(() => location.reload(), 200); }
     });
-    const customOpt = document.createElement('option');
-    customOpt.value = '__custom__';
-    customOpt.textContent = '+ Custom name…';
-    if (currentVal === '__custom__' || (savedName && !PRESET_PLAYERS.includes(savedName) && savedName !== '')) {
-      customOpt.selected = true;
-    }
-    sel.appendChild(customOpt);
-  });
-}
-
-function onPlayerSelect(i) {
-  const sel = document.getElementById(`psel${i}`);
-  const custom = document.getElementById(`pcustom${i}`);
-  if (sel.value === '__custom__') {
-    custom.style.display = 'block';
-    custom.focus();
-    localStorage.removeItem(`player_slot_${i}`);
-  } else {
-    custom.style.display = 'none';
-    localStorage.setItem(`player_slot_${i}`, sel.value);
-  }
-  refreshAllPlayerDropdowns();
-}
-
-function getPlayerName(i) {
-  const sel = document.getElementById(`psel${i}`);
-  const custom = document.getElementById(`pcustom${i}`);
-  if (!sel) return `Player ${i+1}`;
-  if (sel.value === '__custom__') return custom.value.trim() || `Player ${i+1}`;
-  return sel.value || `Player ${i+1}`;
-}
-const SCORE_LABELS = {'-2':'Eagle','-1':'Birdie','0':'Par','1':'Bogey','2':'Double','3':'Triple'};
-
-// ── SETUP HELPERS ────────────────────────────────────────────────────
-function toggleGame(el) { el.classList.toggle('selected'); updateWizard(); }
-
-function startRound() {
-  const names = [0,1,2,3].map(i => getPlayerName(i));
-  const selectedGames = [...document.querySelectorAll('.game-toggle.selected')].map(el => el.dataset.game);
-
-  state.players = names.map(n => ({ name: n, scores: Array(18).fill(null) }));
-  state.games = selectedGames;
-  state.bets = {
-    skins: +document.getElementById('skins-bet').value || 1,
-    rabbit: +document.getElementById('rabbit-bet').value || 2,
-    wolf: +document.getElementById('wolf-bet').value || 0.25,
-    nassau: +document.getElementById('nassau-bet').value || 1,
-  };
-  state.currentHole = 0;
-  state.money = Array(4).fill(0);
-  state.rabbit = { holder: null };
-  state.wolf = { order: [0,1,2,3], picks: Array(18).fill(null) };
-  state.roundDate = new Date().toISOString();
-
-  // Load course pars if a course is selected
-  if (selectedCourseId) {
-    const course = COURSES.find(c => c.id === selectedCourseId);
-    const tee = course.tees[selectedTeeIdx];
-    state.pars = tee.holes.map(h => h.par);
-    state.yardages = tee.holes.map(h => h.yds);
-    state.courseName = course.name;
-    state.teeName = `${tee.name} tees · ${tee.yards}y · ${tee.rating}/${tee.slope}`;
-  } else {
-    state.pars = Array(18).fill(4);
-    state.yardages = Array(18).fill(null);
-    state.courseName = 'Round';
-    state.teeName = '';
-  }
-
-  document.getElementById('header-hole-label').textContent = (state.courseName && state.courseName !== 'Round' ? state.courseName + ' · ' : '') + (state.teeName || 'Hole 1 of 18');
-  showView('play');
-  renderHole();
-  updateHeader('play');
-}
-
-// ── VIEW SWITCHING ───────────────────────────────────────────────────
-function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  updateHeader(id);
-}
-
-function navTo(id) {
-  if (id === 'play' && !state.players?.length) return;
-  if (id === 'scorecard-view') { renderScorecardTable(); }
-  if (id === 'results-view') { renderResults(); }
-  if (id === 'history-view') { renderHistory(); }
-  showView(id);
-}
-
-function updateHeader(activeId) {
-  const inRound = state.players?.length > 0;
-
-  // Subtitle
-  const subtitles = {
-    'setup':          'New Round Setup',
-    'play':           document.getElementById('header-hole-label')?.textContent || 'Hole 1 of 18',
-    'scorecard-view': 'Scorecard',
-    'results-view':   'Review & Confirm',
-    'history-view':   'Leaderboard',
-    'print-view':     'Print View',
-  };
-  const sub = document.getElementById('header-subtitle');
-  if (sub) sub.textContent = subtitles[activeId] || '';
-
-  // Tab map: tabId → viewId
-  const tabs = {
-    'tab-setup':    'setup',
-    'tab-play':     'play',
-    'tab-card':     'scorecard-view',
-    'tab-results':  'results-view',
-    'tab-history':  'history-view',
-  };
-
-  Object.entries(tabs).forEach(([tabId, viewId]) => {
-    const tab = document.getElementById(tabId);
-    if (!tab) return;
-    // Active = current page
-    tab.classList.toggle('active', viewId === activeId);
-    // Disabled = requires active round but none exists
-    const needsRound = ['tab-play','tab-card','tab-results'].includes(tabId);
-    tab.classList.toggle('disabled', needsRound && !inRound);
-  });
-}
-
-function updateHomeButtons() { updateHeader('setup'); }
-function showHistory() { showView('history-view'); renderHistory(); }
-
-function backToPlay() {
-  if (state.players?.length > 0) {
-    showView('play');
-  } else {
-    showView('setup');
-    updateHomeButtons();
-  }
-}
-
-function homeShowScorecard() {
-  if (!state.players?.length) { alert('No round in progress.'); return; }
-  showView('scorecard-view');
-  renderScorecardTable();
-}
-function homeResumeRound() {
-  if (!state.players?.length) { alert('No round in progress.'); return; }
-  showView('play');
-}
-function updateHomeButtons() {
-  const inProgress = state.players?.length > 0;
-  const scBtn = document.getElementById('home-scorecard-btn');
-  const resBtn = document.getElementById('home-resume-btn');
-  if (scBtn) scBtn.style.display = inProgress ? '' : 'none';
-  if (resBtn) resBtn.style.display = inProgress ? '' : 'none';
-}
-function newRound() {
-  // Full reset so course picker starts fresh
-  wizardStep = 0;
-  selectedCourseId = null;
-  selectedTeeIdx = 0;
-  state = {
-    players: [], games: [], bets: {},
-    currentHole: 0,
-    pars: Array(18).fill(4),
-    yardages: Array(18).fill(null),
-    courseName: 'Round', teeName: '', roundDate: null,
-    rabbit: { holder: null },
-    wolf: { picks: Array(18).fill(null) },
-    money: []
-  };
-  // Clear course search input
-  const cSearch = document.getElementById('course-search');
-  if (cSearch) cSearch.value = '';
-  filterCourseDropdown();
-  updateWizard();
-  showView('setup');
-  updateHomeButtons();
-}
-function saveAndNewRound() { saveRound(); gistSync(); newRound(); }
-function showPrintView() { showView('print-view'); renderPrintView(); }
-
-function showLastRound() {
-  const rounds = loadRounds();
-  if (rounds.length === 0) { alert('No saved rounds yet.'); return; }
-  renderResultsFromRound(rounds[0]);
-  showView('results-view');
-}
-
-// ── AUTO-SAVE (on hole advance) ──────────────────────────────────────
-function autoSaveRound() {
-  // Only save if at least some scores entered
-  const hasScores = state.players.some(p => p.scores.some(s => s !== null));
-  if (!hasScores) return;
-  saveRound();
-}
-
-// ── SAVE ROUND TO LOCALSTORAGE ───────────────────────────────────────
-function saveRound() {
-  const key = 'golf_rounds';
-  let rounds = [];
-  try { rounds = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
-
-  const money = calcTotalMoney();
-  const gameMoney = {};
-  if (state.games.includes('skins'))  gameMoney.skins  = calcSkinsMoney();
-  if (state.games.includes('rabbit')) gameMoney.rabbit = calcRabbitMoney();
-  if (state.games.includes('wolf'))   gameMoney.wolf   = calcWolfMoney();
-  if (state.games.includes('nassau')) gameMoney.nassau = calcNassauMoney().total;
-
-  const roundData = {
-    id: state.roundDate || new Date().toISOString(),
-    date: state.roundDate || new Date().toISOString(),
-    courseName: state.courseName || 'Unknown Course',
-    teeName: state.teeName || '',
-    players: state.players.map((p,i) => ({
-      name: p.name,
-      scores: [...p.scores],
-      money: money[i]
-    })),
-    pars: [...state.pars],
-    games: [...state.games],
-    bets: {...state.bets},
-    gameMoney,
-    holesPlayed: (state.players[0]?.scores||[]).filter(s=>s!==null).length
-  };
-
-  // Replace if same round (same id), otherwise append
-  const existingIdx = rounds.findIndex(r => r.id === roundData.id);
-  if (existingIdx >= 0) rounds[existingIdx] = roundData;
-  else rounds.unshift(roundData);
-
-  try { localStorage.setItem(key, JSON.stringify(rounds)); } catch(e) {}
-}
-
-// ── HISTORY / LEADERBOARD ────────────────────────────────────────────
-function loadRounds() {
-  try { return JSON.parse(localStorage.getItem('golf_rounds') || '[]'); } catch(e) { return []; }
-}
-
-function renderHistory() {
-  const content = document.getElementById('history-content');
-  content.innerHTML = '';
-  const rounds = loadRounds();
-
-  // Season leaderboard — aggregate by player name
-  const leaderMap = {};
-  rounds.forEach(r => {
-    r.players.forEach(p => {
-      if (!leaderMap[p.name]) leaderMap[p.name] = { money: 0, strokes: 0, rounds: 0 };
-      leaderMap[p.name].money += p.money || 0;
-      leaderMap[p.name].strokes += p.scores.reduce((a,s)=>a+(s||0),0);
-      leaderMap[p.name].rounds++;
-    });
-  });
-
-  const leaderEntries = Object.entries(leaderMap).sort((a,b) => b[1].money - a[1].money);
-
-  // Leaderboard card
-  const lb = el('div','history-leaderboard');
-  const lbTitle = el('div','history-leaderboard-title'); lbTitle.textContent = '🏆 Season Leaderboard';
-  lb.appendChild(lbTitle);
-
-  if (leaderEntries.length === 0) {
-    lb.innerHTML += '<div style="color:var(--blue-soft);font-size:0.85rem;text-align:center;padding:10px 0;">No rounds saved yet</div>';
-  } else {
-    const medals = ['🥇','🥈','🥉'];
-    leaderEntries.forEach(([name, stats], rank) => {
-      const row = el('div','leaderboard-row');
-      const moneyClass = stats.money > 0 ? 'pos' : stats.money < 0 ? 'neg' : 'zero';
-      row.innerHTML = `
-        <div class="lb-rank">${medals[rank] || (rank+1)}</div>
-        <div class="lb-name">${name}</div>
-        <div class="lb-stat">
-          <div class="lb-money ${moneyClass}">${fmt(stats.money)}</div>
-          <div class="lb-strokes">${stats.strokes > 0 ? stats.strokes + ' strokes' : ''}</div>
-          <div class="lb-rounds">${stats.rounds} round${stats.rounds!==1?'s':''}</div>
-        </div>`;
-      lb.appendChild(row);
-    });
-  }
-  content.appendChild(lb);
-
-  // Round history list
-  if (rounds.length > 0) {
-    const histLabel = el('div','history-section-label'); histLabel.textContent = 'Round History';
-    content.appendChild(histLabel);
-
-    rounds.forEach((r, idx) => {
-      const card = buildRoundCard(r, idx);
-      content.appendChild(card);
-    });
-
-    const clearBtn = el('button','clear-history-btn');
-    clearBtn.textContent = 'Clear All History';
-    clearBtn.onclick = () => {
-      if (confirm('Delete all saved rounds? This cannot be undone.')) {
-        localStorage.removeItem('golf_rounds');
-        renderHistory();
-      }
-    };
-    content.appendChild(clearBtn);
-  } else {
-    const empty = el('div','history-empty');
-    empty.innerHTML = '<div class="history-empty-icon">⛳</div><div>No rounds saved yet.<br>Complete a round and tap <b>Save &amp; New Round</b>.</div>';
-    content.appendChild(empty);
-  }
-
-  // ── Gist sync at bottom as collapsible ──
-  const syncWrap = el('div');
-  syncWrap.style.cssText = 'margin:20px 0 8px;';
-  const syncToggle = el('button');
-  syncToggle.style.cssText = 'background:none;border:none;color:var(--muted);font-family:var(--font-display);font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:8px 0;width:100%;text-align:center;';
-  syncToggle.textContent = '⚙ Sync Settings';
-  const syncPanel = el('div');
-  syncPanel.style.display = 'none';
-  syncPanel.innerHTML = renderGistPanel();
-  syncToggle.onclick = () => {
-    const open = syncPanel.style.display !== 'none';
-    syncPanel.style.display = open ? 'none' : 'block';
-    syncToggle.textContent = open ? '⚙ Sync Settings' : '⚙ Hide Sync Settings';
-  };
-  syncWrap.appendChild(syncToggle);
-  syncWrap.appendChild(syncPanel);
-  content.appendChild(syncWrap);
-}
-
-function buildRoundCard(r, idx) {
-  const card = el('div','round-card');
-  const dateStr = new Date(r.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  const holesLabel = r.holesPlayed === 18 ? '18 holes' : `${r.holesPlayed} holes`;
-  const teeLabel = r.teeName ? ` · ${r.teeName.split('·')[0].trim()}` : '';
-  const gameIcons = {skins:'🎰 Skins', rabbit:'🐇 Rabbit', wolf:'🐺 Wolf', nassau:'🏆 Nassau'};
-
-  const hdr = el('div','round-card-header');
-  hdr.innerHTML = `
-    <div>
-      <div class="round-course">${r.courseName}</div>
-      <div class="round-meta">${dateStr} · ${holesLabel}${teeLabel}</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="text-align:right;">
-        ${r.players.slice().sort((a,b)=>b.money-a.money).slice(0,1).map(p=>`<div style="font-family:var(--font-display);font-size:0.8rem;font-weight:700;color:var(--amber);">${p.name} ${fmt(p.money)}</div>`).join('')}
-      </div>
-      <span class="round-chevron">▼</span>
-    </div>`;
-  hdr.onclick = () => card.classList.toggle('open');
-  card.appendChild(hdr);
-
-  const body = el('div','round-card-body');
-
-  // Money + scores per player
-  const sortedPlayers = r.players.slice().sort((a,b)=>b.money-a.money);
-  sortedPlayers.forEach(p => {
-    const row = el('div','round-money-row');
-    const total = p.scores.reduce((a,s)=>a+(s||0),0);
-    const moneyClass = p.money > 0 ? 'pos' : p.money < 0 ? 'neg' : 'zero';
-    row.innerHTML = `
-      <div class="round-player-name">${p.name}</div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div class="round-player-score">${total > 0 ? total + ' strokes' : '–'}</div>
-        <div class="round-player-money ${moneyClass}">${fmt(p.money)}</div>
-      </div>`;
-    body.appendChild(row);
-  });
-
-  // Game breakdown chips
-  if (r.games && r.games.length > 0) {
-    const chips = el('div','round-game-chips');
-    r.games.forEach(g => {
-      const chip = el('div','round-game-chip');
-      chip.textContent = gameIcons[g] || g;
-      chips.appendChild(chip);
-    });
-    body.appendChild(chips);
-  }
-
-  // Hole-by-hole scorecard (collapsed by default within card)
-  const scToggle = el('div');
-  scToggle.style.cssText = 'padding:8px 14px;cursor:pointer;font-family:var(--font-display);font-size:0.65rem;letter-spacing:1.5px;color:var(--navy-light);font-weight:700;text-transform:uppercase;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px;';
-  scToggle.innerHTML = '📋 Scorecard <span style="color:var(--muted);font-weight:400;">(tap to expand)</span>';
-  const scWrap = el('div','round-sc-wrap');
-  scWrap.style.display = 'none';
-  scToggle.onclick = () => {
-    if (scWrap.style.display === 'none') {
-      scWrap.style.display = 'block';
-      scWrap.innerHTML = '';
-      scWrap.appendChild(buildHistoryScorecardTable(r));
-    } else {
-      scWrap.style.display = 'none';
-    }
-  };
-  body.appendChild(scToggle);
-  body.appendChild(scWrap);
-
-  // Edit hole buttons for saved round
-  const editSec = el('div');
-  editSec.style.cssText = 'padding:8px 14px;border-top:1px solid var(--border);';
-  editSec.innerHTML = `<div style="font-family:var(--font-display);font-size:0.6rem;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">✏️ Edit a hole</div>`;
-  const hGrid = el('div');
-  hGrid.style.cssText = 'display:grid;grid-template-columns:repeat(6,1fr);gap:4px;';
-  for (let h = 0; h < 18; h++) {
-    const hasScore = r.players.some(p => p.scores[h] !== null && p.scores[h] !== undefined);
-    const btn = document.createElement('button');
-    btn.textContent = `H${h+1}`;
-    btn.style.cssText = `padding:5px 2px;font-family:var(--font-display);font-size:0.7rem;font-weight:700;border:1.5px solid ${hasScore?'var(--navy-light)':'var(--border)'};border-radius:var(--r);background:${hasScore?'var(--navy-mid)':'var(--white)'};color:${hasScore?'var(--gold)':'var(--muted)'};cursor:pointer;`;
-    btn.onclick = () => openEditModal(h, r.id);
-    hGrid.appendChild(btn);
-  }
-  editSec.appendChild(hGrid);
-  body.appendChild(editSec);
-
-  card.appendChild(body);
-  return card;
-}
-
-function buildHistoryScorecardTable(r) {
-  const table = document.createElement('table');
-  const thead = document.createElement('thead');
-  const tr1 = document.createElement('tr');
-  ['Player','1','2','3','4','5','6','7','8','9','Out','10','11','12','13','14','15','16','17','18','In','Total'].forEach(h => {
-    const th = document.createElement('th'); th.textContent = h; tr1.appendChild(th);
-  });
-  thead.appendChild(tr1);
-
-  const parRow = document.createElement('tr');
-  ['Par',...r.pars.slice(0,9), r.pars.slice(0,9).reduce((a,b)=>a+b,0),
-   ...r.pars.slice(9), r.pars.slice(9).reduce((a,b)=>a+b,0),
-   r.pars.reduce((a,b)=>a+b,0)].forEach(v => {
-    const td = document.createElement('td'); td.textContent=v; td.style.color='var(--muted)'; parRow.appendChild(td);
-  });
-  thead.appendChild(parRow);
-  table.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
-  r.players.forEach((p, pi) => {
-    const tr = document.createElement('tr');
-    const front9 = p.scores.slice(0,9).reduce((a,s)=>a+(s||0),0);
-    const back9 = p.scores.slice(9).reduce((a,s)=>a+(s||0),0);
-    const cells = [p.name, ...p.scores.slice(0,9), front9||'', ...p.scores.slice(9), back9||'', (front9+back9)||''];
-    cells.forEach((v, ci) => {
-      const td = document.createElement('td');
-      if (ci === 0) { td.textContent = v; td.style.color = COLORS[pi % COLORS.length]; td.style.fontWeight = '700'; }
-      else if (ci === 10 || ci === 20 || ci === 21) { td.textContent = v||''; td.style.fontWeight='700'; }
-      else {
-        const realIdx = ci < 10 ? ci-1 : ci === 20||ci===21 ? -1 : ci-11;
-        if (realIdx >= 0 && realIdx < 18) {
-          const sc = p.scores[realIdx];
-          if (sc === null || sc === undefined) { td.textContent = '—'; td.className = 'cell-empty'; }
-          else {
-            const diff = sc - r.pars[realIdx];
-            td.textContent = sc;
-            if (diff <= -2) td.className = 'cell-eagle';
-            else if (diff === -1) td.className = 'cell-birdie';
-            else if (diff === 0) td.className = 'cell-par';
-            else if (diff === 1) td.className = 'cell-bogey';
-            else td.className = 'cell-double';
-          }
-        } else { td.textContent = v||''; }
-      }
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-  return table;
-}
-
-// ── RENDER HOLE ──────────────────────────────────────────────────────
-function renderHole() {
-  if (!state.players?.length) return;
-  const h = state.currentHole;
-  const hLabel = `Hole ${h+1} of 18`;
-  const holeEl = document.getElementById('header-hole-label');
-  if (holeEl) holeEl.textContent = hLabel;
-  const subEl = document.getElementById('header-subtitle');
-  if (subEl && document.getElementById('play').classList.contains('active')) subEl.textContent = hLabel;
-
-  const content = document.getElementById('play-content');
-  content.innerHTML = '';
-
-  // Running totals bar
-  content.appendChild(buildTotalsBar());
-
-  // Hole nav
-  const nav = el('div','hole-nav');
-  const prevBtn = el('button','nav-btn'); prevBtn.textContent = '‹'; prevBtn.disabled = h === 0;
-  prevBtn.onclick = () => { state.currentHole--; renderHole(); };
-  const center = el('div','hole-nav-center');
-  const yds = state.yardages && state.yardages[h] ? `<div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">${state.yardages[h]} yds</div>` : '';
-  center.innerHTML = `<div class="hole-num">Hole ${h+1}</div><div class="hole-par">Par ${state.pars[h]}</div>${yds}`;
-  const nextBtn = el('button','nav-btn'); nextBtn.textContent = '›'; nextBtn.disabled = h === 17;
-  nextBtn.onclick = () => { autoSaveRound(); state.currentHole++; renderHole(); };
-  nav.append(prevBtn, center, nextBtn);
-  content.appendChild(nav);
-
-  // Par selector
-  const parSel = el('div','par-selector');
-  [3,4,5].forEach(p => {
-    const btn = el('button','par-btn'); btn.textContent = `Par ${p}`;
-    if (state.pars[h] === p) btn.classList.add('active');
-    btn.onclick = () => { state.pars[h] = p; renderHole(); };
-    parSel.appendChild(btn);
-  });
-  content.appendChild(parSel);
-
-  // Score card
-  content.appendChild(buildScoreEntry(h));
-
-  // Wolf partner picker (if wolf selected)
-  if (state.games.includes('wolf')) {
-    content.appendChild(buildWolfUI(h));
-  }
-
-  // Game status panels
-  if (state.games.includes('rabbit')) content.appendChild(buildRabbitPanel(h));
-  if (state.games.includes('skins'))  content.appendChild(buildSkinsPanel());
-  if (state.games.includes('wolf'))   content.appendChild(buildWolfPanel());
-  if (state.games.includes('nassau')) content.appendChild(buildNassauPanel());
-}
-
-function buildTotalsBar() {
-  const bar = el('div','totals-bar');
-  const title = el('h4'); title.textContent = 'Running Totals';
-  const grid = el('div','totals-grid');
-  state.players.forEach((p,i) => {
-    const money = calcTotalMoney();
-    const amt = money[i];
-    const cell = el('div','total-cell');
-    cell.innerHTML = `<div class="tc-name">${p.name}</div><div class="tc-amount ${amt>0?'pos':amt<0?'neg':'zero'}">${fmt(amt)}</div>`;
-    grid.appendChild(cell);
-  });
-  bar.append(title, grid);
-  return bar;
-}
-
-function buildScoreEntry(h) {
-  const card = el('div','score-card');
-  const hdr = el('div','score-header');
-  hdr.innerHTML = '<div>Player</div><div style="text-align:center">Score</div><div style="text-align:center">+/-</div>';
-  card.appendChild(hdr);
-
-  state.players.forEach((p,i) => {
-    const row = el('div','score-row');
-    const nameCell = el('div','player-name-cell');
-    const badge = el('span',`player-badge p${i}`);
-    nameCell.append(badge, document.createTextNode(p.name));
-
-    const stepper = el('div','score-stepper');
-    const minus = el('button','stepper-btn'); minus.textContent = '−';
-    const val = el('div','score-val'); val.textContent = p.scores[h] ?? '−';
-    const plus = el('button','stepper-btn'); plus.textContent = '+';
-
-    minus.onclick = () => {
-      if (p.scores[h] === null) p.scores[h] = state.pars[h];
-      else if (p.scores[h] > 1) p.scores[h]--;
-      recalc(); renderHole();
-    };
-    plus.onclick = () => {
-      if (p.scores[h] === null) p.scores[h] = state.pars[h];
-      else p.scores[h]++;
-      recalc(); renderHole();
-    };
-    stepper.append(minus, val, plus);
-
-    const rel = el('div','score-rel');
-    if (p.scores[h] !== null) {
-      const diff = p.scores[h] - state.pars[h];
-      rel.textContent = diff === 0 ? 'E' : diff > 0 ? `+${diff}` : `${diff}`;
-      if (diff <= -2) { rel.className = 'score-rel eagle'; rel.textContent = diff===-1?'🐦':'🦅'; }
-      else if (diff === -1) { rel.className = 'score-rel under'; }
-      else if (diff === 0) rel.className = 'score-rel even';
-      else rel.className = 'score-rel over';
-    } else { rel.textContent = ''; }
-
-    row.append(nameCell, stepper, rel);
-    card.appendChild(row);
-  });
-
-  // Edit a previous hole
-  if (h > 0) {
-    const editLink = el('div');
-    editLink.style.cssText = 'padding:7px 14px;font-size:0.73rem;color:var(--navy-light);cursor:pointer;border-top:1px solid var(--surface);text-align:center;font-family:var(--font-display);letter-spacing:.5px;text-decoration:underline;';
-    editLink.textContent = `✏️ Edit hole ${h} scores`;
-    editLink.onclick = () => openEditModal(h - 1, null);
-    card.appendChild(editLink);
-  }
-
-  return card;
-}
-
-function buildWolfUI(h) {
-  const wolfIdx = h % 4;
-  const wolfName = state.players[wolfIdx].name;
-  const pick = state.wolf.picks[h];
-
-  const wrap = el('div','game-panel');
-  wrap.classList.add('open');
-  const hdr = el('div','game-panel-header');
-  hdr.innerHTML = `<span class="gp-icon">🐺</span><span class="gp-title">Wolf Decision</span><span class="gp-summary c${wolfIdx}">${wolfName} is Wolf</span>`;
-  hdr.onclick = () => wrap.classList.toggle('open');
-  const body = el('div','game-panel-body');
-
-  const lbl = el('div','wolf-label'); lbl.textContent = `${wolfName} chooses a partner or goes Lone:`;
-  const picker = el('div','wolf-picker');
-
-  state.players.forEach((p,i) => {
-    if (i === wolfIdx) {
-      const btn = el('button','wolf-pick-btn wolf-is'); btn.textContent = `${p.name} (Wolf)`; btn.disabled = true;
-      picker.appendChild(btn);
-      return;
-    }
-    const btn = el('button','wolf-pick-btn');
-    btn.textContent = p.name;
-    if (pick === i) btn.classList.add('picked');
-    btn.onclick = () => {
-      state.wolf.picks[h] = (state.wolf.picks[h] === i) ? null : i;
-      recalc(); renderHole();
-    };
-    picker.appendChild(btn);
-  });
-
-  const loneBtn = el('button','wolf-pick-btn');
-  loneBtn.textContent = '🐺 Lone Wolf';
-  if (pick === 'lone') loneBtn.classList.add('lone');
-  loneBtn.onclick = () => {
-    state.wolf.picks[h] = (state.wolf.picks[h] === 'lone') ? null : 'lone';
-    recalc(); renderHole();
-  };
-  picker.appendChild(loneBtn);
-
-  body.append(lbl, picker);
-  wrap.append(hdr, body);
-  return wrap;
-}
-
-// ── GAME PANELS ──────────────────────────────────────────────────────
-function buildRabbitPanel(h) {
-  const panel = el('div','game-panel open');
-  const rabbitState = calcRabbitState();
-  const holder = rabbitState.holder;
-  const segment = Math.floor(h / 6);
-  const segmentEnd = (segment + 1) * 6 - 1;
-  const payoutHole = segmentEnd + 1;
-
-  const summary = holder !== null ? `${state.players[holder].name} holds 🐇` : 'Unclaimed';
-  const hdr = el('div','game-panel-header');
-  hdr.innerHTML = `<span class="gp-icon">🐇</span><span class="gp-title">Rabbit</span><span class="gp-summary">${summary}</span><span class="gp-chevron">▼</span>`;
-  hdr.onclick = () => panel.classList.toggle('open');
-
-  const body = el('div','game-panel-body');
-
-  state.players.forEach((p,i) => {
-    const row = el('div','status-row');
-    const nameDiv = el('div','status-player');
-    const badge = el('span',`player-badge p${i}`);
-    nameDiv.append(badge, document.createTextNode(p.name));
-    if (i === holder) {
-      const tag = el('span','status-tag tag-holds'); tag.textContent = 'HOLDS';
-      nameDiv.appendChild(tag);
-    }
-    const earnings = el('div','status-amount');
-    const amt = calcRabbitMoney()[i];
-    earnings.textContent = fmt(amt);
-    earnings.className = `status-amount ${amt>0?'pos':amt<0?'neg':'zero'}`;
-    row.append(nameDiv, earnings);
-    body.appendChild(row);
-  });
-
-  if (h === segmentEnd) {
-    const notice = el('div','payout-notice');
-    notice.textContent = `💰 End of segment — payout after this hole!`;
-    body.appendChild(notice);
-  }
-
-  const info = el('p'); info.style.cssText = 'font-size:0.75rem;color:var(--muted);margin-top:10px;';
-  info.textContent = `Segments: 1-6 · 7-12 · 13-18. Ties don't move the rabbit.`;
-  body.appendChild(info);
-
-  panel.append(hdr, body);
-  return panel;
-}
-
-function buildSkinsPanel() {
-  const panel = el('div','game-panel');
-  const skinData = calcSkins();
-  const totalSkins = skinData.filter(s=>s!==null).length;
-  const pending = skinData.filter(s=>s==='pending').length;
-
-  const hdr = el('div','game-panel-header');
-  hdr.innerHTML = `<span class="gp-icon">🎰</span><span class="gp-title">Skins</span><span class="gp-summary">${totalSkins} skin${totalSkins!==1?'s':''} won · ${pending} pending</span><span class="gp-chevron">▼</span>`;
-  hdr.onclick = () => panel.classList.toggle('open');
-
-  const body = el('div','game-panel-body');
-  const money = calcSkinsMoney();
-  state.players.forEach((p,i) => {
-    const row = el('div','status-row');
-    const nameDiv = el('div','status-player');
-    const badge = el('span',`player-badge p${i}`);
-    nameDiv.append(badge, document.createTextNode(p.name));
-    const wins = skinData.filter(s=>s===i).length;
-    if (wins > 0) {
-      const tag = el('span','status-tag tag-skin'); tag.textContent = `${wins} skin${wins>1?'s':''}`;
-      nameDiv.appendChild(tag);
-    }
-    const amt = el('div','status-amount');
-    amt.textContent = fmt(money[i]);
-    amt.className = `status-amount ${money[i]>0?'pos':money[i]<0?'neg':'zero'}`;
-    row.append(nameDiv, amt);
-    body.appendChild(row);
-  });
-
-  panel.append(hdr, body);
-  return panel;
-}
-
-function buildWolfPanel() {
-  const panel = el('div','game-panel');
-  const money = calcWolfMoney();
-  const points = calcWolfPoints();
-  const hdr = el('div','game-panel-header');
-  hdr.innerHTML = `<span class="gp-icon">🐺</span><span class="gp-title">Wolf</span><span class="gp-summary">Points · settle at 18</span><span class="gp-chevron">▼</span>`;
-  hdr.onclick = () => panel.classList.toggle('open');
-
-  const body = el('div','game-panel-body');
-
-  // Points + projected money per player
-  state.players.forEach((p,i) => {
-    const row = el('div','status-row');
-    const nameDiv = el('div','status-player');
-    const badge = el('span',`player-badge p${i}`);
-    nameDiv.append(badge, document.createTextNode(p.name));
-    const right = el('div'); right.style.cssText = 'display:flex;align-items:center;gap:10px;';
-    const pts = el('div'); pts.style.cssText = `font-size:0.8rem;font-family:var(--font-display);color:var(--muted);`;
-    pts.textContent = `${points[i] > 0 ? '+' : ''}${points[i]} pts`;
-    const amt = el('div','status-amount');
-    amt.textContent = fmt(money[i]);
-    amt.className = `status-amount ${money[i]>0?'pos':money[i]<0?'neg':'zero'}`;
-    right.append(pts, amt);
-    row.append(nameDiv, right);
-    body.appendChild(row);
-  });
-
-  // Minimal payouts with context
-  const payouts = calcPayouts(money);
-  const owes = pairwiseOwed(points, state.bets.wolf);
-  if (payouts.length > 0) {
-    const divider = el('div');
-    divider.style.cssText = 'border-top:1px solid var(--border);margin:8px 0 6px;';
-    body.appendChild(divider);
-    const label = el('div');
-    label.style.cssText = 'font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:0 0 6px;font-family:var(--font-display);font-weight:700;';
-    label.textContent = 'Who Pays Who';
-    body.appendChild(label);
-    payouts.forEach(({from, to, amt}) => {
-      const wrap = el('div');
-      wrap.style.cssText = 'margin-bottom:12px;';
-
-      // Main payout row
-      const row = el('div');
-      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;';
-      row.innerHTML = `
-        <div style="display:flex;align-items:center;gap:8px;font-size:0.88rem;font-weight:600;flex:1;min-width:0;">
-          <span style="background:var(--navy);color:var(--gold);font-family:var(--font-display);font-size:0.62rem;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;">${state.players[from].name}</span>
-          <span style="color:var(--muted);font-size:0.75rem;white-space:nowrap;">pays</span>
-          <span style="background:var(--navy);color:var(--gold);font-family:var(--font-display);font-size:0.62rem;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;">${state.players[to].name}</span>
-        </div>
-        <div style="font-family:var(--font-display);font-size:1rem;font-weight:800;color:var(--green);white-space:nowrap;padding-left:8px;">${fmt(amt)}</div>`;
-
-      // Context note — figure out what debts this payment is covering
-      const directOwed = owes[from][to]; // what from directly owes to
-      const context = el('div');
-      context.style.cssText = 'font-size:0.72rem;color:var(--muted);font-style:italic;padding-left:2px;line-height:1.4;';
-
-      // Find other players whose debt is being routed through this payment
-      const others = [0,1,2,3].filter(i => i !== from && i !== to);
-      const routedThrough = others.filter(k => owes[k][to] > 0 && owes[from][k] > 0);
-
-      if (directOwed > 0 && routedThrough.length === 0) {
-        // Pure direct debt
-        const ptDiff = points[to] - points[from];
-        context.textContent = `${state.players[from].name} owes ${state.players[to].name} directly (${ptDiff}pt diff)`;
-      } else if (directOwed > 0 && routedThrough.length > 0) {
-        // Covers own debt + part of someone else's
-        const names = routedThrough.map(k => state.players[k].name).join(' & ');
-        context.textContent = `Covers own debt + part of ${names}'s debt to ${state.players[to].name}`;
-      } else {
-        // Purely covering someone else's debt
-        const names = routedThrough.map(k => state.players[k].name).join(' & ');
-        context.textContent = routedThrough.length > 0
-          ? `Covering ${names}'s debt to ${state.players[to].name}`
-          : `${state.players[from].name} settles with ${state.players[to].name}`;
-      }
-
-      wrap.append(row, context);
-      body.appendChild(wrap);
-    });
-  }
-
-  panel.append(hdr, body);
-  return panel;
-}
-
-function buildNassauPanel() {
-  const panel = el('div','game-panel');
-  const nassau = calcNassauMoney();
-  const hdr = el('div','game-panel-header');
-  hdr.innerHTML = `<span class="gp-icon">🏆</span><span class="gp-title">Nassau</span><span class="gp-summary">Front · Back · Total</span><span class="gp-chevron">▼</span>`;
-  hdr.onclick = () => panel.classList.toggle('open');
-
-  const body = el('div','game-panel-body');
-  state.players.forEach((p,i) => {
-    const row = el('div','status-row');
-    const nameDiv = el('div','status-player');
-    const badge = el('span',`player-badge p${i}`);
-    nameDiv.append(badge, document.createTextNode(p.name));
-    const amt = el('div','status-amount');
-    amt.textContent = fmt(nassau.total[i]);
-    amt.className = `status-amount ${nassau.total[i]>0?'pos':nassau.total[i]<0?'neg':'zero'}`;
-    row.append(nameDiv, amt);
-    body.appendChild(row);
-  });
-
-  panel.append(hdr, body);
-  return panel;
-}
-
-// ── GAME CALCULATORS ─────────────────────────────────────────────────
-function calcRabbitState() {
-  if (!state.players?.length) return { holder: null };
-  // Returns current holder at current hole
-  let holder = null;
-  const h = state.currentHole;
-  for (let i = 0; i <= h; i++) {
-    // Check if this is a payout hole — reset
-    if (i > 0 && i % 6 === 0) holder = null;
-    const scores = state.players.map(p => p.scores[i]);
-    if (scores.some(s => s === null)) continue;
-    const min = Math.min(...scores);
-    const winners = scores.reduce((a,s,idx)=>s===min?[...a,idx]:a,[]);
-    if (winners.length === 1) holder = winners[0]; // outright win
-    // tie: holder unchanged
-  }
-  return { holder };
-}
-
-function calcRabbitMoney() {
-  if (!state.players?.length) return Array(4).fill(0);
-  const money = Array(4).fill(0);
-  const bet = state.bets.rabbit;
-  // Simulate all holes up to current
-  let holder = null;
-  const holesScored = state.currentHole;
-  for (let i = 0; i <= holesScored; i++) {
-    // Payout at end of holes 5, 11, 17 (0-indexed)
-    if (i > 0 && i % 6 === 0) {
-      // Payout the previous segment
-      if (holder !== null) {
-        // holder gets bet from each other player
-        state.players.forEach((_,j) => {
-          if (j !== holder) { money[j] -= bet; money[holder] += bet; }
-        });
-      }
-      holder = null;
-    }
-    const scores = state.players.map(p => p.scores[i]);
-    if (scores.some(s => s === null)) continue;
-    const min = Math.min(...scores);
-    const winners = scores.reduce((a,s,idx)=>s===min?[...a,idx]:a,[]);
-    if (winners.length === 1) holder = winners[0];
-  }
-  // If we're at the very last hole of a segment and it's been scored, pay out
-  const lastPlayed = state.currentHole;
-  if ((lastPlayed + 1) % 6 === 0 && state.players[0]?.scores?.[lastPlayed] !== null) {
-    if (holder !== null) {
-      state.players.forEach((_,j) => {
-        if (j !== holder) { money[j] -= bet; money[holder] += bet; }
-      });
-    }
-  }
-  return money;
-}
-
-// Skins: returns array per hole: null (not played), 'pending' (tie carried), or playerIdx
-function calcSkins() {
-  if (!state.players?.length) return Array(18).fill(null);
-  const result = Array(18).fill(null);
-  let carried = 0;
-  for (let h = 0; h < 18; h++) {
-    const scores = state.players.map(p => p.scores[h]);
-    if (scores.some(s => s === null)) { if (carried > 0) result[h] = 'pending'; continue; }
-    const min = Math.min(...scores);
-    const winners = scores.reduce((a,s,i)=>s===min?[...a,i]:a,[]);
-    if (winners.length === 1) {
-      result[h] = winners[0];
-      // carried skins go back to their holes retroactively — mark the winner
-      for (let back = h-carried; back < h; back++) result[back] = winners[0];
-      carried = 0;
-    } else {
-      result[h] = 'pending';
-      carried++;
-    }
-  }
-  return result;
-}
-
-function calcSkinsMoney() {
-  if (!state.players?.length) return Array(4).fill(0);
-  const money = Array(4).fill(0);
-  const skins = calcSkins();
-  const bet = state.bets.skins;
-  // Count skins per player
-  for (let h = 0; h < 18; h++) {
-    const s = skins[h];
-    if (typeof s === 'number') {
-      // Winner gets bet from each loser
-      state.players.forEach((_,j) => {
-        if (j !== s) { money[j] -= bet; money[s] += bet; }
-      });
-    }
-  }
-  // Deduplicate: we assigned money per hole but carried skins have been resolved
-  // Simple approach: count distinct won holes
-  const moneyClean = Array(4).fill(0);
-  const wonHoles = {}; // playerIdx -> set of holes they won
-  for (let h = 0; h < 18; h++) {
-    const s = skins[h];
-    if (typeof s === 'number') {
-      if (!wonHoles[s]) wonHoles[s] = new Set();
-      wonHoles[s].add(h);
-    }
-  }
-  // Each skin the winner collects from 3 others (but we count each hole once)
-  // Count unique holes won per player
-  const skinCounts = Array(4).fill(0);
-  Object.keys(wonHoles).forEach(p => { skinCounts[+p] = wonHoles[+p].size; });
-  const totalSkins = skinCounts.reduce((a,b)=>a+b,0);
-  skinCounts.forEach((cnt, i) => {
-    moneyClean[i] = cnt * bet * 3 - (totalSkins - cnt) * bet;
-  });
-  return moneyClean;
-}
-
-function calcWolfPoints() {
-  if (!state.players?.length) return Array(4).fill(0);
-  const points = Array(4).fill(0);
-  for (let h = 0; h < 18; h++) {
-    const scores = state.players.map(p => p.scores[h]);
-    if (scores.some(s => s === null)) continue;
-    const wolfIdx = h % 4;
-    const pick = state.wolf.picks[h];
-    if (pick === null) continue;
-    if (pick === 'lone') {
-      const wolfScore = scores[wolfIdx];
-      const others = [0,1,2,3].filter(i => i !== wolfIdx);
-      const bestOther = Math.min(...others.map(i => scores[i]));
-      if (wolfScore < bestOther) {
-        // Lone wolf wins: wolf +4, opponents get nothing
-        points[wolfIdx] += 4;
-      } else {
-        // Lone wolf loses: each opponent +1, wolf gets nothing
-        others.forEach(i => points[i] += 1);
-      }
-    } else {
-      const team1 = [wolfIdx, pick];
-      const team2 = [0,1,2,3].filter(i => !team1.includes(i));
-      const best1 = Math.min(...team1.map(i => scores[i]));
-      const best2 = Math.min(...team2.map(i => scores[i]));
-      if (best1 < best2) {
-        // Wolf's team wins: +2 each, losers get nothing
-        team1.forEach(i => points[i] += 2);
-      } else if (best2 < best1) {
-        // Other team wins: +2 each, losers get nothing
-        team2.forEach(i => points[i] += 2);
-      }
-      // Tie: nobody gets points
-    }
-  }
-  return points;
-}
-
-function calcWolfMoney() {
-  if (!state.players?.length) return Array(4).fill(0);
-  const points = calcWolfPoints();
-  const bet = state.bets.wolf;
-  const n = state.players.length;
-  const avg = points.reduce((a,b) => a+b, 0) / n;
-  // Money is relative to the average — if everyone is tied, everyone gets $0.
-  return points.map(p => Math.round((p - avg) * bet * 100) / 100);
-}
-
-function calcNassauMoney() {
-  if (!state.players?.length) return { front:Array(4).fill(0), back:Array(4).fill(0), overall:Array(4).fill(0), total:Array(4).fill(0) };
-  const bet = state.bets.nassau;
-  const front = Array(4).fill(0);
-  const back = Array(4).fill(0);
-  const overall = Array(4).fill(0);
-
-  // front 9 (holes 0-8), back 9 (9-17), overall
-  const totalFront = state.players.map(p => p.scores.slice(0,9).reduce((a,s)=>a+(s||0),0));
-  const totalBack = state.players.map(p => p.scores.slice(9,18).reduce((a,s)=>a+(s||0),0));
-  const totalAll = state.players.map(p => p.scores.reduce((a,s)=>a+(s||0),0));
-
-  // For each of front/back/overall: lowest score wins from each other player
-  const payNassau = (totals, moneyArr) => {
-    // Only score if all holes in range have been played
-    const min = Math.min(...totals.filter(t=>t>0));
-    const winners = totals.reduce((a,t,i)=>t===min&&t>0?[...a,i]:a,[]);
-    if (winners.length === 1) {
-      const w = winners[0];
-      state.players.forEach((_,j)=>{ if(j!==w){ moneyArr[j]-=bet; moneyArr[w]+=bet; } });
-    }
-  };
-
-  // Only count if the 9 holes have actual scores
-  const frontPlayed = (state.players[0]?.scores||[]).slice(0,9).filter(s=>s!==null).length;
-  const backPlayed = (state.players[0]?.scores||[]).slice(9,18).filter(s=>s!==null).length;
-
-  if (frontPlayed === 9) payNassau(totalFront, front);
-  if (backPlayed === 9) payNassau(totalBack, back);
-  if (frontPlayed === 9 && backPlayed === 9) payNassau(totalAll, overall);
-
-  const total = front.map((f,i)=>f+back[i]+overall[i]);
-  return { front, back, overall, total };
-}
-
-// Calculates minimum transactions to settle a money array
-// Returns [{from, to, amt}]
-function calcPayouts(money) {
-  // Minimum transactions debt settlement
-  const balances = money.map((amt, i) => ({ i, amt }));
-  const debtors   = balances.filter(b => b.amt < 0).sort((a,b) => a.amt - b.amt);
-  const creditors = balances.filter(b => b.amt > 0).sort((a,b) => b.amt - a.amt);
-  const payouts = [];
-  const d = debtors.map(b => ({ ...b, rem: Math.abs(b.amt) }));
-  const cr = creditors.map(b => ({ ...b, rem: b.amt }));
-  let di = 0, ci = 0;
-  while (di < d.length && ci < cr.length) {
-    const pay = Math.min(d[di].rem, cr[ci].rem);
-    if (pay > 0.005) payouts.push({ from: d[di].i, to: cr[ci].i, amt: Math.round(pay * 100) / 100 });
-    d[di].rem -= pay; cr[ci].rem -= pay;
-    if (d[di].rem < 0.005) di++;
-    if (cr[ci].rem < 0.005) ci++;
-  }
-  return payouts;
-}
-
-function pairwiseOwed(points, bet) {
-  // owes[i][j] = amount i owes j based on point totals
-  // Since points are strictly non-negative (no one loses points),
-  // player with more points is owed by player with fewer points.
-  // We use the money array directly to derive context notes.
-  const money = points.map(p => Math.round(p * bet * 100) / 100);
-  const owes = Array.from({length:4}, () => Array(4).fill(0));
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-      if (i === j) continue;
-      // i owes j if i has fewer points and j has more
-      if (points[i] < points[j]) {
-        const share = Math.round((points[j] - points[i]) * bet / 3 * 100) / 100;
-        owes[i][j] = share;
-      }
-    }
-  }
-  return owes;
-}
-
-function calcTotalMoney() {
-  if (!state.players?.length) return Array(4).fill(0);
-  const money = Array(4).fill(0);
-  if (state.games.includes('rabbit')) { const m = calcRabbitMoney(); m.forEach((v,i)=>money[i]+=v); }
-  if (state.games.includes('skins'))  { const m = calcSkinsMoney(); m.forEach((v,i)=>money[i]+=v); }
-  if (state.games.includes('wolf'))   { const m = calcWolfMoney(); m.forEach((v,i)=>money[i]+=v); }
-  if (state.games.includes('nassau')) { const m = calcNassauMoney(); m.total.forEach((v,i)=>money[i]+=v); }
-  return money;
-}
-
-// ═══ EDIT SCORE MODAL ════════════════════════════════
-let editModal = { holeIdx: null, tempScores: [], roundId: null };
-
-function openEditModal(holeIdx, roundId) {
-  // roundId=null means current live round; roundId=string means history round
-  editModal.holeIdx = holeIdx;
-  editModal.roundId = roundId;
-  const pars = roundId ? loadRounds().find(r=>r.id===roundId)?.pars || state.pars : state.pars;
-  const players = roundId ? loadRounds().find(r=>r.id===roundId)?.players || [] : state.players.map(p=>({name:p.name,scores:[...p.scores]}));
-  editModal.tempScores = players.map(p => p.scores[holeIdx] ?? null);
-  const par = pars[holeIdx];
-  document.getElementById('modal-title').textContent = `Edit Hole ${holeIdx+1}`;
-  document.getElementById('modal-sub').textContent = `Par ${par}${roundId ? ' · Saved round' : ' · Current round'}`;
-  const grid = document.getElementById('modal-score-grid');
-  grid.innerHTML = '';
-  players.forEach((p,i) => {
-    const sc = editModal.tempScores[i];
-    const cell = document.createElement('div');
-    cell.style.cssText = 'text-align:center;';
-    cell.innerHTML = `
-      <div style="font-size:0.65rem;color:var(--muted);margin-bottom:5px;font-family:var(--font-display);font-weight:700;letter-spacing:.5px;text-transform:uppercase;">${p.name}</div>
-      <div style="display:flex;align-items:center;justify-content:center;gap:4px;">
-        <button onclick="editModalAdj(${i},-1)" style="width:32px;height:32px;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface);color:var(--navy);font-size:1.1rem;font-weight:700;cursor:pointer;">−</button>
-        <div id="em-val-${i}" style="min-width:26px;text-align:center;font-size:1.1rem;font-weight:700;">${sc ?? '—'}</div>
-        <button onclick="editModalAdj(${i},1)" style="width:32px;height:32px;border:1.5px solid var(--border);border-radius:var(--r);background:var(--surface);color:var(--navy);font-size:1.1rem;font-weight:700;cursor:pointer;">+</button>
-      </div>`;
-    grid.appendChild(cell);
-  });
-  document.getElementById('edit-modal').style.display = 'flex';
-}
-
-function editModalAdj(playerIdx, delta) {
-  const cur = editModal.tempScores[playerIdx];
-  const newVal = cur === null ? (delta>0?1:null) : Math.max(1, cur+delta);
-  editModal.tempScores[playerIdx] = newVal;
-  document.getElementById(`em-val-${playerIdx}`).textContent = newVal ?? '—';
-}
-
-function closeEditModal() {
-  document.getElementById('edit-modal').style.display = 'none';
-}
-
-function saveEditModal() {
-  const h = editModal.holeIdx;
-  if (editModal.roundId) {
-    // Edit a saved historical round
-    const rounds = loadRounds();
-    const rIdx = rounds.findIndex(r=>r.id===editModal.roundId);
-    if (rIdx < 0) { closeEditModal(); return; }
-    const r = rounds[rIdx];
-    // Recalculate money with updated scores
-    editModal.tempScores.forEach((sc,i) => { r.players[i].scores[h] = sc; });
-    // Recompute money for that round (simplified: rebuild state-like object and recalc)
-    const tempState = { players: r.players.map(p=>({name:p.name,scores:[...p.scores]})), games: r.games, bets: r.bets, pars: r.pars, currentHole:17, wolf:{picks:Array(18).fill(null)}, rabbit:{holder:null} };
-    const savedState = JSON.parse(JSON.stringify(state));
-    Object.assign(state, tempState);
-    const newMoney = calcTotalMoney();
-    const gameMoney = {};
-    if(r.games.includes('skins')) gameMoney.skins=calcSkinsMoney();
-    if(r.games.includes('rabbit')) gameMoney.rabbit=calcRabbitMoney();
-    if(r.games.includes('wolf')) gameMoney.wolf=calcWolfMoney();
-    if(r.games.includes('nassau')) gameMoney.nassau=calcNassauMoney().total;
-    Object.assign(state, savedState);
-    r.players.forEach((p,i) => { p.money = newMoney[i]; });
-    r.gameMoney = gameMoney;
-    r.holesPlayed = r.players[0].scores.filter(s=>s!==null).length;
-    rounds[rIdx] = r;
-    try { localStorage.setItem('golf_rounds', JSON.stringify(rounds)); } catch(e) {}
-    gistSync();
-    closeEditModal();
-    renderHistory();
-  } else {
-    // Edit current live round
-    editModal.tempScores.forEach((sc,i) => { state.players[i].scores[h] = sc; });
-    closeEditModal();
-    autoSaveRound();
-    renderHole();
-  }
-}
-
-// ═══ PRINT / CLEAN VIEW ══════════════════════════════
-function renderPrintView() {
-  const body = document.getElementById('print-body');
-  body.innerHTML = '';
-  const money = calcTotalMoney();
-  const dateStr = state.roundDate ? new Date(state.roundDate).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}) : '';
-
-  // Header
-  const hdr = document.createElement('div');
-  hdr.style.cssText = 'background:var(--navy);border-radius:var(--r-md);padding:14px 16px;margin-bottom:14px;';
-  hdr.innerHTML = `
-    <div style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;letter-spacing:2px;color:var(--gold);">${state.courseName}</div>
-    <div style="font-size:0.78rem;color:var(--blue-soft);margin-top:3px;">${dateStr}${state.teeName ? ' · '+state.teeName : ''}</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;">
-      ${state.players.map((p,i)=>{const amt=money[i];return `<div style="background:rgba(255,255,255,0.07);border-radius:var(--r);padding:8px;text-align:center;"><div style="font-size:0.65rem;color:var(--blue-soft);font-family:var(--font-display);font-weight:700;letter-spacing:.5px;">${p.name}</div><div style="font-family:var(--font-display);font-size:1.2rem;font-weight:800;margin-top:2px;color:${amt>0?'#86efac':amt<0?'#fca5a5':'var(--blue-soft)'};">${fmt(amt)}</div></div>`;}).join('')}
-    </div>`;
-  body.appendChild(hdr);
-
-  // Scorecard table
-  const tableWrap = document.createElement('div');
-  tableWrap.style.cssText = 'overflow-x:auto;margin-bottom:14px;';
-  const table = document.createElement('table');
-  table.style.cssText = 'min-width:460px;font-size:0.78rem;';
-  const thead = document.createElement('thead');
-  const tr1 = document.createElement('tr');
-  ['Player','1','2','3','4','5','6','7','8','9','Out','10','11','12','13','14','15','16','17','18','In','Tot'].forEach(h=>{
-    const th=document.createElement('th');th.textContent=h;tr1.appendChild(th);
-  });
-  thead.appendChild(tr1);
-  const parRow = document.createElement('tr');
-  ['Par',...state.pars.slice(0,9),state.pars.slice(0,9).reduce((a,b)=>a+b,0),...state.pars.slice(9),state.pars.slice(9).reduce((a,b)=>a+b,0),state.pars.reduce((a,b)=>a+b,0)].forEach(v=>{
-    const td=document.createElement('td');td.textContent=v;td.style.cssText='color:var(--muted);font-size:0.75rem;';parRow.appendChild(td);
-  });
-  thead.appendChild(parRow);
-  table.appendChild(thead);
-  const tbody = document.createElement('tbody');
-  state.players.forEach((p,pi)=>{
-    const tr=document.createElement('tr');
-    const f9=p.scores.slice(0,9).reduce((a,s)=>a+(s||0),0);
-    const b9=p.scores.slice(9).reduce((a,s)=>a+(s||0),0);
-    const cells=[p.name,...p.scores.slice(0,9),f9||'',...p.scores.slice(9),b9||'',(f9+b9)||''];
-    cells.forEach((v,ci)=>{
-      const td=document.createElement('td');
-      if(ci===0){td.textContent=v;td.style.color=COLORS[pi%4];td.style.fontWeight='700';}
-      else if(ci===10||ci===20||ci===21){td.textContent=v||'';td.style.fontWeight='700';td.style.background='rgba(240,192,64,0.08)';}
-      else{
-        const ri=ci<10?ci-1:ci===20||ci===21?-1:ci-11;
-        if(ri>=0&&ri<18){const sc=p.scores[ri];if(sc===null){td.textContent='—';td.className='cell-empty';}else{const d=sc-state.pars[ri];td.textContent=sc;if(d<=-2)td.className='cell-eagle';else if(d===-1)td.className='cell-birdie';else if(d===0)td.className='cell-par';else if(d===1)td.className='cell-bogey';else td.className='cell-double';}}
-        else{td.textContent=v||'';}
-      }
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-  tableWrap.appendChild(table);
-  body.appendChild(tableWrap);
-
-  // Game breakdown
-  if (state.games.length > 0) {
-    const bdTitle = document.createElement('div');
-    bdTitle.style.cssText = 'font-family:var(--font-display);font-size:0.6rem;letter-spacing:2px;color:var(--slate);text-transform:uppercase;border-bottom:2px solid var(--border);padding-bottom:5px;margin-bottom:10px;';
-    bdTitle.textContent = 'Game Breakdown';
-    body.appendChild(bdTitle);
-    const icons={skins:'🎰',rabbit:'🐇',wolf:'🐺',nassau:'🏆'};
-    const names={skins:'Skins',rabbit:'Rabbit',wolf:'Wolf',nassau:'Nassau'};
-    state.games.forEach(g=>{
-      let gm;
-      if(g==='skins')gm=calcSkinsMoney();
-      else if(g==='rabbit')gm=calcRabbitMoney();
-      else if(g==='wolf')gm=calcWolfMoney();
-      else if(g==='nassau')gm=calcNassauMoney().total;
-      const card=document.createElement('div');
-      card.style.cssText='background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-bottom:8px;box-shadow:var(--shadow-sm);';
-      card.innerHTML=`<div style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:1px;color:var(--slate);text-transform:uppercase;margin-bottom:8px;">${icons[g]} ${names[g]}</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">${state.players.map((p,i)=>{const amt=gm[i];return `<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--muted);">${p.name}</div><div style="font-size:0.95rem;font-weight:700;color:${amt>0?'var(--green)':amt<0?'var(--red)':'var(--muted)'};">${fmt(amt)}</div></div>`;}).join('')}</div>`;
-      body.appendChild(card);
-    });
-  }
-}
-
-// ═══ GITHUB GIST SYNC ════════════════════════════════
-function getGistToken() { return localStorage.getItem('gist_token')||''; }
-function getGistId()    { return localStorage.getItem('gist_id')||''; }
-function setGistLog(msg, color='var(--muted)') {
-  const el = document.getElementById('gist-log');
-  if (el) { el.textContent = msg; el.style.color = color; }
-}
-
-async function gistSave() {
-  const token = getGistToken();
-  if (!token) { setGistLog('No token — enter your GitHub token first.','var(--red)'); return; }
-  const rounds = loadRounds();
-  const content = JSON.stringify(rounds, null, 2);
-  setGistLog('Syncing…','var(--amber)');
-  try {
-    const existingId = getGistId();
-    let url = 'https://api.github.com/gists';
-    let method = 'POST';
-    if (existingId) { url += '/'+existingId; method = 'PATCH'; }
-    const res = await fetch(url, {
-      method,
-      headers:{'Authorization':'token '+token,'Content-Type':'application/json'},
-      body: JSON.stringify({ description:'The Bunker — Round History', public:false, files:{'golf-rounds.json':{content}} })
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (!existingId) localStorage.setItem('gist_id', data.id);
-    setGistLog('✓ Saved to Gist at '+new Date().toLocaleTimeString(),'var(--green)');
-  } catch(e) { setGistLog('Error: '+e.message,'var(--red)'); }
-}
-
-async function gistLoad() {
-  const token = getGistToken(), id = getGistId();
-  if (!token || !id) { setGistLog('Token and Gist ID required.','var(--red)'); return; }
-  setGistLog('Loading…','var(--amber)');
-  try {
-    const res = await fetch(`https://api.github.com/gists/${id}`, {headers:{'Authorization':'token '+token}});
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    const content = data.files['golf-rounds.json']?.content;
-    if (!content) throw new Error('File not found in Gist');
-    const rounds = JSON.parse(content);
-    localStorage.setItem('golf_rounds', JSON.stringify(rounds));
-    setGistLog(`✓ Loaded ${rounds.length} rounds from Gist`,'var(--green)');
-    renderHistory();
-  } catch(e) { setGistLog('Error: '+e.message,'var(--red)'); }
-}
-
-function gistSync() {
-  if (getGistToken()) gistSave();
-}
-
-function saveGistSettings() {
-  const token = document.getElementById('gist-token-input')?.value?.trim();
-  const id = document.getElementById('gist-id-input')?.value?.trim();
-  if (token) localStorage.setItem('gist_token', token);
-  if (id !== undefined) localStorage.setItem('gist_id', id);
-  setGistLog('Settings saved.','var(--green)');
-}
-
-function renderGistPanel() {
-  const token = getGistToken(), id = getGistId();
-  return `
-    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:14px;box-shadow:var(--shadow-sm);">
-      <div style="font-family:var(--font-display);font-size:0.6rem;letter-spacing:2px;color:var(--slate);text-transform:uppercase;border-bottom:2px solid var(--border);padding-bottom:5px;margin-bottom:10px;">☁️ GitHub Gist Sync</div>
-      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;line-height:1.5;">
-        Save your round history to a private GitHub Gist so it persists across devices. 
-        <a href="https://github.com/settings/tokens/new?scopes=gist&description=The+Bunker" target="_blank" style="color:var(--navy-light);">Create a token here</a> (only needs <code>gist</code> scope).
-      </div>
-      <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:10px;">
-        <input id="gist-token-input" type="password" placeholder="GitHub token (ghp_…)" value="${token}" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:0.82rem;font-family:monospace;outline:none;color:var(--text);">
-        <input id="gist-id-input" type="text" placeholder="Gist ID (leave blank for first save)" value="${id}" style="border:1.5px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:0.82rem;font-family:monospace;outline:none;color:var(--text);">
-      </div>
-      <div style="display:flex;gap:7px;flex-wrap:wrap;">
-        <button onclick="saveGistSettings()" style="padding:8px 12px;background:var(--navy-mid);color:var(--gold);border:none;border-radius:var(--r);font-family:var(--font-display);font-size:0.75rem;font-weight:700;letter-spacing:1px;cursor:pointer;">Save Settings</button>
-        <button onclick="gistSave()" style="padding:8px 12px;background:var(--green-bg);color:var(--green);border:1px solid var(--green);border-radius:var(--r);font-family:var(--font-display);font-size:0.75rem;font-weight:700;letter-spacing:1px;cursor:pointer;">↑ Push to Gist</button>
-        <button onclick="gistLoad()" style="padding:8px 12px;background:var(--surface);color:var(--slate);border:1px solid var(--border);border-radius:var(--r);font-family:var(--font-display);font-size:0.75rem;font-weight:700;letter-spacing:1px;cursor:pointer;">↓ Pull from Gist</button>
-      </div>
-      <div id="gist-log" style="font-size:0.72rem;color:var(--muted);margin-top:7px;font-family:monospace;min-height:16px;"></div>
-    </div>`;
-}
-
-// ═══════════════════════════════════════════════════════
-function recalc() { /* state computed live */ }
-
-// ── SCORECARD TABLE ──────────────────────────────────────────────────
-function renderScorecardTable() {
-  const wrap = document.getElementById('sc-table-wrap');
-  wrap.innerHTML = '';
-  const table = document.createElement('table');
-
-  // Head
-  const thead = document.createElement('thead');
-  const tr1 = document.createElement('tr');
-  ['Player','1','2','3','4','5','6','7','8','9','Out','10','11','12','13','14','15','16','17','18','In','Total'].forEach((h,i) => {
-    const th = document.createElement('th');
-    th.textContent = h;
-    if (i===10||i===20||i===21) th.style.background='rgba(201,168,76,0.1)';
-    tr1.appendChild(th);
-  });
-  thead.appendChild(tr1);
-
-  // Par row
-  const parRow = document.createElement('tr');
-  const parCells = ['Par',...state.pars.slice(0,9), state.pars.slice(0,9).reduce((a,b)=>a+b,0),
-                    ...state.pars.slice(9), state.pars.slice(9).reduce((a,b)=>a+b,0),
-                    state.pars.reduce((a,b)=>a+b,0)];
-  parCells.forEach((v,i) => {
-    const td = document.createElement('td');
-    td.textContent = v; td.style.color='var(--muted)'; td.style.fontSize='0.8rem';
-    if(i===10||i===20||i===21) td.style.background='rgba(201,168,76,0.06)';
-    parRow.appendChild(td);
-  });
-  thead.appendChild(parRow);
-  table.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
-  state.players.forEach((p,pi) => {
-    const tr = document.createElement('tr');
-    const front9 = p.scores.slice(0,9).reduce((a,s)=>a+(s||0),0);
-    const back9 = p.scores.slice(9).reduce((a,s)=>a+(s||0),0);
-    const total = front9 + back9;
-    const cells = [p.name, ...p.scores.slice(0,9), front9||'', ...p.scores.slice(9), back9||'', total||''];
-    cells.forEach((v,ci) => {
-      const td = document.createElement('td');
-      if (ci === 0) { td.textContent = v; td.style.color=COLORS[pi]; td.style.fontWeight='700'; }
-      else if (ci === 10 || ci === 20 || ci === 21) {
-        td.textContent = v||''; td.style.background='rgba(201,168,76,0.06)'; td.style.fontWeight='700';
-      } else {
-        const hIdx = ci <= 9 ? ci-1 : ci-11;
-        const score = p.scores[ci <= 9 ? ci-1 : ci-2]; // adjust for Out col
-        const actualIdx = ci < 10 ? ci-1 : ci-11;
-        const s = p.scores[ci < 10 ? ci-1 : ci === 20 ? 8 : ci-11]; // hacky but works
-        const realIdx = ci < 10 ? ci - 1 : ci === 20 ? -1 : ci === 21 ? -1 : ci - 11;
-        if (realIdx >= 0 && realIdx < 18) {
-          const sc = p.scores[realIdx];
-          if (sc === null) { td.textContent = '—'; td.className = 'cell-empty'; }
-          else {
-            const diff = sc - state.pars[realIdx];
-            td.textContent = sc;
-            if (diff <= -2) td.className = 'cell-eagle';
-            else if (diff === -1) td.className = 'cell-birdie';
-            else if (diff === 0) td.className = 'cell-par';
-            else if (diff === 1) td.className = 'cell-bogey';
-            else td.className = 'cell-double';
-          }
-        } else { td.textContent = v||'—'; }
-      }
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-
-  // Money footer
-  const tfoot = document.createElement('tfoot');
-  const mtr = document.createElement('tr');
-  const money = calcTotalMoney();
-  const mCells = ['Net',...Array(19).fill(''),...money.map(m=>fmt(m))];
-  // Just show money at the end
-  const mtr2 = document.createElement('tr');
-  ['Money',...Array(20).fill(''), ...money.map(m=>fmt(m))].slice(0,22).forEach((v,i)=>{
-    const td = document.createElement('td');
-    if (i < 2 || i > 18) {
-      td.textContent = v;
-      if (i > 18) {
-        const idx = i - 19;
-        const amt = money[idx];
-        td.style.color = amt > 0 ? 'var(--green-win)' : amt < 0 ? 'var(--red)' : 'var(--muted)';
-      }
-    }
-    mtr2.appendChild(td);
-  });
-
-  // Simpler money row
-  const moneyTr = document.createElement('tr');
-  state.players.forEach((p,i) => {
-    const td = document.createElement('td');
-    td.colSpan = 1;
-  });
-
-  tfoot.appendChild(mtr);
-  table.appendChild(tfoot);
-  wrap.appendChild(table);
-
-  // Money summary below
-  const mSummary = document.createElement('div');
-  mSummary.style.cssText = 'margin-top:20px;';
-  mSummary.innerHTML = `<div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Money Summary</div>`;
-  const mGrid = document.createElement('div');
-  mGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:10px;';
-  state.players.forEach((p,i) => {
-    const cell = document.createElement('div');
-    cell.style.cssText = 'background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:12px;text-align:center;';
-    const amt = money[i];
-    cell.innerHTML = `<div style="font-size:0.75rem;color:var(--muted);margin-bottom:4px;">${p.name}</div><div style="font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:${amt>0?'var(--green)':amt<0?'var(--red)':'var(--muted)'};">${fmt(amt)}</div>`;
-    mGrid.appendChild(cell);
-  });
-  mSummary.appendChild(mGrid);
-  wrap.appendChild(mSummary);
-}
-
-// ── RESULTS ──────────────────────────────────────────────────────────
-function renderResultsFromRound(r) {
-  const icons = {skins:'🎰',rabbit:'🐇',wolf:'🐺',nassau:'🏆'};
-  const gnames = {skins:'Skins',rabbit:'Rabbit',wolf:'Wolf',nassau:'Nassau'};
-  const content = document.getElementById('results-content');
-  content.innerHTML = '';
-  const dateStr = r.date ? new Date(r.date).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) : '';
-  const sub = el('div'); sub.style.cssText='text-align:center;padding:10px 14px 4px;font-size:0.78rem;color:var(--muted);';
-  sub.textContent = [r.courseName, r.teeName, dateStr].filter(Boolean).join(' · ');
-  content.appendChild(sub);
-  const sorted = r.players.map((p,i)=>({...p,idx:i,total:(p.scores||[]).reduce((a,s)=>a+(s||0),0)})).sort((a,b)=>b.money-a.money);
-  const card = el('div','results-card');
-  ['🥇','🥈','🥉','4️⃣'].forEach((medal,rank)=>{
-    const p=sorted[rank]; if(!p) return;
-    const row=el('div','results-row');
-    row.innerHTML=`<div class="rr-rank">${medal}</div><div class="rr-name" style="color:${COLORS[p.idx%4]}">${p.name}</div><div class="rr-score">${p.total>0?p.total+' strokes':'–'}</div><div class="rr-money ${p.money>0?'pos':p.money<0?'neg':'zero'}" style="color:${p.money>0?'var(--green-win)':p.money<0?'var(--red)':'var(--muted)'}">${fmt(p.money)}</div>`;
-    card.appendChild(row);
-  });
-  content.appendChild(card);
-  if (r.games && r.games.length > 0) {
-    const breakdown=el('div'); breakdown.style.cssText='margin-top:16px;width:100%;';
-    const bTitle=el('div'); bTitle.style.cssText='font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;'; bTitle.textContent='Game Breakdown'; breakdown.appendChild(bTitle);
-    r.games.forEach(g=>{
-      const gm=(r.gameMoney&&r.gameMoney[g])?r.gameMoney[g]:Array(4).fill(0);
-      const gCard=el('div'); gCard.style.cssText='background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow-sm);';
-      gCard.innerHTML=`<div style="font-family:var(--font-display);font-size:0.75rem;font-weight:700;letter-spacing:1px;color:var(--slate);margin-bottom:8px;">${icons[g]||''} ${(gnames[g]||g).toUpperCase()}</div>`;
-      const gGrid=el('div'); gGrid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:6px;';
-      r.players.forEach((p,i)=>{const amt=gm[i]||0;const c=el('div');c.style.cssText='text-align:center;';c.innerHTML=`<div style="font-size:0.7rem;color:var(--muted);">${p.name}</div><div style="font-size:1rem;font-weight:700;color:${amt>0?'var(--green)':amt<0?'var(--red)':'var(--muted)'};">${fmt(amt)}</div>`;gGrid.appendChild(c);});
-      gCard.appendChild(gGrid); breakdown.appendChild(gCard);
-    });
-    const totalCard=el('div'); totalCard.style.cssText='background:var(--navy-mid);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-md);padding:12px 14px;margin-bottom:8px;';
-    totalCard.innerHTML=`<div style="font-family:var(--font-display);font-size:0.75rem;font-weight:700;letter-spacing:1px;color:var(--gold);margin-bottom:8px;">💰 TOTAL</div>`;
-    const totalGrid=el('div'); totalGrid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:6px;';
-    r.players.forEach((p,i)=>{const amt=p.money||0;const c=el('div');c.style.cssText='text-align:center;';c.innerHTML=`<div style="font-size:0.7rem;color:var(--blue-soft);">${p.name}</div><div style="font-family:var(--font-display);font-size:1.3rem;font-weight:800;color:${amt>0?'#86efac':amt<0?'#fca5a5':'var(--blue-soft)'};">${fmt(amt)}</div>`;totalGrid.appendChild(c);});
-    totalCard.appendChild(totalGrid); breakdown.appendChild(totalCard);
-    content.appendChild(breakdown);
-  }
-}
-
-function renderResults() {
-  if (!state.players || state.players.length === 0) return;
-  const content = document.getElementById('results-content');
-  content.innerHTML = '';
-
-  // ── SECTION LABEL: Scorecard Review ──
-  const scLabel = el('div');
-  scLabel.style.cssText = 'font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-family:var(--font-display);font-weight:700;';
-  scLabel.textContent = '📋 Scorecard — Tap any score to edit';
-  content.appendChild(scLabel);
-
-  // ── INLINE EDITABLE SCORECARD TABLE ──
-  const scWrap = el('div');
-  scWrap.style.cssText = 'overflow-x:auto;margin-bottom:20px;border-radius:var(--r-md);box-shadow:var(--shadow-sm);';
-  scWrap.appendChild(buildReviewScorecardTable());
-  content.appendChild(scWrap);
-
-  // ── MONEY SUMMARY ──
-  renderResultsMoney(content);
-
-  // ── CONFIRM & SAVE BUTTON ──
-  const saveWrap = el('div');
-  saveWrap.style.cssText = 'padding:16px 0 40px;text-align:center;';
-  saveWrap.innerHTML = `
-    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;">Everyone happy with the scorecard?</div>
-    <button onclick="saveAndNewRound()" style="background:var(--gold);color:var(--navy);font-family:var(--font-display);font-size:1rem;font-weight:800;letter-spacing:2px;border:none;border-radius:var(--r-md);padding:16px 40px;cursor:pointer;box-shadow:0 4px 12px rgba(240,192,64,0.3);">✓ Confirm &amp; Save</button>`;
-  content.appendChild(saveWrap);
-}
-
-function buildReviewScorecardTable() {
-  const table = document.createElement('table');
-  table.style.cssText = 'width:100%;border-collapse:collapse;font-size:0.78rem;';
-
-  // Header row
-  const thead = document.createElement('thead');
-  const hrow = document.createElement('tr');
-  hrow.style.background = 'var(--navy)';
-  ['Player','1','2','3','4','5','6','7','8','9','OUT','10','11','12','13','14','15','16','17','18','IN','TOT'].forEach((h,i) => {
-    const th = document.createElement('th');
-    th.textContent = h;
-    th.style.cssText = `padding:6px ${i===0?'10px':'4px'};color:var(--gold);font-family:var(--font-display);letter-spacing:1px;text-align:${i===0?'left':'center'};white-space:nowrap;${(i===10||i===20||i===21)?'background:rgba(240,192,64,0.15);':''}`;
-    hrow.appendChild(th);
-  });
-  thead.appendChild(hrow);
-
-  // Par row
-  const parRow = document.createElement('tr');
-  parRow.style.background = 'var(--navy-mid)';
-  const parCells = ['Par',...state.pars.slice(0,9),
-    state.pars.slice(0,9).reduce((a,b)=>a+b,0),
-    ...state.pars.slice(9),
-    state.pars.slice(9).reduce((a,b)=>a+b,0),
-    state.pars.reduce((a,b)=>a+b,0)];
-  parCells.forEach((v,i) => {
-    const td = document.createElement('td');
-    td.textContent = v;
-    td.style.cssText = `padding:4px ${i===0?'10px':'4px'};color:var(--muted);text-align:${i===0?'left':'center'};font-size:0.72rem;${(i===10||i===20||i===21)?'background:rgba(240,192,64,0.08);':''}`;
-    parRow.appendChild(td);
-  });
-  thead.appendChild(parRow);
-  table.appendChild(thead);
-
-  // Player rows
-  const tbody = document.createElement('tbody');
-  state.players.forEach((p, pi) => {
-    const tr = document.createElement('tr');
-    tr.style.background = pi % 2 === 0 ? 'var(--white)' : '#f8fafc';
-
-    // Name cell
-    const nameTd = document.createElement('td');
-    nameTd.textContent = p.name;
-    nameTd.style.cssText = `padding:6px 10px;font-weight:700;color:${COLORS[pi]};white-space:nowrap;`;
-    tr.appendChild(nameTd);
-
-    // Score cells for holes 1-9
-    for (let h = 0; h < 9; h++) {
-      tr.appendChild(makeReviewScoreCell(pi, h));
-    }
-    // OUT
-    const outTd = document.createElement('td');
-    const front = p.scores.slice(0,9).reduce((a,s)=>a+(s||0),0);
-    outTd.textContent = front || '—';
-    outTd.style.cssText = 'padding:6px 4px;text-align:center;font-weight:700;background:rgba(240,192,64,0.08);';
-    tr.appendChild(outTd);
-
-    // Score cells for holes 10-18
-    for (let h = 9; h < 18; h++) {
-      tr.appendChild(makeReviewScoreCell(pi, h));
-    }
-    // IN
-    const inTd = document.createElement('td');
-    const back = p.scores.slice(9).reduce((a,s)=>a+(s||0),0);
-    inTd.textContent = back || '—';
-    inTd.style.cssText = 'padding:6px 4px;text-align:center;font-weight:700;background:rgba(240,192,64,0.08);';
-    tr.appendChild(inTd);
-
-    // TOT
-    const totTd = document.createElement('td');
-    const tot = front + back;
-    totTd.textContent = tot || '—';
-    totTd.style.cssText = 'padding:6px 4px;text-align:center;font-weight:800;background:rgba(240,192,64,0.08);';
-    tr.appendChild(totTd);
-
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-  return table;
-}
-
-function makeReviewScoreCell(pi, h) {
-  const td = document.createElement('td');
-  const sc = state.players[pi].scores[h];
-  const par = state.pars[h];
-  const diff = sc !== null ? sc - par : null;
-  td.textContent = sc !== null ? sc : '—';
-  td.style.cssText = 'padding:5px 4px;text-align:center;cursor:pointer;border-radius:3px;transition:background .15s;';
-  if (sc !== null && diff !== null) {
-    if (diff <= -2) td.style.cssText += 'background:#fef08a;color:#854d0e;font-weight:700;';
-    else if (diff === -1) td.style.cssText += 'background:#bbf7d0;color:#166534;font-weight:700;';
-    else if (diff === 0) td.style.cssText += 'color:var(--navy);';
-    else if (diff === 1) td.style.cssText += 'color:var(--red);';
-    else td.style.cssText += 'color:var(--red);font-weight:700;';
-  } else {
-    td.style.cssText += 'color:var(--muted);';
-  }
-  td.onclick = () => openReviewEditModal(pi, h);
-  td.title = `Edit ${state.players[pi].name} hole ${h+1}`;
-  return td;
-}
-
-function openReviewEditModal(pi, h) {
-  // Remove any existing modal
-  const existing = document.getElementById('review-edit-modal');
-  if (existing) existing.remove();
-
-  const overlay = document.createElement('div');
-  overlay.id = 'review-edit-modal';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;';
-
-  const modal = document.createElement('div');
-  modal.style.cssText = 'background:var(--white);border-radius:var(--r-md);padding:24px 20px;width:100%;max-width:320px;box-shadow:0 20px 60px rgba(0,0,0,0.4);';
-
-  const curScore = state.players[pi].scores[h] ?? state.pars[h];
-  let tempScore = curScore;
-
-  modal.innerHTML = `
-    <div style="font-family:var(--font-display);font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Edit Score</div>
-    <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:800;color:var(--navy);margin-bottom:16px;">${state.players[pi].name} — Hole ${h+1} (Par ${state.pars[h]})</div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px;">
-      <button id="rev-minus" style="width:52px;height:52px;border-radius:50%;border:2px solid var(--border);background:var(--surface);font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>
-      <div id="rev-score-display" style="font-family:var(--font-display);font-size:2.5rem;font-weight:800;color:var(--navy);min-width:60px;text-align:center;">${tempScore}</div>
-      <button id="rev-plus" style="width:52px;height:52px;border-radius:50%;border:2px solid var(--border);background:var(--surface);font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
-    </div>
-    <div style="display:flex;gap:10px;">
-      <button id="rev-cancel" style="flex:1;padding:12px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:var(--font-display);font-size:0.85rem;letter-spacing:1px;cursor:pointer;">Cancel</button>
-      <button id="rev-save" style="flex:2;padding:12px;border:none;border-radius:var(--r);background:var(--navy);color:var(--gold);font-family:var(--font-display);font-size:0.85rem;font-weight:700;letter-spacing:1px;cursor:pointer;">Save Score</button>
-    </div>`;
-
-  overlay.appendChild(modal);
-  document.body.appendChild(overlay);
-
-  const display = document.getElementById('rev-score-display');
-  document.getElementById('rev-minus').onclick = () => { if (tempScore > 1) { tempScore--; display.textContent = tempScore; } };
-  document.getElementById('rev-plus').onclick  = () => { tempScore++; display.textContent = tempScore; };
-  document.getElementById('rev-cancel').onclick = () => overlay.remove();
-  document.getElementById('rev-save').onclick   = () => {
-    state.players[pi].scores[h] = tempScore;
-    overlay.remove();
-    renderResults(); // re-render everything live
-  };
-  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
-}
-
-function renderResultsMoney(content) {
-  const money = calcTotalMoney();
-  const totals = state.players.map((p,i) => ({
-    name: p.name, idx: i,
-    total: p.scores.reduce((a,s)=>a+(s||0),0),
-    money: money[i]
-  })).sort((a,b) => b.money - a.money);
-
-  const card = el('div','results-card');
-  const medals = ['🥇','🥈','🥉','4️⃣'];
-  totals.forEach((p,rank) => {
-    const row = el('div','results-row');
-    row.innerHTML = `<div class="rr-rank">${medals[rank]}</div><div class="rr-name" style="color:${COLORS[p.idx]}">${p.name}</div><div class="rr-score">${p.total > 0 ? p.total + ' strokes' : '–'}</div><div class="rr-money ${p.money>0?'pos':p.money<0?'neg':'zero'}" style="color:${p.money>0?'var(--green-win)':p.money<0?'var(--red)':'var(--muted)'}">${fmt(p.money)}</div>`;
-    card.appendChild(row);
-  });
-  content.appendChild(card);
-
-  if (state.games.length > 0) {
-    const breakdown = el('div'); breakdown.style.cssText = 'margin-top:16px;width:100%;';
-    const bTitle = el('div'); bTitle.style.cssText = 'font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;';
-    bTitle.textContent = 'Game Breakdown'; breakdown.appendChild(bTitle);
-    const icons = {skins:'🎰',rabbit:'🐇',wolf:'🐺',nassau:'🏆'};
-    const names = {skins:'Skins',rabbit:'Rabbit',wolf:'Wolf',nassau:'Nassau'};
-    state.games.forEach(g => {
-      let gMoney;
-      if (g==='skins') gMoney = calcSkinsMoney();
-      else if (g==='rabbit') gMoney = calcRabbitMoney();
-      else if (g==='wolf') gMoney = calcWolfMoney();
-      else if (g==='nassau') gMoney = calcNassauMoney().total;
-      const gCard = el('div'); gCard.style.cssText = 'background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow-sm);';
-      gCard.innerHTML = `<div style="font-family:var(--font-display);font-size:0.75rem;font-weight:700;letter-spacing:1px;color:var(--slate);margin-bottom:8px;">${icons[g]} ${names[g].toUpperCase()}</div>`;
-      const gGrid = el('div'); gGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:6px;';
-      state.players.forEach((p,i) => {
-        const amt = gMoney[i];
-        const cv = el('div'); cv.style.cssText = 'text-align:center;';
-        cv.innerHTML = `<div style="font-size:0.7rem;color:var(--muted);">${p.name}</div><div style="font-size:1rem;font-weight:700;color:${amt>0?'var(--green)':amt<0?'var(--red)':'var(--muted)'};">${fmt(amt)}</div>`;
-        gGrid.appendChild(cv);
-      });
-      gCard.appendChild(gGrid); breakdown.appendChild(gCard);
-    });
-    const totalCard = el('div'); totalCard.style.cssText = 'background:var(--navy-mid);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-md);padding:12px 14px;margin-bottom:8px;';
-    totalCard.innerHTML = `<div style="font-family:var(--font-display);font-size:0.75rem;font-weight:700;letter-spacing:1px;color:var(--gold);margin-bottom:8px;">💰 TOTAL</div>`;
-    const totalGrid = el('div'); totalGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:6px;';
-    state.players.forEach((p,i) => {
-      const amt = money[i]; const cv = el('div'); cv.style.cssText = 'text-align:center;';
-      cv.innerHTML = `<div style="font-size:0.7rem;color:var(--blue-soft);">${p.name}</div><div style="font-family:var(--font-display);font-size:1.3rem;font-weight:800;color:${amt>0?'#86efac':amt<0?'#fca5a5':'var(--blue-soft)'};">${fmt(amt)}</div>`;
-      totalGrid.appendChild(cv);
-    });
-    totalCard.appendChild(totalGrid); breakdown.appendChild(totalCard); content.appendChild(breakdown);
-  }
-}
-// ── UTILS ────────────────────────────────────────────────────────────
-function el(tag, cls) {
-  const e = document.createElement(tag);
-  if (cls) cls.split(' ').forEach(c => e.classList.add(c));
-  return e;
-}
-function fmt(n) {
-  if (n === 0) return '$0';
-  const abs = Math.abs(n).toFixed(2).replace(/\.00$/,'');
-  return (n > 0 ? '+$' : '-$') + abs;
-}
-
-// ── COURSE DATA ──────────────────────────────────────────────────────
-const COURSES = [
-  // ── COLUMBUS CITY (CRPD) ─────────────────────────────────────────
-  { id:'champions', name:'Champions Golf Course', location:'Columbus, OH', emoji:'🏆',
-    scorecardUrl:'https://crpdgolf.com/golf-courses/champions-golf-course/',
-    tees:[
-    { name:'Black', color:'#555',    par:70, yards:6536, rating:70.8, slope:125, holes:[{par:4,yds:392},{par:3,yds:150},{par:4,yds:400},{par:4,yds:365},{par:3,yds:150},{par:4,yds:410},{par:5,yds:530},{par:4,yds:358},{par:4,yds:410},{par:3,yds:217},{par:4,yds:440},{par:4,yds:394},{par:4,yds:407},{par:4,yds:411},{par:5,yds:524},{par:4,yds:399},{par:3,yds:189},{par:4,yds:390}]},
-    { name:'Blue',  color:'#1a4a9a', par:70, yards:6222, rating:69.6, slope:122, holes:[{par:4,yds:378},{par:3,yds:142},{par:4,yds:371},{par:4,yds:355},{par:3,yds:136},{par:4,yds:398},{par:5,yds:520},{par:4,yds:345},{par:4,yds:395},{par:3,yds:199},{par:4,yds:423},{par:4,yds:366},{par:4,yds:394},{par:4,yds:391},{par:5,yds:484},{par:4,yds:385},{par:3,yds:162},{par:4,yds:378}]},
-    { name:'White', color:'#888',    par:70, yards:5886, rating:67.9, slope:120, holes:[{par:4,yds:366},{par:3,yds:135},{par:4,yds:325},{par:4,yds:347},{par:3,yds:123},{par:4,yds:375},{par:5,yds:500},{par:4,yds:323},{par:4,yds:388},{par:3,yds:176},{par:4,yds:401},{par:4,yds:348},{par:4,yds:365},{par:4,yds:370},{par:5,yds:460},{par:4,yds:375},{par:3,yds:147},{par:4,yds:362}]},
-    { name:'Orange',color:'#e07820', par:72, yards:5046, rating:68.4, slope:117, holes:[{par:4,yds:296},{par:3,yds:129},{par:4,yds:257},{par:4,yds:306},{par:3,yds:110},{par:4,yds:300},{par:5,yds:435},{par:4,yds:260},{par:4,yds:375},{par:3,yds:112},{par:4,yds:380},{par:4,yds:285},{par:4,yds:300},{par:4,yds:310},{par:5,yds:401},{par:4,yds:315},{par:3,yds:140},{par:4,yds:335}]},
-    { name:'Purple',color:'#7c3aed', par:72, yards:2200, rating:48.0, slope:90,  holes:[{par:4,yds:150},{par:3,yds:80},{par:4,yds:150},{par:4,yds:140},{par:3,yds:35},{par:4,yds:150},{par:5,yds:200},{par:4,yds:100},{par:5,yds:150},{par:3,yds:70},{par:5,yds:130},{par:4,yds:105},{par:4,yds:130},{par:4,yds:140},{par:5,yds:200},{par:4,yds:100},{par:3,yds:55},{par:4,yds:115}]}
-  ]},
-  { id:'raymond', name:'Raymond Memorial GC', location:'Columbus, OH', emoji:'🌳',
-    scorecardUrl:'https://crpdgolf.com/golf-courses/raymond-memorial/',
-    tees:[
-    { name:'Blue',   color:'#1a4a9a', par:72, yards:6864, rating:72.8, slope:121, holes:[{par:5,yds:489},{par:4,yds:433},{par:4,yds:416},{par:4,yds:359},{par:3,yds:175},{par:5,yds:460},{par:4,yds:447},{par:3,yds:187},{par:4,yds:401},{par:4,yds:420},{par:5,yds:496},{par:4,yds:420},{par:3,yds:216},{par:4,yds:438},{par:4,yds:362},{par:5,yds:552},{par:3,yds:198},{par:4,yds:395}]},
-    { name:'White',  color:'#888',    par:72, yards:6452, rating:70.9, slope:117, holes:[{par:5,yds:481},{par:4,yds:407},{par:4,yds:390},{par:4,yds:332},{par:3,yds:162},{par:5,yds:431},{par:4,yds:422},{par:3,yds:174},{par:4,yds:378},{par:4,yds:405},{par:5,yds:462},{par:4,yds:400},{par:3,yds:196},{par:4,yds:407},{par:4,yds:329},{par:5,yds:523},{par:3,yds:173},{par:4,yds:380}]},
-    { name:'Gold',   color:'#d4a017', par:72, yards:5990, rating:68.8, slope:112, holes:[{par:5,yds:474},{par:4,yds:378},{par:4,yds:365},{par:4,yds:312},{par:3,yds:156},{par:5,yds:406},{par:4,yds:391},{par:3,yds:155},{par:4,yds:305},{par:4,yds:385},{par:5,yds:434},{par:4,yds:380},{par:3,yds:155},{par:4,yds:377},{par:4,yds:312},{par:5,yds:482},{par:3,yds:159},{par:4,yds:364}]},
-    { name:'Orange', color:'#e07820', par:72, yards:5171, rating:65.0, slope:105, holes:[{par:5,yds:402},{par:4,yds:314},{par:4,yds:301},{par:4,yds:299},{par:3,yds:152},{par:5,yds:395},{par:4,yds:289},{par:3,yds:107},{par:4,yds:266},{par:4,yds:285},{par:5,yds:420},{par:4,yds:325},{par:3,yds:135},{par:4,yds:272},{par:4,yds:306},{par:5,yds:468},{par:3,yds:148},{par:4,yds:287}]},
-    { name:'Purple', color:'#7c3aed', par:72, yards:3400, rating:59.0, slope:92,  holes:[{par:5,yds:250},{par:4,yds:200},{par:4,yds:200},{par:4,yds:200},{par:3,yds:100},{par:5,yds:250},{par:4,yds:200},{par:3,yds:100},{par:4,yds:200},{par:4,yds:200},{par:5,yds:250},{par:4,yds:200},{par:3,yds:100},{par:4,yds:200},{par:4,yds:200},{par:5,yds:250},{par:3,yds:100},{par:4,yds:200}]}
-  ]},
-  { id:'airport', name:'Airport Golf Course', location:'Columbus, OH', emoji:'✈️',
-    scorecardUrl:'https://crpdgolf.com/golf-courses/airport-golf-course/',
-    tees:[
-    { name:'Black', color:'#555',    par:72, yards:6318, rating:68.7, slope:113, holes:[{par:5,yds:447},{par:4,yds:353},{par:3,yds:161},{par:4,yds:371},{par:4,yds:394},{par:5,yds:558},{par:4,yds:305},{par:3,yds:205},{par:4,yds:410},{par:5,yds:454},{par:4,yds:352},{par:3,yds:144},{par:4,yds:389},{par:4,yds:360},{par:5,yds:522},{par:4,yds:391},{par:3,yds:127},{par:4,yds:375}]},
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6026, rating:67.4, slope:110, holes:[{par:5,yds:412},{par:4,yds:339},{par:3,yds:147},{par:4,yds:357},{par:4,yds:381},{par:5,yds:538},{par:4,yds:298},{par:3,yds:193},{par:4,yds:390},{par:5,yds:440},{par:4,yds:340},{par:3,yds:133},{par:4,yds:375},{par:4,yds:345},{par:5,yds:508},{par:4,yds:376},{par:3,yds:114},{par:4,yds:340}]},
-    { name:'White', color:'#888',    par:72, yards:5626, rating:65.4, slope:105, holes:[{par:5,yds:403},{par:4,yds:319},{par:3,yds:121},{par:4,yds:327},{par:4,yds:339},{par:5,yds:515},{par:4,yds:286},{par:3,yds:173},{par:4,yds:367},{par:5,yds:412},{par:4,yds:322},{par:3,yds:118},{par:4,yds:349},{par:4,yds:326},{par:5,yds:476},{par:4,yds:347},{par:3,yds:99},{par:4,yds:327}]},
-    { name:'Orange',color:'#e07820', par:72, yards:4817, rating:61.8, slope:98,  holes:[{par:5,yds:299},{par:4,yds:271},{par:3,yds:87},{par:4,yds:289},{par:4,yds:305},{par:5,yds:470},{par:4,yds:248},{par:3,yds:145},{par:4,yds:326},{par:5,yds:365},{par:4,yds:268},{par:3,yds:90},{par:4,yds:276},{par:4,yds:287},{par:5,yds:424},{par:4,yds:309},{par:3,yds:67},{par:4,yds:291}]},
-    { name:'Purple',color:'#7c3aed', par:72, yards:2689, rating:50.0, slope:80,  holes:[{par:5,yds:200},{par:4,yds:150},{par:3,yds:87},{par:4,yds:150},{par:4,yds:150},{par:5,yds:200},{par:4,yds:150},{par:3,yds:145},{par:4,yds:150},{par:5,yds:200},{par:4,yds:150},{par:3,yds:90},{par:4,yds:150},{par:4,yds:150},{par:5,yds:200},{par:4,yds:150},{par:3,yds:67},{par:4,yds:150}]}
-  ]},
-  { id:'mentel', name:'Mentel Memorial GC', location:'Galloway, OH', emoji:'🌿',
-    scorecardUrl:'https://crpdgolf.com/golf-courses/mentel-memorial/',
-    tees:[
-    { name:'Black', color:'#555',    par:72, yards:7014, rating:72.4, slope:126, holes:[{par:4,yds:401},{par:5,yds:530},{par:5,yds:562},{par:4,yds:393},{par:3,yds:228},{par:4,yds:430},{par:4,yds:423},{par:3,yds:208},{par:4,yds:435},{par:4,yds:432},{par:5,yds:547},{par:3,yds:181},{par:5,yds:526},{par:4,yds:381},{par:4,yds:386},{par:3,yds:186},{par:4,yds:395},{par:4,yds:370}]},
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6602, rating:70.5, slope:122, holes:[{par:4,yds:379},{par:5,yds:510},{par:5,yds:540},{par:4,yds:373},{par:3,yds:208},{par:4,yds:400},{par:4,yds:393},{par:3,yds:189},{par:4,yds:418},{par:4,yds:402},{par:5,yds:522},{par:3,yds:161},{par:5,yds:490},{par:4,yds:351},{par:4,yds:366},{par:3,yds:170},{par:4,yds:380},{par:4,yds:350}]},
-    { name:'White', color:'#888',    par:72, yards:6224, rating:68.7, slope:117, holes:[{par:4,yds:361},{par:5,yds:492},{par:5,yds:513},{par:4,yds:356},{par:3,yds:192},{par:4,yds:379},{par:4,yds:376},{par:3,yds:139},{par:4,yds:401},{par:4,yds:379},{par:5,yds:500},{par:3,yds:144},{par:5,yds:467},{par:4,yds:333},{par:4,yds:343},{par:3,yds:159},{par:4,yds:356},{par:4,yds:334}]},
-    { name:'Orange',color:'#e07820', par:72, yards:5600, rating:65.3, slope:108, holes:[{par:4,yds:320},{par:5,yds:445},{par:5,yds:455},{par:4,yds:315},{par:3,yds:155},{par:4,yds:335},{par:4,yds:335},{par:3,yds:115},{par:4,yds:358},{par:4,yds:340},{par:5,yds:450},{par:3,yds:115},{par:5,yds:415},{par:4,yds:295},{par:4,yds:305},{par:3,yds:128},{par:4,yds:335},{par:4,yds:305}]},
-    { name:'Purple',color:'#7c3aed', par:72, yards:4200, rating:59.8, slope:87,  holes:[{par:4,yds:255},{par:5,yds:365},{par:5,yds:380},{par:4,yds:255},{par:3,yds:115},{par:4,yds:265},{par:4,yds:265},{par:3,yds:95},{par:4,yds:280},{par:4,yds:265},{par:5,yds:365},{par:3,yds:95},{par:5,yds:330},{par:4,yds:230},{par:4,yds:240},{par:3,yds:100},{par:4,yds:260},{par:4,yds:240}]}
-  ]},
-  { id:'turnberry', name:'Turnberry Golf Course', location:'Pickerington, OH', emoji:'🏰',
-    scorecardUrl:'https://crpdgolf.com/golf-courses/turnberry-golf-course/',
-    tees:[
-    { name:'Black', color:'#555',    par:72, yards:6775, rating:72.4, slope:128, holes:[{par:5,yds:525},{par:4,yds:362},{par:3,yds:159},{par:4,yds:337},{par:5,yds:508},{par:4,yds:392},{par:3,yds:182},{par:4,yds:375},{par:4,yds:441},{par:4,yds:385},{par:4,yds:413},{par:5,yds:510},{par:3,yds:207},{par:4,yds:413},{par:4,yds:451},{par:3,yds:215},{par:4,yds:384},{par:5,yds:516}]},
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6161, rating:69.9, slope:124, holes:[{par:5,yds:500},{par:4,yds:337},{par:3,yds:136},{par:4,yds:303},{par:5,yds:481},{par:4,yds:354},{par:3,yds:148},{par:4,yds:321},{par:4,yds:425},{par:4,yds:348},{par:4,yds:354},{par:5,yds:483},{par:3,yds:172},{par:4,yds:370},{par:4,yds:416},{par:3,yds:186},{par:4,yds:351},{par:5,yds:476}]},
-    { name:'White', color:'#888',    par:72, yards:5868, rating:68.4, slope:121, holes:[{par:5,yds:485},{par:4,yds:325},{par:3,yds:125},{par:4,yds:291},{par:5,yds:475},{par:4,yds:337},{par:3,yds:134},{par:4,yds:300},{par:4,yds:410},{par:4,yds:325},{par:4,yds:325},{par:5,yds:469},{par:3,yds:160},{par:4,yds:358},{par:4,yds:385},{par:3,yds:170},{par:4,yds:339},{par:5,yds:455}]},
-    { name:'Orange',color:'#e07820', par:72, yards:5440, rating:66.5, slope:115, holes:[{par:5,yds:477},{par:4,yds:314},{par:3,yds:112},{par:4,yds:271},{par:5,yds:455},{par:4,yds:317},{par:3,yds:114},{par:4,yds:273},{par:4,yds:401},{par:4,yds:295},{par:4,yds:295},{par:5,yds:459},{par:3,yds:139},{par:4,yds:338},{par:4,yds:365},{par:3,yds:160},{par:4,yds:254},{par:5,yds:401}]},
-    { name:'Purple',color:'#7c3aed', par:73, yards:3812, rating:62.0, slope:102, holes:[{par:5,yds:340},{par:4,yds:225},{par:3,yds:110},{par:4,yds:172},{par:5,yds:320},{par:4,yds:205},{par:3,yds:110},{par:4,yds:162},{par:4,yds:270},{par:4,yds:205},{par:4,yds:200},{par:5,yds:330},{par:3,yds:130},{par:4,yds:210},{par:4,yds:250},{par:3,yds:53},{par:4,yds:210},{par:5,yds:310}]}
-  ]},
-  // ── DUBLIN / AREA ─────────────────────────────────────────────────
-  { id:'dublin', name:'Golf Club of Dublin', location:'Dublin, OH', emoji:'🍀',
-    scorecardUrl:'https://www.golfclubofdublin.com/scorecard/',
-    tees:[
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6928, rating:72.9, slope:135, holes:[{par:4,yds:408},{par:3,yds:175},{par:4,yds:418},{par:4,yds:417},{par:5,yds:500},{par:5,yds:534},{par:4,yds:320},{par:3,yds:193},{par:4,yds:436},{par:5,yds:556},{par:4,yds:474},{par:4,yds:335},{par:5,yds:568},{par:3,yds:163},{par:4,yds:412},{par:4,yds:385},{par:3,yds:230},{par:4,yds:404}]},
-    { name:'Green', color:'#2d7a4f', par:72, yards:6364, rating:70.0, slope:130, holes:[{par:4,yds:374},{par:3,yds:149},{par:4,yds:377},{par:4,yds:370},{par:5,yds:455},{par:5,yds:502},{par:4,yds:310},{par:3,yds:168},{par:4,yds:400},{par:5,yds:527},{par:4,yds:440},{par:4,yds:312},{par:5,yds:521},{par:3,yds:145},{par:4,yds:377},{par:4,yds:371},{par:3,yds:191},{par:4,yds:375}]},
-    { name:'White', color:'#888',    par:72, yards:5992, rating:68.4, slope:127, holes:[{par:4,yds:354},{par:3,yds:129},{par:4,yds:364},{par:4,yds:348},{par:5,yds:435},{par:5,yds:483},{par:4,yds:287},{par:3,yds:152},{par:4,yds:380},{par:5,yds:506},{par:4,yds:392},{par:4,yds:294},{par:5,yds:494},{par:3,yds:130},{par:4,yds:357},{par:4,yds:357},{par:3,yds:175},{par:4,yds:355}]},
-    { name:'Gold',  color:'#d4a017', par:72, yards:5277, rating:64.9, slope:112, holes:[{par:4,yds:295},{par:3,yds:115},{par:4,yds:315},{par:4,yds:340},{par:5,yds:400},{par:5,yds:430},{par:4,yds:268},{par:3,yds:135},{par:4,yds:327},{par:5,yds:430},{par:4,yds:330},{par:4,yds:280},{par:5,yds:420},{par:3,yds:110},{par:4,yds:274},{par:4,yds:332},{par:3,yds:150},{par:4,yds:326}]},
-    { name:'Red',   color:'#c00',    par:72, yards:4706, rating:62.4, slope:108, holes:[{par:4,yds:279},{par:3,yds:105},{par:4,yds:305},{par:4,yds:291},{par:5,yds:348},{par:5,yds:421},{par:4,yds:258},{par:3,yds:127},{par:4,yds:255},{par:5,yds:410},{par:4,yds:280},{par:4,yds:229},{par:5,yds:345},{par:3,yds:84},{par:4,yds:266},{par:4,yds:266},{par:3,yds:135},{par:4,yds:302}]}
-  ]},
-  { id:'safari', name:'Safari Golf Club', location:'Powell, OH', emoji:'🦒',
-    scorecardUrl:'https://www.safarigc.com/',
-    tees:[
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6845, rating:72.2, slope:121, holes:[{par:4,yds:391},{par:5,yds:518},{par:4,yds:358},{par:4,yds:379},{par:4,yds:386},{par:4,yds:345},{par:4,yds:424},{par:3,yds:194},{par:4,yds:369},{par:4,yds:446},{par:3,yds:194},{par:4,yds:467},{par:5,yds:522},{par:4,yds:391},{par:5,yds:520},{par:3,yds:148},{par:4,yds:373},{par:4,yds:420}]},
-    { name:'White', color:'#888',    par:72, yards:6144, rating:68.8, slope:114, holes:[{par:4,yds:352},{par:5,yds:468},{par:4,yds:325},{par:4,yds:344},{par:4,yds:352},{par:4,yds:312},{par:4,yds:388},{par:3,yds:170},{par:4,yds:335},{par:4,yds:405},{par:3,yds:170},{par:4,yds:425},{par:5,yds:475},{par:4,yds:355},{par:5,yds:474},{par:3,yds:128},{par:4,yds:339},{par:4,yds:380}]},
-    { name:'Gold',  color:'#d4a017', par:72, yards:5626, rating:66.2, slope:108, holes:[{par:4,yds:319},{par:5,yds:430},{par:4,yds:291},{par:4,yds:308},{par:4,yds:315},{par:4,yds:278},{par:4,yds:350},{par:3,yds:145},{par:4,yds:300},{par:4,yds:360},{par:3,yds:145},{par:4,yds:380},{par:5,yds:430},{par:4,yds:318},{par:5,yds:430},{par:3,yds:108},{par:4,yds:302},{par:4,yds:342}]},
-    { name:'Red',   color:'#c00',    par:72, yards:4861, rating:67.1, slope:115, holes:[{par:4,yds:270},{par:5,yds:370},{par:4,yds:245},{par:4,yds:265},{par:4,yds:272},{par:4,yds:238},{par:4,yds:302},{par:3,yds:118},{par:4,yds:258},{par:4,yds:310},{par:3,yds:118},{par:4,yds:340},{par:5,yds:370},{par:4,yds:272},{par:5,yds:370},{par:3,yds:88},{par:4,yds:260},{par:4,yds:295}]}
-  ]},
-  { id:'darby', name:'Darby Creek Golf Course', location:'Marysville, OH', emoji:'🌊',
-    scorecardUrl:'https://www.darbycreekgolf.com/',
-    tees:[
-    { name:'Black', color:'#555',    par:72, yards:7074, rating:74.1, slope:136, holes:[{par:4,yds:369},{par:4,yds:423},{par:3,yds:189},{par:5,yds:558},{par:4,yds:359},{par:5,yds:520},{par:3,yds:172},{par:4,yds:434},{par:4,yds:460},{par:4,yds:335},{par:3,yds:194},{par:4,yds:426},{par:4,yds:462},{par:5,yds:502},{par:4,yds:436},{par:3,yds:211},{par:5,yds:549},{par:4,yds:475}]},
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6661, rating:72.2, slope:133, holes:[{par:4,yds:347},{par:4,yds:398},{par:3,yds:170},{par:5,yds:530},{par:4,yds:340},{par:5,yds:493},{par:3,yds:160},{par:4,yds:412},{par:4,yds:436},{par:4,yds:315},{par:3,yds:180},{par:4,yds:404},{par:4,yds:440},{par:5,yds:477},{par:4,yds:413},{par:3,yds:196},{par:5,yds:520},{par:4,yds:450}]},
-    { name:'White', color:'#888',    par:72, yards:6176, rating:69.9, slope:124, holes:[{par:4,yds:320},{par:4,yds:368},{par:3,yds:153},{par:5,yds:490},{par:4,yds:314},{par:5,yds:459},{par:3,yds:144},{par:4,yds:383},{par:4,yds:405},{par:4,yds:292},{par:3,yds:163},{par:4,yds:375},{par:4,yds:408},{par:5,yds:442},{par:4,yds:384},{par:3,yds:178},{par:5,yds:483},{par:4,yds:420}]},
-    { name:'Gold',  color:'#d4a017', par:72, yards:5466, rating:66.6, slope:118, holes:[{par:4,yds:280},{par:4,yds:320},{par:3,yds:128},{par:5,yds:430},{par:4,yds:272},{par:5,yds:400},{par:3,yds:120},{par:4,yds:336},{par:4,yds:358},{par:4,yds:252},{par:3,yds:138},{par:4,yds:330},{par:4,yds:360},{par:5,yds:388},{par:4,yds:340},{par:3,yds:152},{par:5,yds:425},{par:4,yds:377}]},
-    { name:'Red',   color:'#c00',    par:72, yards:5200, rating:65.5, slope:115, holes:[{par:4,yds:255},{par:4,yds:293},{par:3,yds:112},{par:5,yds:395},{par:4,yds:248},{par:5,yds:368},{par:3,yds:108},{par:4,yds:305},{par:4,yds:328},{par:4,yds:228},{par:3,yds:120},{par:4,yds:300},{par:4,yds:330},{par:5,yds:358},{par:4,yds:310},{par:3,yds:138},{par:5,yds:390},{par:4,yds:348}]}
-  ]},
-  { id:'westchester', name:'Westchester Golf Course', location:'Canal Winchester, OH', emoji:'🏡',
-    scorecardUrl:'https://westchestergolfcourse.com/',
-    tees:[
-    { name:'Black', color:'#555',    par:72, yards:7120, rating:73.8, slope:140, holes:[{par:5,yds:534},{par:3,yds:229},{par:4,yds:402},{par:4,yds:405},{par:5,yds:528},{par:4,yds:433},{par:3,yds:156},{par:4,yds:371},{par:4,yds:380},{par:4,yds:401},{par:5,yds:556},{par:3,yds:202},{par:4,yds:387},{par:5,yds:592},{par:4,yds:380},{par:4,yds:489},{par:3,yds:213},{par:4,yds:462}]},
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6754, rating:72.0, slope:134, holes:[{par:5,yds:510},{par:3,yds:208},{par:4,yds:382},{par:4,yds:385},{par:5,yds:505},{par:4,yds:412},{par:3,yds:142},{par:4,yds:355},{par:4,yds:355},{par:4,yds:382},{par:5,yds:530},{par:3,yds:185},{par:4,yds:368},{par:5,yds:565},{par:4,yds:360},{par:4,yds:465},{par:3,yds:195},{par:4,yds:440}]},
-    { name:'White', color:'#888',    par:72, yards:6320, rating:70.1, slope:130, holes:[{par:5,yds:480},{par:3,yds:188},{par:4,yds:360},{par:4,yds:362},{par:5,yds:478},{par:4,yds:390},{par:3,yds:128},{par:4,yds:332},{par:4,yds:330},{par:4,yds:358},{par:5,yds:502},{par:3,yds:165},{par:4,yds:348},{par:5,yds:535},{par:4,yds:338},{par:4,yds:438},{par:3,yds:178},{par:4,yds:418}]},
-    { name:'Green', color:'#2d7a4f', par:72, yards:5625, rating:70.6, slope:121, holes:[{par:5,yds:430},{par:3,yds:155},{par:4,yds:312},{par:4,yds:315},{par:5,yds:425},{par:4,yds:342},{par:3,yds:108},{par:4,yds:288},{par:4,yds:290},{par:4,yds:315},{par:5,yds:448},{par:3,yds:138},{par:4,yds:302},{par:5,yds:475},{par:4,yds:292},{par:4,yds:388},{par:3,yds:148},{par:4,yds:360}]},
-    { name:'Gold',  color:'#d4a017', par:72, yards:5163, rating:60.2, slope:104, holes:[{par:5,yds:390},{par:3,yds:130},{par:4,yds:278},{par:4,yds:282},{par:5,yds:380},{par:4,yds:305},{par:3,yds:90},{par:4,yds:255},{par:4,yds:258},{par:4,yds:280},{par:5,yds:400},{par:3,yds:118},{par:4,yds:268},{par:5,yds:425},{par:4,yds:258},{par:4,yds:348},{par:3,yds:122},{par:4,yds:326}]},
-    { name:'Orange',color:'#e07820', par:72, yards:3816, rating:60.2, slope:104, holes:[{par:5,yds:280},{par:3,yds:95},{par:4,yds:198},{par:4,yds:202},{par:5,yds:275},{par:4,yds:218},{par:3,yds:62},{par:4,yds:182},{par:4,yds:183},{par:4,yds:200},{par:5,yds:285},{par:3,yds:82},{par:4,yds:188},{par:5,yds:302},{par:4,yds:180},{par:4,yds:245},{par:3,yds:85},{par:4,yds:230}]}
-  ]},
-  { id:'york', name:'York Golf Club', location:'Columbus, OH', emoji:'🦌',
-    scorecardUrl:'https://www.yorkgc.com/',
-    tees:[
-    { name:'Black', color:'#555',    par:71, yards:6536, rating:71.7, slope:123, holes:[{par:4,yds:335},{par:4,yds:435},{par:3,yds:225},{par:4,yds:460},{par:5,yds:570},{par:5,yds:575},{par:3,yds:142},{par:4,yds:432},{par:4,yds:335},{par:4,yds:450},{par:3,yds:177},{par:5,yds:525},{par:3,yds:190},{par:5,yds:495},{par:4,yds:380},{par:3,yds:160},{par:4,yds:290},{par:4,yds:360}]},
-    { name:'Blue',  color:'#1a4a9a', par:71, yards:6114, rating:69.4, slope:124, holes:[{par:4,yds:313},{par:4,yds:410},{par:3,yds:204},{par:4,yds:434},{par:5,yds:540},{par:5,yds:548},{par:3,yds:131},{par:4,yds:406},{par:4,yds:317},{par:4,yds:424},{par:3,yds:163},{par:5,yds:497},{par:3,yds:178},{par:5,yds:468},{par:4,yds:356},{par:3,yds:148},{par:4,yds:266},{par:4,yds:338}]},
-    { name:'Green', color:'#2d7a4f', par:71, yards:5697, rating:67.7, slope:118, holes:[{par:4,yds:291},{par:4,yds:385},{par:3,yds:187},{par:4,yds:406},{par:5,yds:505},{par:5,yds:518},{par:3,yds:119},{par:4,yds:380},{par:4,yds:297},{par:4,yds:397},{par:3,yds:149},{par:5,yds:465},{par:3,yds:163},{par:5,yds:434},{par:4,yds:332},{par:3,yds:134},{par:4,yds:245},{par:4,yds:316}]},
-    { name:'Gold',  color:'#d4a017', par:71, yards:5307, rating:66.2, slope:114, holes:[{par:4,yds:274},{par:4,yds:360},{par:3,yds:172},{par:4,yds:378},{par:5,yds:470},{par:5,yds:490},{par:3,yds:108},{par:4,yds:353},{par:4,yds:278},{par:4,yds:370},{par:3,yds:136},{par:5,yds:432},{par:3,yds:148},{par:5,yds:403},{par:4,yds:308},{par:3,yds:120},{par:4,yds:225},{par:4,yds:280}]},
-    { name:'Silver',color:'#999',    par:71, yards:4621, rating:63.1, slope:110, holes:[{par:4,yds:236},{par:4,yds:315},{par:3,yds:148},{par:4,yds:330},{par:5,yds:410},{par:5,yds:430},{par:3,yds:90},{par:4,yds:308},{par:4,yds:242},{par:4,yds:322},{par:3,yds:115},{par:5,yds:375},{par:3,yds:125},{par:5,yds:352},{par:4,yds:265},{par:3,yds:102},{par:4,yds:193},{par:4,yds:245}]},
-    { name:'Teal',  color:'#0d9488', par:71, yards:3097, rating:59.0, slope:100, holes:[{par:4,yds:158},{par:4,yds:215},{par:3,yds:95},{par:4,yds:225},{par:5,yds:280},{par:5,yds:300},{par:3,yds:68},{par:4,yds:210},{par:4,yds:162},{par:4,yds:218},{par:3,yds:78},{par:5,yds:252},{par:3,yds:82},{par:5,yds:240},{par:4,yds:178},{par:3,yds:68},{par:4,yds:128},{par:4,yds:168}]}
-  ]},
-  // ── SPRINGFIELD AREA ─────────────────────────────────────────────
-  { id:'locust-maple', name:'Locust Hills – Maple', location:'Springfield, OH', emoji:'🍁',
-    scorecardUrl:'https://locusthillsgc.com/',
-    tees:[
-    { name:'Black', color:'#555',    par:72, yards:6596, rating:70.2, slope:112, holes:[{par:5,yds:542},{par:3,yds:190},{par:5,yds:474},{par:4,yds:293},{par:3,yds:124},{par:4,yds:389},{par:4,yds:393},{par:3,yds:192},{par:5,yds:508},{par:5,yds:546},{par:3,yds:176},{par:4,yds:389},{par:4,yds:391},{par:5,yds:602},{par:4,yds:397},{par:3,yds:168},{par:4,yds:407},{par:4,yds:415}]},
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6185, rating:68.4, slope:109, holes:[{par:5,yds:512},{par:3,yds:172},{par:5,yds:447},{par:4,yds:268},{par:3,yds:110},{par:4,yds:365},{par:4,yds:370},{par:3,yds:172},{par:5,yds:479},{par:5,yds:518},{par:3,yds:158},{par:4,yds:365},{par:4,yds:368},{par:5,yds:568},{par:4,yds:372},{par:3,yds:148},{par:4,yds:382},{par:4,yds:390}]},
-    { name:'Silver',color:'#999',    par:72, yards:5327, rating:64.5, slope:99,  holes:[{par:5,yds:440},{par:3,yds:142},{par:5,yds:385},{par:4,yds:225},{par:3,yds:88},{par:4,yds:312},{par:4,yds:318},{par:3,yds:138},{par:5,yds:410},{par:5,yds:445},{par:3,yds:128},{par:4,yds:312},{par:4,yds:315},{par:5,yds:488},{par:4,yds:318},{par:3,yds:118},{par:4,yds:325},{par:4,yds:336}]},
-    { name:'Gold',  color:'#d4a017', par:72, yards:4631, rating:61.7, slope:93,  holes:[{par:5,yds:380},{par:3,yds:110},{par:5,yds:328},{par:4,yds:190},{par:3,yds:68},{par:4,yds:268},{par:4,yds:272},{par:3,yds:110},{par:5,yds:355},{par:5,yds:385},{par:3,yds:102},{par:4,yds:268},{par:4,yds:270},{par:5,yds:420},{par:4,yds:272},{par:3,yds:95},{par:4,yds:278},{par:4,yds:288}]}
-  ]},
-  { id:'locust-locust', name:'Locust Hills – Locust', location:'Springfield, OH', emoji:'🌿',
-    scorecardUrl:'https://locusthillsgc.com/',
-    tees:[
-    { name:'Black', color:'#555',    par:72, yards:6596, rating:70.2, slope:112, holes:[{par:5,yds:542},{par:3,yds:190},{par:5,yds:474},{par:4,yds:293},{par:3,yds:124},{par:4,yds:389},{par:4,yds:393},{par:3,yds:192},{par:5,yds:508},{par:5,yds:546},{par:3,yds:176},{par:4,yds:389},{par:4,yds:391},{par:5,yds:602},{par:4,yds:397},{par:3,yds:168},{par:4,yds:407},{par:4,yds:415}]},
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6185, rating:68.4, slope:109, holes:[{par:5,yds:512},{par:3,yds:172},{par:5,yds:447},{par:4,yds:268},{par:3,yds:110},{par:4,yds:365},{par:4,yds:370},{par:3,yds:172},{par:5,yds:479},{par:5,yds:518},{par:3,yds:158},{par:4,yds:365},{par:4,yds:368},{par:5,yds:568},{par:4,yds:372},{par:3,yds:148},{par:4,yds:382},{par:4,yds:390}]},
-    { name:'Silver',color:'#999',    par:72, yards:5327, rating:64.5, slope:99,  holes:[{par:5,yds:440},{par:3,yds:142},{par:5,yds:385},{par:4,yds:225},{par:3,yds:88},{par:4,yds:312},{par:4,yds:318},{par:3,yds:138},{par:5,yds:410},{par:5,yds:445},{par:3,yds:128},{par:4,yds:312},{par:4,yds:315},{par:5,yds:488},{par:4,yds:318},{par:3,yds:118},{par:4,yds:325},{par:4,yds:336}]},
-    { name:'Gold',  color:'#d4a017', par:72, yards:4631, rating:61.7, slope:93,  holes:[{par:5,yds:380},{par:3,yds:110},{par:5,yds:328},{par:4,yds:190},{par:3,yds:68},{par:4,yds:268},{par:4,yds:272},{par:3,yds:110},{par:5,yds:355},{par:5,yds:385},{par:3,yds:102},{par:4,yds:268},{par:4,yds:270},{par:5,yds:420},{par:4,yds:272},{par:3,yds:95},{par:4,yds:278},{par:4,yds:288}]}
-  ]},
-  { id:'reid-north', name:'Reid Park – North', location:'Springfield, OH', emoji:'🌲',
-    scorecardUrl:'https://www.golfreidpark.com/',
-    tees:[
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6772, rating:72.7, slope:136, holes:[{par:4,yds:394},{par:4,yds:398},{par:5,yds:539},{par:3,yds:201},{par:4,yds:402},{par:5,yds:600},{par:4,yds:363},{par:3,yds:193},{par:4,yds:376},{par:5,yds:509},{par:4,yds:357},{par:4,yds:420},{par:4,yds:434},{par:3,yds:178},{par:5,yds:511},{par:4,yds:374},{par:3,yds:172},{par:4,yds:351}]},
-    { name:'White', color:'#888',    par:72, yards:6263, rating:70.3, slope:129, holes:[{par:4,yds:360},{par:4,yds:365},{par:5,yds:498},{par:3,yds:178},{par:4,yds:370},{par:5,yds:548},{par:4,yds:332},{par:3,yds:172},{par:4,yds:342},{par:5,yds:468},{par:4,yds:328},{par:4,yds:385},{par:4,yds:398},{par:3,yds:158},{par:5,yds:472},{par:4,yds:342},{par:3,yds:152},{par:4,yds:318}]},
-    { name:'Red',   color:'#c00',    par:72, yards:5128, rating:68.3, slope:117, holes:[{par:4,yds:295},{par:4,yds:298},{par:5,yds:415},{par:3,yds:142},{par:4,yds:302},{par:5,yds:448},{par:4,yds:270},{par:3,yds:138},{par:4,yds:278},{par:5,yds:382},{par:4,yds:268},{par:4,yds:315},{par:4,yds:325},{par:3,yds:128},{par:5,yds:385},{par:4,yds:278},{par:3,yds:122},{par:4,yds:258}]}
-  ]},
-  { id:'reid-south', name:'Reid Park – South', location:'Springfield, OH', emoji:'☀️',
-    scorecardUrl:'https://www.golfreidpark.com/',
-    tees:[
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6422, rating:69.0, slope:110, holes:[{par:4,yds:368},{par:4,yds:352},{par:5,yds:498},{par:3,yds:172},{par:4,yds:378},{par:5,yds:520},{par:4,yds:345},{par:3,yds:168},{par:4,yds:355},{par:4,yds:362},{par:3,yds:158},{par:5,yds:498},{par:4,yds:348},{par:4,yds:368},{par:3,yds:152},{par:5,yds:510},{par:4,yds:355},{par:4,yds:315}]},
-    { name:'White', color:'#888',    par:72, yards:5900, rating:67.0, slope:105, holes:[{par:4,yds:338},{par:4,yds:322},{par:5,yds:462},{par:3,yds:152},{par:4,yds:348},{par:5,yds:482},{par:4,yds:318},{par:3,yds:148},{par:4,yds:328},{par:4,yds:332},{par:3,yds:138},{par:5,yds:462},{par:4,yds:318},{par:4,yds:338},{par:3,yds:135},{par:5,yds:472},{par:4,yds:325},{par:4,yds:285}]},
-    { name:'Red',   color:'#c00',    par:72, yards:4950, rating:64.0, slope:100, holes:[{par:4,yds:278},{par:4,yds:262},{par:5,yds:385},{par:3,yds:122},{par:4,yds:288},{par:5,yds:398},{par:4,yds:258},{par:3,yds:118},{par:4,yds:268},{par:4,yds:272},{par:3,yds:112},{par:5,yds:382},{par:4,yds:258},{par:4,yds:275},{par:3,yds:108},{par:5,yds:388},{par:4,yds:262},{par:4,yds:228}]}
-  ]},
-  { id:'national-gl', name:'National Golf Links', location:'S. Charleston, OH', emoji:'🏴',
-    scorecardUrl:'https://nationalgolflinks.org/',
-    tees:[
-    { name:'Black', color:'#555',    par:72, yards:7200, rating:74.2, slope:138, holes:[{par:4,yds:428},{par:4,yds:412},{par:5,yds:558},{par:3,yds:215},{par:4,yds:438},{par:4,yds:405},{par:5,yds:575},{par:3,yds:205},{par:4,yds:442},{par:4,yds:418},{par:3,yds:195},{par:5,yds:562},{par:4,yds:422},{par:4,yds:415},{par:3,yds:188},{par:5,yds:548},{par:4,yds:408},{par:4,yds:366}]},
-    { name:'Blue',  color:'#1a4a9a', par:72, yards:6600, rating:71.5, slope:130, holes:[{par:4,yds:392},{par:4,yds:378},{par:5,yds:518},{par:3,yds:192},{par:4,yds:402},{par:4,yds:372},{par:5,yds:535},{par:3,yds:182},{par:4,yds:408},{par:4,yds:382},{par:3,yds:175},{par:5,yds:520},{par:4,yds:388},{par:4,yds:380},{par:3,yds:165},{par:5,yds:510},{par:4,yds:372},{par:4,yds:328}]},
-    { name:'White', color:'#888',    par:72, yards:6000, rating:68.5, slope:122, holes:[{par:4,yds:355},{par:4,yds:342},{par:5,yds:468},{par:3,yds:168},{par:4,yds:365},{par:4,yds:338},{par:5,yds:488},{par:3,yds:162},{par:4,yds:372},{par:4,yds:348},{par:3,yds:155},{par:5,yds:472},{par:4,yds:352},{par:4,yds:345},{par:3,yds:148},{par:5,yds:462},{par:4,yds:338},{par:4,yds:298}]},
-    { name:'Gold',  color:'#c8a000', par:72, yards:5400, rating:65.5, slope:115, holes:[{par:4,yds:318},{par:4,yds:305},{par:5,yds:418},{par:3,yds:142},{par:4,yds:328},{par:4,yds:302},{par:5,yds:432},{par:3,yds:142},{par:4,yds:332},{par:4,yds:312},{par:3,yds:135},{par:5,yds:422},{par:4,yds:315},{par:4,yds:308},{par:3,yds:128},{par:5,yds:412},{par:4,yds:302},{par:4,yds:268}]},
-    { name:'Red',   color:'#c00',    par:72, yards:5100, rating:63.0, slope:108, holes:[{par:4,yds:295},{par:4,yds:282},{par:5,yds:392},{par:3,yds:128},{par:4,yds:305},{par:4,yds:278},{par:5,yds:405},{par:3,yds:128},{par:4,yds:308},{par:4,yds:288},{par:3,yds:122},{par:5,yds:395},{par:4,yds:292},{par:4,yds:285},{par:3,yds:115},{par:5,yds:385},{par:4,yds:278},{par:4,yds:248}]}
-  ]},
-  { id:'windy-knoll', name:'Windy Knoll Golf Club', location:'Springfield, OH', emoji:'💨',
-    scorecardUrl:'https://www.windyknollgolfclub.com/scorecard/',
-    tees:[
-    { name:'Black',   color:'#555',    par:71, yards:6834, rating:71.9, slope:126, holes:[{par:4,yds:350},{par:4,yds:427},{par:3,yds:170},{par:4,yds:425},{par:5,yds:531},{par:4,yds:445},{par:3,yds:203},{par:4,yds:412},{par:5,yds:565},{par:4,yds:402},{par:3,yds:206},{par:5,yds:504},{par:3,yds:230},{par:4,yds:479},{par:5,yds:530},{par:4,yds:440},{par:4,yds:300},{par:3,yds:215}]},
-    { name:'Grey',    color:'#888',    par:71, yards:6400, rating:70.1, slope:120, holes:[{par:4,yds:325},{par:4,yds:400},{par:3,yds:155},{par:4,yds:398},{par:5,yds:500},{par:4,yds:418},{par:3,yds:185},{par:4,yds:385},{par:5,yds:534},{par:4,yds:375},{par:3,yds:190},{par:5,yds:472},{par:3,yds:210},{par:4,yds:450},{par:5,yds:498},{par:4,yds:412},{par:4,yds:275},{par:3,yds:198}]},
-    { name:'White',   color:'#aaa',    par:71, yards:5939, rating:67.8, slope:117, holes:[{par:4,yds:300},{par:4,yds:370},{par:3,yds:140},{par:4,yds:368},{par:5,yds:465},{par:4,yds:385},{par:3,yds:168},{par:4,yds:355},{par:5,yds:495},{par:4,yds:345},{par:3,yds:172},{par:5,yds:438},{par:3,yds:188},{par:4,yds:418},{par:5,yds:462},{par:4,yds:378},{par:4,yds:252},{par:3,yds:180}]},
-    { name:'Gold',    color:'#c8a000', par:71, yards:5482, rating:64.5, slope:110, holes:[{par:4,yds:272},{par:4,yds:340},{par:3,yds:122},{par:4,yds:338},{par:5,yds:428},{par:4,yds:352},{par:3,yds:148},{par:4,yds:325},{par:5,yds:455},{par:4,yds:315},{par:3,yds:152},{par:5,yds:402},{par:3,yds:165},{par:4,yds:382},{par:5,yds:422},{par:4,yds:345},{par:4,yds:228},{par:3,yds:160}]},
-    { name:'Burgundy',color:'#800020', par:71, yards:5101, rating:64.0, slope:108, holes:[{par:4,yds:248},{par:4,yds:312},{par:3,yds:108},{par:4,yds:308},{par:5,yds:395},{par:4,yds:322},{par:3,yds:132},{par:4,yds:298},{par:5,yds:418},{par:4,yds:288},{par:3,yds:135},{par:5,yds:368},{par:3,yds:148},{par:4,yds:352},{par:5,yds:388},{par:4,yds:315},{par:4,yds:205},{par:3,yds:140}]}
-  ]}
-];
-
-// ── COURSE SELECTOR ──────────────────────────────────────────────────
-let selectedCourseId = null;
-let selectedTeeIdx = 0;
-
-function initCourseList() {
-  buildCourseDropdown(COURSES);
-}
-
-function buildCourseDropdown(courses) {
-  const sel = document.getElementById('course-select');
-  if (!sel) return;
-  const currentVal = sel.value;
-  sel.innerHTML = '<option value="">— Select a course —</option>';
-  const byLocation = {};
-  courses.forEach(c => {
-    if (!byLocation[c.location]) byLocation[c.location] = [];
-    byLocation[c.location].push(c);
-  });
-  Object.entries(byLocation).forEach(([loc, list]) => {
-    const grp = document.createElement('optgroup');
-    grp.label = loc;
-    list.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c.id;
-      opt.textContent = `${c.emoji} ${c.name}`;
-      if (selectedCourseId === c.id) opt.selected = true;
-      grp.appendChild(opt);
-    });
-    sel.appendChild(grp);
-  });
-  // Restore value if it survived the filter
-  if (currentVal) sel.value = currentVal;
-}
-
-function filterCourseDropdown() {
-  const q = document.getElementById('course-search').value.toLowerCase().trim();
-  const filtered = q ? COURSES.filter(c =>
-    c.name.toLowerCase().includes(q) || c.location.toLowerCase().includes(q)
-  ) : COURSES;
-  buildCourseDropdown(filtered);
-}
-
-function filterCourses() {} // no-op kept for compat
-
-function selectCourse(id) {
-  selectedCourseId = id || null;
-  selectedTeeIdx = 0;
-  renderTeePicker();
-}
-
-function renderTeePicker() {
-  const wrap = document.getElementById('tee-picker-wrap');
-  const opts = document.getElementById('tee-options');
-  if (!selectedCourseId) { wrap.style.display = 'none'; return; }
-  const course = COURSES.find(c => c.id === selectedCourseId);
-  if (!course) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-  opts.innerHTML = '';
-
-  // Scorecard link
-  let linkEl = document.getElementById('course-scorecard-link');
-  if (!linkEl) {
-    linkEl = document.createElement('div');
-    linkEl.id = 'course-scorecard-link';
-    linkEl.style.cssText = 'margin-bottom:10px;font-size:0.78rem;';
-    wrap.insertBefore(linkEl, opts);
-  }
-  if (course.scorecardUrl) {
-    linkEl.innerHTML = `<a href="${course.scorecardUrl}" target="_blank" style="color:var(--gold);text-decoration:none;font-family:var(--font-display);letter-spacing:1px;">📄 View Official Scorecard ↗</a>`;
-  } else {
-    linkEl.innerHTML = '';
-  }
-
-  course.tees.forEach((t, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'tee-btn' + (selectedTeeIdx === i ? ' active' : '');
-    btn.innerHTML = `<span style="font-weight:700;">${t.name}</span> <span style="font-size:0.75em;opacity:0.85;">${t.yards}y · ${t.rating}/${t.slope} · Par ${t.par||72}</span>`;
-    if (selectedTeeIdx === i) { btn.style.background = t.color; btn.style.borderColor = t.color; btn.style.color = '#fff'; }
-    btn.onclick = (e) => { e.stopPropagation(); selectedTeeIdx = i; renderTeePicker(); };
-    opts.appendChild(btn);
-  });
-}
-
-function skipCourse() {
-  selectedCourseId = null;
-  selectedTeeIdx = 0;
-  const sel = document.getElementById('course-select');
-  if (sel) sel.value = '';
-  const search = document.getElementById('course-search');
-  if (search) { search.value = ''; buildCourseDropdown(COURSES); }
-  document.getElementById('tee-picker-wrap').style.display = 'none';
-}
-
-document.addEventListener('DOMContentLoaded', () => { initCourseList(); initPlayerSlots(); updateWizard(); });
-
-// ── THEME TOGGLE ─────────────────────────────────────────────────────────────
-function applyTheme(theme) {
-  const isLight = theme === 'light';
-  const attr = isLight ? 'light' : '';
-  document.body.setAttribute('data-theme', attr);
-  document.getElementById('app').setAttribute('data-theme', attr);
-  const btn = document.getElementById('theme-btn');
-  if (btn) btn.textContent = isLight ? '🌙 Dark' : '☀️ Light';
-  localStorage.setItem('bunker_theme', theme);
-}
-function toggleTheme() {
-  const current = localStorage.getItem('bunker_theme') || 'dark';
-  applyTheme(current === 'light' ? 'dark' : 'light');
-}
-// Apply saved theme on load
-(function() {
-  const saved = localStorage.getItem('bunker_theme') || 'dark';
-  applyTheme(saved);
-})();
-</script>
-</div>
+  </script>
 </body>
 </html>
