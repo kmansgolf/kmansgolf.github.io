@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>kmansgolf · Golfweek Amateur Tour</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #000000;
+      --card:    #111113;
+      --card-2:  #161618;
+      --border:  rgba(255,255,255,0.08);
+      --text:    #f0ece4;
+      --muted:   #5a5a60;
+      --dim:     #2e2e33;
+      --green:   #3ddc84;
+      --green-2: #00c8a0;
+      --gold:    #e8b84b;
+      --radius:  20px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: var(--bg); }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      min-height: 100svh;
+      padding-bottom: env(safe-area-inset-bottom, 24px);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 0.5px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 10;
+    }
+
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--green); }
+
+    .nav-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 64px 24px 52px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.1s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(52px, 14vw, 72px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 0.95;
+      color: var(--text);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.2s forwards;
+    }
+
+    .hero-title .accent {
+      background: linear-gradient(90deg, var(--green), var(--green-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: var(--muted);
+      font-weight: 400;
+      line-height: 1.5;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.3s forwards;
+    }
+
+    /* ── GRID ── */
+    .apps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 14px;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 20px 22px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.35s; }
+    .card:nth-child(2) { animation-delay: 0.42s; }
+    .card:nth-child(3) { animation-delay: 0.49s; }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), transparent);
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-2px) scale(1.01);
+      background: var(--card-2);
+      border-color: rgba(255,255,255,0.14);
+    }
+
+    .card:active { transform: scale(0.98); }
+
+    /* Icon */
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 24px;
+    }
+    .icon-fairway { background: linear-gradient(135deg, #1a5c35, #2a8a50); }
+    .icon-bunker  { background: linear-gradient(135deg, #7a5518, #b8892e); }
+    .icon-range   { background: linear-gradient(135deg, #163370, #2550b0); }
+
+    .card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .card-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .card-arrow {
+      position: absolute;
+      bottom: 18px;
+      right: 18px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.18s ease;
+    }
+    .card:hover .card-arrow { background: rgba(61,220,132,0.15); }
+    .card-arrow svg {
+      width: 11px; height: 11px;
+      stroke: var(--muted); fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      transition: stroke 0.18s ease;
+    }
+    .card:hover .card-arrow svg { stroke: var(--green); }
+
+    /* Wide card (Range) */
+    .card-wide {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 22px 20px;
+    }
+    .card-wide .card-icon { margin-bottom: 0; flex-shrink: 0; }
+    .card-wide .card-text { flex: 1; min-width: 0; }
+    .card-wide .card-arrow { position: static; flex-shrink: 0; }
+    .card-wide .card-name { font-size: 26px; }
+
+    /* Range — featured green border */
+    .card-featured {
+      border-color: rgba(61,220,132,0.2);
+    }
+    .card-featured:hover {
+      border-color: rgba(61,220,132,0.4);
+    }
+
+    /* ── DIVIDER + FOOTER ── */
+    .divider {
+      margin: 44px 14px 0;
+      border-top: 0.5px solid var(--border);
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px 24px 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">kmans<span>golf</span></a>
+    <div class="nav-meta">Columbus · C/B Flight</div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-eyebrow">Golfweek Amateur Tour</div>
+    <div class="hero-title">Your game.<br><span class="accent">Tracked.</span></div>
+    <div class="hero-sub">Tools built for how you actually play.</div>
+  </section>
+
+  <div class="apps">
+
+    <a href="/fairway/" class="card">
+      <div class="card-icon icon-fairway">⛳</div>
+      <div class="card-label">The</div>
+      <div class="card-name">Fairway</div>
+      <div class="card-desc">Tournament scores &amp; standings</div>
+      <div class="card-arrow">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+    <a href="/bunker/" class="card">
+      <div class="card-icon icon-bunker">💰</div>
+      <div class="card-label">The</div>
+      <div class="card-name">Bunker</div>
+      <div class="card-desc">Side games &amp; money tracking</div>
+      <div class="card-arrow">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+    <a href="/range/" class="card card-wide card-featured">
+      <div class="card-icon icon-range">🎯</div>
+      <div class="card-text">
+        <div class="card-label">The</div>
+        <div class="card-name">Range</div>
+        <div class="card-desc">Practice tracker, combines &amp; pressure games</div>
+      </div>
+      <div class="card-arrow">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="divider"></div>
+  <footer>kmansgolf · Built for the Golfweek Amateur Tour</footer>
+
+</body>
+</html>
