@@ -298,6 +298,7 @@ tfoot td:first-child{text-align:left;padding-left:12px;}
 body[data-theme="light"]{
   --navy:        #faf8f4;
   --navy-mid:    #1c1c1e;
+  --white:       #ffffff;  /* fix: dark restyle set this to #1c1c1e */
   --navy-light:  #3a3a3c;
   --text:        #1a1a1a;
   --muted:       #6e6e73;
@@ -350,6 +351,131 @@ body[data-theme="light"] .clear-history-btn{background:#fee2e2;color:#c0392b;}
 body[data-theme="light"] .course-item:hover{border-color:var(--green-accent);}
 body[data-theme="light"] .hole-nav-center .hole-num{color:#1a1a1a;}
 body[data-theme="light"] #app-header{background:#000000;}
+
+/* ── LIGHT MODE: comprehensive fixes ────────────────────────────────────────── */
+
+/* Score header and game panel header stay dark — white text on dark bg */
+body[data-theme="light"] .score-header {
+  background: #1c1c1e;
+}
+body[data-theme="light"] .game-panel-header {
+  background: #1c1c1e;
+  border-bottom-color: rgba(255,255,255,0.08);
+}
+body[data-theme="light"] .fw-card-header--dark,
+body[data-theme="light"] .fw-card-header--gold {
+  background: #1c1c1e;
+}
+
+/* Table headers stay dark */
+body[data-theme="light"] thead th {
+  background: #1c1c1e;
+  border-color: rgba(255,255,255,0.08);
+}
+
+/* All text that should be dark on light bg */
+body[data-theme="light"] .fw-player-name,
+body[data-theme="light"] .player-name-cell,
+body[data-theme="light"] .score-val,
+body[data-theme="light"] .round-player-name,
+body[data-theme="light"] .status-player,
+body[data-theme="light"] .round-course,
+body[data-theme="light"] .round-player-name { color: #1a1a1a; }
+
+/* Game panel body: explicitly white */
+body[data-theme="light"] .game-panel-body { background: #ffffff; }
+body[data-theme="light"] .game-panel.open .game-panel-body { background: #ffffff; }
+
+/* Status row amounts — keep semantic colors, readable on white */
+body[data-theme="light"] .status-amount.pos { color: #166534; }
+body[data-theme="light"] .status-amount.neg { color: #c0392b; }
+body[data-theme="light"] .status-amount.zero { color: #6e6e73; }
+
+/* Score relative to par chips */
+body[data-theme="light"] .score-rel.under { color: #166534; }
+body[data-theme="light"] .score-rel.over  { color: #c0392b; }
+body[data-theme="light"] .score-rel.even  { color: #6e6e73; }
+body[data-theme="light"] .score-rel.eagle { color: #d68910; }
+
+/* Scorecard table body text */
+body[data-theme="light"] tbody td { color: #1a1a1a; }
+body[data-theme="light"] tbody td:first-child { color: #1a1a1a; }
+
+/* Hole nav */
+body[data-theme="light"] .hole-nav-center .hole-par { color: #6e6e73; }
+
+/* Wolf picker label */
+body[data-theme="light"] .wolf-label { color: #6e6e73; }
+
+/* Par selector */
+body[data-theme="light"] .par-btn { color: #6e6e73; }
+body[data-theme="light"] .par-btn.active { background: var(--green-accent); color: #000; border-color: var(--green-accent); }
+
+/* Round game chips */
+body[data-theme="light"] .round-money-row .round-player-score { color: #6e6e73; }
+
+/* Course list items text */
+body[data-theme="light"] .course-name { color: #1a1a1a; }
+body[data-theme="light"] .course-loc  { color: #6e6e73; }
+
+/* Dropdown item text — ensure readable */
+body[data-theme="light"] .gt-info h3 { color: #1a1a1a; }
+body[data-theme="light"] .gt-info p  { color: #6e6e73; }
+body[data-theme="light"] .bet-row label { color: #6e6e73; }
+
+/* Step line in wizard */
+body[data-theme="light"] .step-line { background: rgba(0,0,0,0.12); }
+body[data-theme="light"] .step-line.done { background: var(--green-accent); }
+
+/* Player slot label */
+body[data-theme="light"] .player-slot-label { color: #6e6e73; }
+
+/* Section title */
+body[data-theme="light"] .section-title { color: #6e6e73; border-bottom-color: rgba(0,0,0,0.1); }
+
+/* Totals bar stays dark — already dark via var(--navy-mid) = #1c1c1e, fine */
+
+/* New round button on results */
+body[data-theme="light"] .new-round-btn { background: var(--green-accent); color: #000; }
+
+/* Results card text */
+body[data-theme="light"] .results-row .rr-rank { color: var(--amber); }
+body[data-theme="light"] .results-row .rr-name { color: #1a1a1a; }
+body[data-theme="light"] .results-row .rr-score { color: #6e6e73; }
+
+/* Leaderboard row text (stays on dark bg — already fine) */
+
+/* Round card header text */
+body[data-theme="light"] .round-card-header .round-course { color: #1a1a1a; }
+body[data-theme="light"] .round-card-header .round-meta  { color: #6e6e73; }
+body[data-theme="light"] .round-card-header .round-chevron { color: #6e6e73; }
+
+/* Wizard back button inline style fix: var(--white) now = #fff, var(--navy-mid) = #1c1c1e */
+/* The wizard-next button background:var(--navy-mid) = dark, color:var(--gold) = fine */
+/* The wizard-back button background:var(--white) = #fff now, color:var(--navy-mid) = dark text on white = readable */
+
+/* Play-content general text */
+body[data-theme="light"] .play-content { color: #1a1a1a; }
+body[data-theme="light"] .play-content .player-name-cell { color: #1a1a1a; font-weight: 600; }
+
+/* Score-card player badge area */  
+body[data-theme="light"] .score-row .player-name-cell { color: #1a1a1a; }
+
+/* Tee button active — fix --white color issue */
+body[data-theme="light"] .tee-btn { color: #6e6e73; background: #f5f3ef; }
+body[data-theme="light"] .tee-btn.active { color: #ffffff; }
+
+/* History empty state */
+body[data-theme="light"] .history-empty { color: #6e6e73; }
+body[data-theme="light"] .history-empty-icon { opacity: 0.5; }
+
+/* Fix any remaining var(--blue-soft) text on light content bg */
+body[data-theme="light"] .play-content .gp-title { color: #6e6e73; }
+body[data-theme="light"] .play-content .gp-summary { color: #6e6e73; }
+body[data-theme="light"] .play-content .status-row .status-tag { }
+
+/* Select option text (native) */
+body[data-theme="light"] select option { background: #ffffff; color: #1a1a1a; }
 </style>
 </head>
 <body>
