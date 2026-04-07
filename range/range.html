@@ -7,64 +7,106 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="The Range">
 <meta name="theme-color" content="#0d2340" id="theme-meta">
-<title>The Range</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>kmansgolf · The Range</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap&font-display=swap" rel="stylesheet">
 <style>
 :root{
-  --n:#0d2340;--nm:#152e50;--nl:#1e3d66;--nc:#1a3558;--ni:#112844;
-  --g:#e8b84b;--gl:#f5d070;--w:#f5f0e8;--d:#8ba4c0;
-  --gr:#2ecc71;--re:#e74c3c;--or:#f39c12;--bl:#3498db;
+  --n:#000000;--nm:#1c1c1e;--nl:#3a3a3c;--nc:#2c2c2e;--ni:#141414;
+  --g:#e8b84b;--gl:#f5d070;--w:#f5f5f7;--d:#6e6e73;
+  --gr:#3ddc84;--re:#e74c3c;--or:#f39c12;--bl:#3498db;
+  --accent:#3ddc84;
   --fc:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;--fm:'DM Mono',monospace;
 }
 
-/* ══ LIGHT THEME ══ */
+/* ══ LIGHT THEME ══
+   Strategy: header + bottom nav STAY DARK — avoids white-on-white issues.
+   Content area → warm cream. Cards → white with shadow.
+   Green and gold both pop on cream. Augusta aesthetic.
+══════════════════════════════════════════════════════ */
 [data-theme="light"] {
-  --n: #f2f2f4;
-  --nm: #ffffff;
-  --nl: #e8e8ec;
-  --nc: #ffffff;
-  --ni: #e4e4e8;
-  --w: #1a1a2e;
-  --d: #6e6e80;
-  /* Gold and green stay identical */
-  --g: #d4a030;   /* slightly deeper gold — readable on white */
-  --gl: #e8b84b;
-  --gr: #27a85e;  /* slightly deeper green — readable on white */
-  --re: #c0392b;
-  --or: #d68910;
-  --bl: #2980b9;
+  --n:   #faf8f4;   /* warm cream bg */
+  --nm:  #1c1c1e;   /* header/nav stays dark */
+  --nl:  #3a3a3c;
+  --nc:  #ffffff;   /* cards white */
+  --ni:  #f0ede8;
+  --w:   #1a1a1a;   /* near-black text */
+  --d:   #6e6e73;   /* muted text */
+  --g:   #c8960c;   /* deeper gold — pops on cream */
+  --gl:  #d4a030;
+  --gr:  #1e9e5e;   /* deeper green — readable on cream */
+  --re:  #c0392b;
+  --or:  #d68910;
+  --bl:  #2471a3;
 }
-[data-theme="light"] html,
+
+/* Body + app bg → cream; header/nav stay dark via --nm=#1c1c1e */
 [data-theme="light"] body,
 [data-theme="light"] #app { background: var(--n); color: var(--w); }
-[data-theme="light"] .btn.gh { border-color: rgba(0,0,0,.18); color: var(--d); }
-[data-theme="light"] .miss-btn { border-color: rgba(0,0,0,.15); }
-[data-theme="light"] .gbtn { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.12); }
+
+/* Cards get white bg + real shadow */
+[data-theme="light"] .card,
+[data-theme="light"] .accord,
+[data-theme="light"] .sp-card,
+[data-theme="light"] .rcomb,
+[data-theme="light"] .hse {
+  background: #ffffff;
+  border-color: rgba(0,0,0,.08);
+  box-shadow: 0 1px 6px rgba(0,0,0,.08);
+}
+
+/* Dividers: rgba(255,255,255,x) → rgba(0,0,0,x) */
+[data-theme="light"] .accord-check-row { border-bottom-color: rgba(0,0,0,.07); }
+[data-theme="light"] .ssetup { border-bottom-color: rgba(0,0,0,.07); }
+[data-theme="light"] .tipbox { border-bottom-color: rgba(0,0,0,.07); background: rgba(0,0,0,.02); }
+[data-theme="light"] .rchdr { border-bottom-color: rgba(0,0,0,.07); }
+[data-theme="light"] .rstnr { border-bottom-color: rgba(0,0,0,.06); }
+[data-theme="light"] .sp-dim { border-bottom-color: rgba(0,0,0,.06); }
+[data-theme="light"] .trow { border-bottom-color: rgba(0,0,0,.07); }
+[data-theme="light"] .trow + .trow { border-top-color: rgba(0,0,0,.07) !important; }
+
+/* Inputs */
+[data-theme="light"] .inp { background: #f5f3ef; border-color: rgba(0,0,0,.15); color: var(--w); }
+[data-theme="light"] .sel { background: #f5f3ef; border-color: rgba(0,0,0,.15); color: var(--w); }
+
+/* Buttons */
+[data-theme="light"] .btn.gh { background: #f5f3ef; border-color: rgba(0,0,0,.15); color: var(--d); }
+[data-theme="light"] .miss-btn { background: #f5f3ef; border-color: rgba(0,0,0,.12); color: var(--w); }
+[data-theme="light"] .gbtn { background: #f5f3ef; border-color: rgba(0,0,0,.12); color: var(--d); }
+
+/* Score zone */
 [data-theme="light"] .scorezone { background: rgba(0,0,0,.02); }
-[data-theme="light"] .chkbox { border-color: rgba(0,0,0,.2); }
-[data-theme="light"] .card { border-color: rgba(0,0,0,.1); }
-[data-theme="light"] .accord { border-color: rgba(0,0,0,.1); }
-[data-theme="light"] .stn-body { background: rgba(0,0,0,.02); }
-[data-theme="light"] .tipbox { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.08); }
-[data-theme="light"] .inp { background: #f0f0f4; border-color: rgba(0,0,0,.15); color: var(--w); }
-[data-theme="light"] .sel { background: #f0f0f4; border-color: rgba(0,0,0,.15); color: var(--w); }
-[data-theme="light"] .apzone { background: rgba(41,128,185,.05); border-color: rgba(41,128,185,.2); }
-[data-theme="light"] .ap-result.exact { background: rgba(39,168,94,.12); }
-[data-theme="light"] .ap-result.close { background: rgba(212,160,48,.1); }
+[data-theme="light"] .score-disp { background: #f5f3ef; border-color: rgba(0,0,0,.08); }
+[data-theme="light"] .gate-preview { background: #f5f3ef; border-color: rgba(0,0,0,.08); }
+
+/* Chkbox */
+[data-theme="light"] .chkbox { border-color: rgba(0,0,0,.18); }
+
+/* Skill profile */
+[data-theme="light"] .sp-bar-bg { background: rgba(0,0,0,.08); }
+
+/* AimPoint */
+[data-theme="light"] .apzone { background: rgba(36,113,163,.04); border-color: rgba(36,113,163,.2); }
+[data-theme="light"] .slopebtn { background: #f5f3ef; border-color: rgba(36,113,163,.2); }
+[data-theme="light"] .ap-result.exact { background: rgba(30,158,94,.1); }
+[data-theme="light"] .ap-result.close { background: rgba(200,150,12,.1); }
 [data-theme="light"] .ap-result.off   { background: rgba(192,57,43,.08); }
-[data-theme="light"] .slopebtn { background: rgba(0,0,0,.05); border-color: rgba(41,128,185,.2); }
-[data-theme="light"] .hschip { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.1); }
-[data-theme="light"] .hse { border-color: rgba(0,0,0,.1); }
-[data-theme="light"] .rcomb { border-color: rgba(0,0,0,.1); }
-[data-theme="light"] .resumebanner { background: rgba(212,160,48,.08); }
-[data-theme="light"] .thcard { background: rgba(212,160,48,.06); }
-[data-theme="light"] .sp-card { border-color: rgba(0,0,0,.12); }
-[data-theme="light"] .rx-card { background: rgba(39,168,94,.06); border-color: rgba(39,168,94,.25); }
-[data-theme="light"] .rx-game { background: rgba(39,168,94,.1); }
-[data-theme="light"] .gate-preview { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.1); }
-[data-theme="light"] .score-disp { background: rgba(0,0,0,.03); }
-[data-theme="light"] .trow + .trow { border-top-color: rgba(0,0,0,.08) !important; }
-[data-theme="light"] .div { background: rgba(0,0,0,.08); }
+
+/* Resume banner */
+[data-theme="light"] .resumebanner { background: rgba(200,150,12,.08); border-color: rgba(200,150,12,.3); }
+[data-theme="light"] .resumetit { color: var(--g); }
+
+/* Threshold */
+[data-theme="light"] .thcard { background: rgba(200,150,12,.06); border-color: rgba(200,150,12,.2); }
+
+/* Prescription */
+[data-theme="light"] .rx-card { background: rgba(30,158,94,.05); border-color: rgba(30,158,94,.25); }
+[data-theme="light"] .rx-game { background: rgba(30,158,94,.08); }
+
+/* History chip */
+[data-theme="light"] .hschip { background: #f5f3ef; border-color: rgba(0,0,0,.1); color: var(--d); }
+
+/* Runner header stays dark (it has own bg inline) */
+[data-theme="light"] .rhdr { background: #1c1c1e; }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);overflow:hidden}
 #app{width:100%;max-width:480px;height:100dvh;margin:0 auto;display:flex;flex-direction:column;overflow:hidden}
@@ -73,27 +115,27 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 .sb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:88px}
 
 /* HEADER */
-.hd{background:var(--nm);padding:13px 18px 11px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--g);flex-shrink:0}
-.logo{font-family:var(--fc);font-size:21px;font-weight:800;letter-spacing:1.5px;color:var(--g)}
-.logo span{color:var(--w);font-weight:400}
+.hd{background:var(--nm);padding:13px 18px 11px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0}
+.logo{font-family:var(--fc);font-size:21px;font-weight:800;letter-spacing:1.5px;color:var(--gr)}
+.logo span{color:rgba(255,255,255,0.5);font-weight:400}
 .hm{font-family:var(--fc);font-size:12px;color:var(--d);letter-spacing:.5px}
 .bk{background:none;border:none;color:var(--d);font-size:22px;cursor:pointer;padding:4px 8px 4px 0;line-height:1}
 
 /* BOTTOM NAV */
-#bnav{display:none;background:var(--nm);border-top:2px solid var(--g);flex-shrink:0}
+#bnav{display:none;background:var(--nm);border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0}
 #bnav.show{display:flex}
 .nb{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;background:none;border:none;color:var(--d);cursor:pointer;transition:color .2s;gap:3px}
-.nb.on{color:var(--g)}
+.nb.on{color:var(--gr)}
 .nb svg{width:20px;height:20px}
 .nl{font-family:var(--fc);font-size:11px;letter-spacing:.5px;text-transform:uppercase}
 
 /* CARD / COMMON */
-.card{background:var(--nc);border-radius:10px;padding:16px;margin:0 16px 12px;border:1px solid rgba(232,184,75,.15)}
-.ct{font-family:var(--fc);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g);margin-bottom:12px}
+.card{background:var(--nc);border-radius:10px;padding:16px;margin:0 16px 12px;border:1px solid rgba(255,255,255,.08)}
+.ct{font-family:var(--fc);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gr);margin-bottom:12px}
 .slbl{font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--d);padding:14px 16px 8px}
-.btn{background:var(--g);color:var(--n);border:none;border-radius:8px;padding:13px 20px;font-family:var(--fc);font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;width:100%;transition:background .15s,transform .1s;line-height:1}
+.btn{background:var(--gr);color:#000;border:none;border-radius:8px;padding:13px 20px;font-family:var(--fc);font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;width:100%;transition:background .15s,transform .1s;line-height:1}
 .btn:active{transform:scale(.98)}
-.btn.ol{background:transparent;border:2px solid var(--g);color:var(--g)}
+.btn.ol{background:transparent;border:2px solid var(--gr);color:var(--gr)}
 .btn.gh{background:transparent;border:2px solid rgba(255,255,255,.15);color:var(--d)}
 .btn.dn{background:transparent;border:2px solid var(--re);color:var(--re)}
 .btn.sm{padding:9px 16px;font-size:14px;width:auto}
@@ -107,7 +149,7 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 .sel option{background:var(--nm)}
 .div{height:1px;background:rgba(232,184,75,.1);margin:4px 16px 12px}
 .prog{height:4px;background:var(--nl);flex-shrink:0}
-.pf{height:100%;background:var(--g);transition:width .4s ease}
+.pf{height:100%;background:var(--gr);transition:width .4s ease}
 .emp{text-align:center;padding:48px 24px}
 .emp-i{font-size:44px;margin-bottom:12px}
 .emp-t{font-family:var(--fc);font-size:18px;font-weight:700;color:var(--w);margin-bottom:6px}
@@ -116,7 +158,7 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 /* LOGIN */
 #s-login{justify-content:center;padding:32px 24px 40px;overflow-y:auto;background:radial-gradient(ellipse at top,rgba(232,184,75,.06) 0%,transparent 70%),var(--n)}
 .lbrand{text-align:center;margin-bottom:36px;margin-top:16px}
-.llogo{font-family:var(--fc);font-size:46px;font-weight:800;color:var(--g);letter-spacing:3px;line-height:1}
+.llogo{font-family:var(--fc);font-size:46px;font-weight:800;color:var(--gr);letter-spacing:3px;line-height:1}
 .lsub{font-family:var(--fc);font-size:13px;letter-spacing:4px;text-transform:uppercase;color:var(--d);margin-top:6px}
 .lbox{background:var(--nc);border-radius:14px;padding:24px;border:1px solid rgba(232,184,75,.2)}
 .ltabs{display:flex;gap:8px;margin-bottom:22px}
@@ -160,7 +202,7 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 .sestim span{color:var(--g);font-weight:700}
 
 /* ACCORDION SECTIONS */
-.accord{background:var(--nc);border-radius:10px;margin:0 16px 10px;border:1px solid rgba(232,184,75,.15);overflow:hidden}
+.accord{background:var(--nc);border-radius:10px;margin:0 16px 10px;border:1px solid rgba(255,255,255,.08);overflow:hidden}
 .accord-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer;transition:background .15s;user-select:none}
 .accord-hdr:active{background:rgba(232,184,75,.05)}
 .accord-hdr-left{display:flex;align-items:center;gap:12px}
@@ -256,9 +298,9 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 .ap-result-diff{font-family:var(--fm);font-size:12px;flex-shrink:0}
 
 /* RESUME BANNER */
-.resumebanner{background:rgba(232,184,75,.08);border:2px solid var(--g);border-radius:10px;margin:0 16px 12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.resumebanner{background:rgba(61,220,132,.06);border:1px solid rgba(61,220,132,.3);border-radius:10px;margin:0 16px 12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .resumeinfo{flex:1}
-.resumetit{font-family:var(--fc);font-size:16px;font-weight:700;color:var(--g)}
+.resumetit{font-family:var(--fc);font-size:16px;font-weight:700;color:var(--gr)}
 .resumesub{font-family:var(--fb);font-size:12px;color:var(--d);margin-top:2px}
 
 /* RESULTS */
@@ -282,9 +324,9 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 
 /* THRESHOLD */
 .thcard{background:rgba(232,184,75,.06);border:1px solid rgba(232,184,75,.2);border-radius:10px;margin:0 16px 12px;padding:14px 16px}
-.thtit{font-family:var(--fc);font-size:13px;font-weight:700;color:var(--g);margin-bottom:6px}
+.thtit{font-family:var(--fc);font-size:13px;font-weight:700;color:var(--gr);margin-bottom:6px}
 .thbarw{height:6px;background:var(--nm);border-radius:3px;overflow:hidden;margin:8px 0 6px}
-.thbarf{height:100%;background:var(--g);border-radius:3px;transition:width .5s ease}
+.thbarf{height:100%;background:var(--gr);border-radius:3px;transition:width .5s ease}
 .thsub{font-family:var(--fb);font-size:12px;color:var(--d)}
 
 /* HISTORY */
@@ -300,7 +342,7 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 .trend-eq{color:var(--d);font-size:13px}
 
 /* PHASE 2 — SKILL PROFILE */
-.sp-card{background:var(--nc);border-radius:10px;margin:0 16px 12px;border:1px solid rgba(232,184,75,.2);overflow:hidden}
+.sp-card{background:var(--nc);border-radius:10px;margin:0 16px 12px;border:1px solid rgba(255,255,255,.08);overflow:hidden}
 .sp-hdr{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
 .sp-hdr:active{background:rgba(232,184,75,.04)}
 .sp-title{font-family:var(--fc);font-size:17px;font-weight:700;color:var(--w)}
@@ -323,7 +365,7 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 .sp-bar{height:100%;border-radius:2px;transition:width .5s ease}
 
 /* PHASE 2 — PRESCRIPTION */
-.rx-card{background:rgba(46,204,113,.06);border:2px solid rgba(46,204,113,.3);border-radius:10px;margin:0 16px 12px;padding:14px 16px}
+.rx-card{background:rgba(61,220,132,.05);border:1px solid rgba(61,220,132,.25);border-radius:10px;margin:0 16px 12px;padding:14px 16px}
 .rx-lbl{font-family:var(--fc);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gr);margin-bottom:8px}
 .rx-weak{font-family:var(--fc);font-size:13px;color:var(--d);margin-bottom:10px;line-height:1.4}
 .rx-game{display:flex;align-items:center;gap:10px;background:rgba(46,204,113,.1);border-radius:8px;padding:10px 12px}
@@ -341,7 +383,7 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 .gbtn.sel-line{background:rgba(52,152,219,.2);border-color:var(--bl);color:var(--bl)}
 .gbtn.sel-pace{background:rgba(232,184,75,.15);border-color:var(--g);color:var(--g)}
 .gate-submit{width:100%;padding:13px;background:var(--nm);border:2px solid rgba(255,255,255,.15);border-radius:8px;font-family:var(--fc);font-size:14px;font-weight:700;color:var(--d);cursor:pointer;transition:all .2s;margin-bottom:10px;letter-spacing:.5px}
-.gate-submit.ready{background:var(--g);border-color:var(--g);color:var(--n)}
+.gate-submit.ready{background:var(--gr);border-color:var(--gr);color:#000}
 .gate-preview{background:var(--nm);border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;min-height:44px}
 .gate-prev-lbl{font-family:var(--fc);font-size:12px;color:var(--d)}
 .gate-prev-val{font-family:var(--fm);font-size:14px;color:var(--w)}
@@ -363,7 +405,7 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 .stype-lbl{font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--d);margin-bottom:8px}
 .stype-tog{display:flex;background:var(--nm);border-radius:8px;overflow:hidden;border:1px solid rgba(232,184,75,.2)}
 .stype-btn{flex:1;padding:10px 8px;background:none;border:none;font-family:var(--fc);font-size:12px;font-weight:600;letter-spacing:.5px;color:var(--d);cursor:pointer;transition:all .15s;text-align:center;line-height:1.3}
-.stype-btn.on{background:var(--g);color:var(--n)}
+.stype-btn.on{background:var(--gr);color:#000}
 .stype-desc{font-family:var(--fb);font-size:12px;color:var(--d);text-align:center;margin-top:6px;line-height:1.4}
 
 /* PROFILE */
@@ -419,7 +461,7 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 
 <!-- ══ HOME ══ -->
 <div id="s-home" class="scr">
-  <div class="hd"><div class="logo">THE <span>RANGE</span></div><div class="hm" id="hdate"></div></div>
+  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div style="display:flex;align-items:center;gap:10px"><div class="hm" id="hdate"></div><button onclick="togTheme()" id="theme-hdr-btn" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:3px 10px;font-family:var(--fc);font-size:11px;font-weight:700;color:var(--d);cursor:pointer;letter-spacing:.5px">☀️</button></div></div>
   <div class="sb">
     <div class="hhero">
       <div class="hgreet">Welcome, <em id="hname">—</em></div>
@@ -442,7 +484,7 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 
 <!-- ══ SESSION SETUP ══ -->
 <div id="s-practice" class="scr">
-  <div class="hd"><div class="logo">THE <span>RANGE</span></div><div class="hm">SESSION SETUP</div></div>
+  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">SESSION SETUP</div></div>
   <div class="sb" style="padding-top:14px">
     <div id="rx-section"></div>
 
@@ -584,13 +626,13 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 
 <!-- ══ HISTORY ══ -->
 <div id="s-history" class="scr">
-  <div class="hd"><div class="logo">THE <span>RANGE</span></div><div class="hm">HISTORY</div></div>
+  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">HISTORY</div></div>
   <div class="sb" style="padding-top:8px"><div id="hist-list"></div></div>
 </div>
 
 <!-- ══ PROFILE ══ -->
 <div id="s-profile" class="scr">
-  <div class="hd"><div class="logo">THE <span>RANGE</span></div><div class="hm">PROFILE</div></div>
+  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">PROFILE</div></div>
   <div class="sb">
     <div class="profav" id="prof-av"></div>
     <div class="profnam" id="prof-nm"></div>
@@ -602,7 +644,7 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
         <div class="tsw" id="ap-tog" onclick="togAimpoint()"><div class="tknob"></div></div>
       </div>
       <div class="trow" style="border-top:1px solid rgba(255,255,255,.07);margin-top:10px;padding-top:10px">
-        <div class="tinfo"><div class="tlbl" id="theme-lbl">🌙 Light Mode</div><div class="tsub" id="theme-sub">Off — tap to switch for outdoor use</div></div>
+        <div class="tinfo"><div class="tlbl" id="theme-lbl">Light Mode</div><div class="tsub" id="theme-sub">Off — tap to switch for outdoor use</div></div>
         <div class="tsw" id="theme-tog" onclick="togTheme()"><div class="tknob"></div></div>
       </div>
     </div>
@@ -1691,10 +1733,19 @@ function buildStationHTML(stn, sIdx, total, shots, sd, cid) {
     'Place 1 back tee 18" behind the hole (12" for downhill stations).',
     'Goal: pass through the gate AND stop before the back tee.'
   ] : [];
-  const allSetup = [...gateSetup, ...stn.setup];
-  const setupHTML = allSetup.map((s,i) =>
-    `<li${i<gateSetup.length?' style="color:var(--g);font-weight:600"':''} >${s}</li>`
-  ).join('');
+
+  // Gate banner shown once at top — no inline color differences on individual steps
+  const gateBanner = (cid==='putting' && sd.isGate) ? `
+    <div style="background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.25);border-radius:8px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px">
+      <div style="font-size:15px;flex-shrink:0">🎯</div>
+      <div style="font-family:var(--fc);font-size:12px;color:var(--g);line-height:1.5">
+        <strong>Gate Setup:</strong> Remove flag · 2 tees cup-width at near edge ·
+        1 back tee 18" behind (12" for downhill) · Stop ball between gate and back tee.
+      </div>
+    </div>` : '';
+
+  const allSetup = [...stn.setup];
+  const setupHTML = allSetup.map(s => `<li>${s}</li>`).join('');
 
   let scoreHTML = '';
   if (cid === 'putting') {
@@ -1744,6 +1795,7 @@ function buildStationHTML(stn, sIdx, total, shots, sd, cid) {
     </div>
     <div class="ssetup">
       <div class="sslbl">📍 Setup Instructions</div>
+      ${gateBanner}
       <ul class="ssteps">${setupHTML}</ul>
     </div>
     <div class="tipbox">
@@ -2208,6 +2260,13 @@ function applyTheme(theme) {
   }
 
   if (tog) tog.classList.toggle('on', isLight);
+
+  // Update header button icon
+  const hdrBtn = document.getElementById('theme-hdr-btn');
+  if (hdrBtn) hdrBtn.textContent = isLight ? '🌙' : '☀️';
+
+  // Write flat key so games.html can sync without knowing the username
+  localStorage.setItem('range_theme', theme);
 }
 
 function togAimpoint() {
@@ -2397,6 +2456,50 @@ function _autoSeedKman() {
   localStorage.setItem('range_kman', JSON.stringify(data));
   console.log('✅ kman test account seeded — sign in: kman / 1234');
 }
+
+// ── UNSAVED DATA GUARD ────────────────────────────────────────────────────────
+window.addEventListener('beforeunload', function(e) {
+  if (sessionInProgress) {
+    e.preventDefault();
+    e.returnValue = 'You have an active session. Leave and lose your data?';
+    return e.returnValue;
+  }
+});
+document.addEventListener('click', function(e) {
+  const link = e.target.closest('a[href="/"]');
+  if (link && sessionInProgress) {
+    e.preventDefault();
+    if (confirm('You have an active session in progress. Leave and lose your data?')) {
+      sessionInProgress = false;
+      window.location.href = '/';
+    }
+  }
+});
+
+
+(function(){
+  const REFRESH_SCREENS=['s-home','s-history'];
+  let ty=0,ready=false;
+  const ind=document.createElement('div');
+  ind.style.cssText='position:fixed;top:0;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:center;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:2px;color:#3ddc84;background:rgba(0,0,0,0.92);transform:translateY(-44px);transition:transform 0.2s ease;z-index:9999;pointer-events:none;';
+  ind.textContent='↓ RELEASE TO REFRESH';
+  document.body.appendChild(ind);
+  document.addEventListener('touchstart',e=>{ty=e.touches[0].clientY;},{passive:true});
+  document.addEventListener('touchmove',e=>{
+    const active=document.querySelector('.scr.on');
+    if(!active||!REFRESH_SCREENS.includes(active.id)) return;
+    const scroll=active.querySelector('.sb');
+    if(scroll&&scroll.scrollTop>0) return;
+    const dy=e.touches[0].clientY-ty;
+    if(dy>60){ind.style.transform='translateY(0)';ready=true;}
+    else{ind.style.transform='translateY(-44px)';ready=false;}
+  },{passive:true});
+  document.addEventListener('touchend',()=>{
+    ind.style.transform='translateY(-44px)';
+    if(ready){ready=false;setTimeout(()=>location.reload(),200);}
+  });
+})();
+
 </script>
 </body>
 </html>

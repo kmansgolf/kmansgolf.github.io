@@ -25,6 +25,12 @@
 [data-theme="light"] html,
 [data-theme="light"] body,
 [data-theme="light"] #app { background: var(--n); color: var(--w); }
+
+/* Header and bottom nav stay dark in light mode — logo always readable */
+[data-theme="light"] .hd { background: #1c1c1e; border-bottom-color: rgba(255,255,255,0.08); }
+[data-theme="light"] #bnav { background: #1c1c1e; border-top-color: rgba(255,255,255,0.08); }
+[data-theme="light"] .hm { color: #6e6e73; }
+[data-theme="light"] .bk { color: #6e6e73; }
 [data-theme="light"] .btn.gh { border-color: rgba(0,0,0,.18); color: var(--d); }
 [data-theme="light"] .miss-btn { border-color: rgba(0,0,0,.15); }
 [data-theme="light"] .gbtn { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.12); }
