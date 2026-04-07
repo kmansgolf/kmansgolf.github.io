@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#000000" id="theme-meta">
 <title>kmansgolf · The Bunker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2518,6 +2519,22 @@ const COURSES = [
     { name:'White',   color:'#aaa',    par:71, yards:5939, rating:67.8, slope:117, holes:[{par:4,yds:300},{par:4,yds:370},{par:3,yds:140},{par:4,yds:368},{par:5,yds:465},{par:4,yds:385},{par:3,yds:168},{par:4,yds:355},{par:5,yds:495},{par:4,yds:345},{par:3,yds:172},{par:5,yds:438},{par:3,yds:188},{par:4,yds:418},{par:5,yds:462},{par:4,yds:378},{par:4,yds:252},{par:3,yds:180}]},
     { name:'Gold',    color:'#c8a000', par:71, yards:5482, rating:64.5, slope:110, holes:[{par:4,yds:272},{par:4,yds:340},{par:3,yds:122},{par:4,yds:338},{par:5,yds:428},{par:4,yds:352},{par:3,yds:148},{par:4,yds:325},{par:5,yds:455},{par:4,yds:315},{par:3,yds:152},{par:5,yds:402},{par:3,yds:165},{par:4,yds:382},{par:5,yds:422},{par:4,yds:345},{par:4,yds:228},{par:3,yds:160}]},
     { name:'Burgundy',color:'#800020', par:71, yards:5101, rating:64.0, slope:108, holes:[{par:4,yds:248},{par:4,yds:312},{par:3,yds:108},{par:4,yds:308},{par:5,yds:395},{par:4,yds:322},{par:3,yds:132},{par:4,yds:298},{par:5,yds:418},{par:4,yds:288},{par:3,yds:135},{par:5,yds:368},{par:3,yds:148},{par:4,yds:352},{par:5,yds:388},{par:4,yds:315},{par:4,yds:205},{par:3,yds:140}]}
+  ]}  ,
+  { id:'snow-hill', name:'Snow Hill Country Club', location:'New Vienna, OH', emoji:'⛰️',
+    scorecardUrl:'https://www.snowhillcountryclub.com/',
+    tees:[
+    { name:'Blue',   color:'#3b82f6', par:70, yards:6501, rating:71.8, slope:129, holes:[
+      {par:5,yds:540,hcp:17},{par:3,yds:186,hcp:13},{par:5,yds:606,hcp:9},{par:4,yds:442,hcp:1},{par:4,yds:356,hcp:11},{par:3,yds:223,hcp:3},{par:4,yds:366,hcp:5},{par:3,yds:246,hcp:7},{par:4,yds:359,hcp:15},
+      {par:4,yds:365,hcp:4},{par:4,yds:444,hcp:2},{par:3,yds:165,hcp:12},{par:4,yds:395,hcp:14},{par:4,yds:307,hcp:16},{par:3,yds:203,hcp:8},{par:5,yds:582,hcp:10},{par:4,yds:323,hcp:18},{par:4,yds:393,hcp:6}]},
+    { name:'Gold',   color:'#c8a000', par:70, yards:5989, rating:69.8, slope:120, holes:[
+      {par:5,yds:497,hcp:17},{par:3,yds:163,hcp:13},{par:5,yds:591,hcp:9},{par:4,yds:402,hcp:1},{par:4,yds:356,hcp:11},{par:3,yds:136,hcp:3},{par:4,yds:344,hcp:5},{par:3,yds:213,hcp:7},{par:4,yds:345,hcp:15},
+      {par:4,yds:365,hcp:4},{par:4,yds:399,hcp:2},{par:3,yds:132,hcp:12},{par:4,yds:352,hcp:14},{par:4,yds:307,hcp:16},{par:3,yds:178,hcp:8},{par:5,yds:516,hcp:10},{par:4,yds:323,hcp:18},{par:4,yds:370,hcp:6}]},
+    { name:'White',  color:'#aaa',    par:70, yards:5670, rating:68.5, slope:118, holes:[
+      {par:5,yds:466,hcp:17},{par:3,yds:163,hcp:13},{par:5,yds:579,hcp:9},{par:4,yds:384,hcp:1},{par:4,yds:302,hcp:11},{par:3,yds:136,hcp:3},{par:4,yds:327,hcp:5},{par:3,yds:161,hcp:7},{par:4,yds:334,hcp:15},
+      {par:4,yds:352,hcp:4},{par:4,yds:399,hcp:2},{par:3,yds:119,hcp:12},{par:4,yds:352,hcp:14},{par:4,yds:304,hcp:16},{par:3,yds:162,hcp:8},{par:5,yds:475,hcp:10},{par:4,yds:309,hcp:18},{par:4,yds:346,hcp:6}]},
+    { name:'Red',    color:'#e74c3c', par:70, yards:4940, rating:69.1, slope:114, holes:[
+      {par:5,yds:400,hcp:7},{par:3,yds:124,hcp:11},{par:5,yds:520,hcp:1},{par:4,yds:374,hcp:3},{par:4,yds:254,hcp:17},{par:3,yds:122,hcp:13},{par:4,yds:286,hcp:9},{par:3,yds:149,hcp:15},{par:4,yds:317,hcp:5},
+      {par:4,yds:252,hcp:10},{par:4,yds:354,hcp:8},{par:3,yds:90,hcp:18},{par:4,yds:312,hcp:4},{par:4,yds:237,hcp:6},{par:3,yds:155,hcp:12},{par:5,yds:450,hcp:2},{par:4,yds:267,hcp:16},{par:4,yds:277,hcp:14}]}
   ]}
 ];
 
