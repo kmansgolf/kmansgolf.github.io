@@ -6,6 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0f2744">
 <title>kmansgolf · The Fairway</title>
 <meta name="theme-color" content="#000000" id="theme-meta">
@@ -568,6 +569,7 @@ body[data-theme="light"] .fw-score-par--even { background: rgba(0,0,0,0.06); }
 <script>
 // Only make API calls when hosted (not local file)
 const IS_HOSTED = location.protocol === 'https:' || location.hostname === 'localhost';
+const WORKER_URL = 'https://kmansgolf.kemiman74.workers.dev';
 
 window.addEventListener('unhandledrejection', e => { e.preventDefault(); });
 window.addEventListener('error', e => {
@@ -871,93 +873,170 @@ function lsSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch
 
 // ── COUNTDOWN ─────────────────────────────────────────────────────────────────
 // ── LEADERBOARD ───────────────────────────────────────────────────────────────
-function LeaderboardTab({playerId}){
-  const myName=ID_REGION_MAP[parseInt(playerId)]?.name||"";
-  const myLast=myName.split(",")[0].toLowerCase();
-  const myGroup=ls("gw_myGroup",[]);
-  const inMyGroup=(name)=>myGroup.some(p=>p.toLowerCase()===name.toLowerCase())||
-    (myLast&&name.toLowerCase().includes(myLast));
-  const flights=[...DEMO_LEADERBOARD.flights].sort((a,b)=>{
-    const aMe=a.rows?.some(r=>inMyGroup(r.name));
-    const bMe=b.rows?.some(r=>inMyGroup(r.name));
-    return aMe?-1:bMe?1:0;
-  });
-  return h("div",{className:"fw-tab-content"},
-    h("div",{style:{background:"#fef3c7",border:"1px solid #d97706",borderRadius:6,padding:"8px 12px",marginBottom:12,fontSize:12,color:"#92400e",fontWeight:700}},"📊 DEMO · "+DEMO_LEADERBOARD.date+" · "+DEMO_LEADERBOARD.course),
-    h("div",{className:"fw-status fw-status--muted",style:{marginBottom:16}},"Live leaderboard available in the Claude artifact version."),
-    flights.map((flight,fi)=>{
-      const isMine=flight.rows?.some(r=>inMyGroup(r.name));
-      return h("div",{key:fi,style:{marginBottom:20}},
-        h("div",{className:"fw-section-label",style:{borderBottom:"none",padding:"6px 8px",background:"transparent"}},(isMine?"⭐ ":"")+flight.name),
-        h("div",{style:{overflowX:"auto"}},
-          h("table",{className:"fw-table"},
-            h("thead",null,h("tr",null,["POS","PLAYER","SCORE","PTS","$","🐦"].map(col=>h("th",{key:col,style:{textAlign:col==="PLAYER"?"left":"center"}},col)))),
-            h("tbody",null,flight.rows.map((r,i)=>{
-              const me=myLast&&r.name.toLowerCase().includes(myLast);
-              const groupMate=!me&&inMyGroup(r.name);
-              return h("tr",{key:i,className:me?"fw-row--me":groupMate?"fw-row--group":i%2===0?"fw-row--alt":"", style:{background:me?"":groupMate?"":i%2===0?"#f8fafc":"#fff",
-                borderLeft:`4px solid ${me?"#d97706":groupMate?"#3b82f6":"transparent"}`
-              }},
-                h("td",{style:{textAlign:"center",fontWeight:700,color:"var(--slate)"}},r.pos),
-                h("td",{style:{fontWeight:(me||groupMate)?700:400,color:me?"#92400e":groupMate?"#1e40af":"#0f172a"}},
-                  r.name+(me?" ⭐":groupMate?" 👥":"")),
-                h("td",{style:{textAlign:"center"}},r.score),
-                h("td",{style:{textAlign:"center",color:"var(--green)",fontWeight:700}},r.points),
-                h("td",{style:{textAlign:"center",color:r.earnings?"var(--green)":"var(--muted)",fontWeight:r.earnings?700:400}},r.earnings?"$"+r.earnings:"—"),
-                h("td",{style:{textAlign:"center"}},r.birdies||"—")
-              );
-            }))
-          )
-        )
-      );
-    })
-  );
-}
+function LeaderboardTab({playerId, tourType, todayEvent}){
+  const [data,    setData]    = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState(null);
+  const [lastFetch,setLastFetch] = useState(null);
 
-// ── SKINS ─────────────────────────────────────────────────────────────────────
-function SkinsTab({playerId}){
-  const myName=ID_REGION_MAP[parseInt(playerId)]?.name||"";
-  const myLast=myName.split(",")[0].toLowerCase();
-  const sk=DEMO_SKINS;
-  return h("div",{style:{padding:"12px 8px"}},
-    h("div",{style:{background:"#fef3c7",border:"1px solid #d97706",borderRadius:6,padding:"8px 12px",marginBottom:12,fontSize:12,color:"#92400e",fontWeight:700}},"📊 DEMO · "+sk.date+" · "+sk.course),
-    h("div",{style:{color:"#64748b",fontSize:12,marginBottom:16}},"Live skins available in the Claude artifact version."),
-    h("div",{style:{display:"flex",justifyContent:"center",alignItems:"baseline",gap:10,margin:"14px 0 20px"}},
-      h("span",{style:{color:"#475569",fontSize:13,letterSpacing:2,fontWeight:700}},"TOTAL POT"),
-      h("span",{style:{fontSize:36,fontWeight:700,color:"#166534"}},"$"+sk.pot)
-    ),
-    h("div",{className:"fw-section-label"},"HOLE-BY-HOLE"),
-    h("div",{style:{overflowX:"auto",marginBottom:20}},
-      h("table",{className:"fw-table"},
-        h("thead",null,h("tr",null,["HOLE","WINNER","SCORE","WIN"].map(c=>h("th",{key:c,style:{padding:"6px 4px",background:"#1e3a5f",color:"#f0c040",fontSize:10,letterSpacing:1,textAlign:c==="WINNER"?"left":"center"}},c)))),
-        h("tbody",null,sk.holes.map((r,i)=>{
-          const me=myLast&&r.winner.toLowerCase().includes(myLast);
-          return h("tr",{key:i,className:me?"fw-row--me":i%2===0?"fw-row--alt":""},
-            h("td",{style:{textAlign:"center",fontWeight:700}},r.hole),
-            h("td",{style:{textAlign:"left",fontWeight:me?700:400,color:me?"#92400e":"var(--text)"}},r.winner+(me?" ⭐":"")),
-            h("td",{style:{textAlign:"center"}},r.score),
-            h("td",{style:{textAlign:"center",color:"var(--green)",fontWeight:700}},"$"+r.amount)
-          );
-        }))
-      )
-    ),
-    h("div",{className:"fw-section-label"},"TOTALS"),
-    h("div",{style:{overflowX:"auto"}},
-      h("table",{className:"fw-table"},
-        h("thead",null,h("tr",null,["PLAYER","SKINS","WINNINGS"].map(col=>h("th",{key:col,style:{textAlign:col==="PLAYER"?"left":"center"}},col)))),
-        h("tbody",null,sk.totals.map((r,i)=>{
-          const me=myLast&&r.name.toLowerCase().includes(myLast);
-          return h("tr",{key:i,className:me?"fw-row--me":i%2===0?"fw-row--alt":""},
-            h("td",{style:{textAlign:"left",fontWeight:me?700:400,color:me?"#92400e":"var(--text)"}},r.name+(me?" ⭐":"")),
-            h("td",{style:{textAlign:"center",fontWeight:700}},r.skins),
-            h("td",{style:{textAlign:"center",color:"var(--green)",fontWeight:700}},"$"+r.amount)
-          );
-        }))
-      )
+  const myName = ID_REGION_MAP[parseInt(playerId)]?.name || "";
+  const myLast = myName.split(",")[0].toLowerCase();
+  const myGroup = ls("gw_myGroup", []);
+  const inMyGroup = (name) => myGroup.some(p=>p.toLowerCase()===name.toLowerCase()) ||
+    (myLast && name.toLowerCase().includes(myLast));
+
+  async function loadLeaderboard() {
+    if (!todayEvent) return;
+    setLoading(true); setError(null);
+    try {
+      const res = await fetch(`${WORKER_URL}/leaderboard?tid=${todayEvent.tid}&tour=${tourType}`);
+      if (!res.ok) throw new Error("Worker " + res.status);
+      const json = await res.json();
+      setData(json);
+      setLastFetch(new Date());
+    } catch(e) { setError(e.message); }
+    setLoading(false);
+  }
+
+  useEffect(() => { loadLeaderboard(); }, [tourType, todayEvent?.tid]);
+
+  // Auto-refresh every 2 min on tournament day
+  useEffect(() => {
+    if (!todayEvent) return;
+    const iv = setInterval(loadLeaderboard, 2 * 60 * 1000);
+    return () => clearInterval(iv);
+  }, [tourType, todayEvent?.tid]);
+
+  if (!todayEvent) return h("div",{className:"fw-tab-content"},
+    h("div",{className:"fw-empty"},
+      h("div",{className:"fw-empty-icon"},"📋"),
+      h("div",{className:"fw-empty-title"},"No Tournament Today"),
+      h("div",{className:"fw-empty-sub"},"Check the Schedule tab for upcoming events")
+    )
+  );
+
+  return h("div",{className:"fw-tab-content"},
+    lastFetch && h("div",{className:"fw-last-fetch"},"Updated "+lastFetch.toLocaleTimeString()),
+    loading && !data && h("div",{className:"fw-status fw-status--muted"},"Loading leaderboard..."),
+    error && h("div",{className:"fw-status fw-status--error"},"⚠ "+error),
+    data && !data.posted && h("div",{className:"fw-status fw-status--muted",style:{padding:"16px 0"}},"Scores not yet posted for this tournament."),
+    data && data.posted && h("div",null,
+      h("div",{style:{fontWeight:700,fontSize:15,marginBottom:12}},data.course+" · "+data.date),
+      data.flights.map((flight,fi)=>{
+        if (!flight.players.length) return null;
+        const isMine = flight.players.some(r=>inMyGroup(r.player));
+        return h("div",{key:fi,style:{marginBottom:20}},
+          h("div",{className:"fw-section-label"},(isMine?"⭐ ":"")+flight.flight),
+          h("div",{style:{overflowX:"auto"}},
+            h("table",{className:"fw-table"},
+              h("thead",null,h("tr",null,["POS","PLAYER","TOTAL","THRU","NOW"].map(col=>
+                h("th",{key:col,style:{textAlign:col==="PLAYER"?"left":"center"}},col)))),
+              h("tbody",null,flight.players.map((r,i)=>{
+                const me = myLast && r.player.toLowerCase().includes(myLast);
+                const gm = !me && inMyGroup(r.player);
+                return h("tr",{key:i,className:me?"fw-row--me":gm?"fw-row--group":i%2===0?"fw-row--alt":""},
+                  h("td",{style:{textAlign:"center",fontWeight:700}},r.pos),
+                  h("td",{style:{fontWeight:(me||gm)?700:400}},r.player+(me?" ⭐":gm?" 👥":"")),
+                  h("td",{style:{textAlign:"center",fontFamily:"var(--font-mono)"}},r.total),
+                  h("td",{style:{textAlign:"center"}},r.thru),
+                  h("td",{style:{textAlign:"center",fontSize:11}},r.currently||"—")
+                );
+              }))
+            )
+          )
+        );
+      }),
+      h("button",{className:"fw-btn fw-btn--refresh",style:{width:"100%",marginTop:8},onClick:loadLeaderboard},"↻ Refresh")
     )
   );
 }
 
+// ── SKINS ─────────────────────────────────────────────────────────────────────
+function SkinsTab({playerId, tourType, todayEvent}){
+  const [data,    setData]    = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState(null);
+  const [lastFetch,setLastFetch] = useState(null);
+
+  const myName = ID_REGION_MAP[parseInt(playerId)]?.name || "";
+  const myLast = myName.split(",")[0].toLowerCase();
+
+  async function loadSkins() {
+    if (!todayEvent) return;
+    setLoading(true); setError(null);
+    try {
+      const res = await fetch(`${WORKER_URL}/skins?tid=${todayEvent.tid}&tour=${tourType}`);
+      if (!res.ok) throw new Error("Worker " + res.status);
+      const json = await res.json();
+      setData(json);
+      setLastFetch(new Date());
+    } catch(e) { setError(e.message); }
+    setLoading(false);
+  }
+
+  useEffect(() => { loadSkins(); }, [tourType, todayEvent?.tid]);
+
+  if (!todayEvent) return h("div",{className:"fw-tab-content"},
+    h("div",{className:"fw-empty"},
+      h("div",{className:"fw-empty-icon"},"💰"),
+      h("div",{className:"fw-empty-title"},"No Tournament Today"),
+      h("div",{className:"fw-empty-sub"},"Skins results are posted during and after each tournament")
+    )
+  );
+
+  return h("div",{className:"fw-tab-content"},
+    lastFetch && h("div",{className:"fw-last-fetch"},"Updated "+lastFetch.toLocaleTimeString()),
+    loading && !data && h("div",{className:"fw-status fw-status--muted"},"Loading skins..."),
+    error && h("div",{className:"fw-status fw-status--error"},"⚠ "+error),
+    data && !data.posted && h("div",null,
+      h("div",{style:{fontWeight:700,fontSize:15,marginBottom:8}},todayEvent.course),
+      h("div",{className:"fw-status fw-status--muted"},"Skins results not yet posted. Check back mid-round."),
+      h("button",{className:"fw-btn fw-btn--refresh",style:{width:"100%",marginTop:12},onClick:loadSkins},"↻ Check Again")
+    ),
+    data && data.posted && h("div",null,
+      h("div",{style:{display:"flex",justifyContent:"center",alignItems:"baseline",gap:10,margin:"0 0 20px"}},
+        h("span",{style:{color:"var(--muted)",fontSize:13,letterSpacing:2,fontWeight:700}},"TOTAL POT"),
+        h("span",{style:{fontSize:36,fontWeight:700,color:"var(--green)"}},data.pot?"$"+data.pot:"—")
+      ),
+      data.holes.length > 0 && h("div",null,
+        h("div",{className:"fw-section-label"},"HOLE-BY-HOLE"),
+        h("div",{style:{overflowX:"auto",marginBottom:20}},
+          h("table",{className:"fw-table"},
+            h("thead",null,h("tr",null,["HOLE","WINNER","SCORE","WIN"].map(col=>
+              h("th",{key:col,style:{textAlign:col==="WINNER"?"left":"center"}},col)))),
+            h("tbody",null,data.holes.map((r,i)=>{
+              const me = myLast && r.winner.toLowerCase().includes(myLast);
+              return h("tr",{key:i,className:me?"fw-row--me":i%2===0?"fw-row--alt":""},
+                h("td",{style:{textAlign:"center",fontWeight:700}},r.hole),
+                h("td",{style:{fontWeight:me?700:400}},r.winner+(me?" ⭐":"")),
+                h("td",{style:{textAlign:"center"}},r.score),
+                h("td",{style:{textAlign:"center",color:"var(--green)",fontWeight:700}},r.amount?"$"+r.amount:"—")
+              );
+            }))
+          )
+        )
+      ),
+      data.totals.length > 0 && h("div",null,
+        h("div",{className:"fw-section-label"},"TOTALS"),
+        h("div",{style:{overflowX:"auto"}},
+          h("table",{className:"fw-table"},
+            h("thead",null,h("tr",null,["PLAYER","SKINS","WINNINGS"].map(col=>
+              h("th",{key:col,style:{textAlign:col==="PLAYER"?"left":"center"}},col)))),
+            h("tbody",null,data.totals.map((r,i)=>{
+              const me = myLast && r.name.toLowerCase().includes(myLast);
+              return h("tr",{key:i,className:me?"fw-row--me":i%2===0?"fw-row--alt":""},
+                h("td",{style:{fontWeight:me?700:400}},r.name+(me?" ⭐":"")),
+                h("td",{style:{textAlign:"center",fontWeight:700}},r.skins),
+                h("td",{style:{textAlign:"center",color:"var(--green)",fontWeight:700}},r.winnings?"$"+r.winnings:"—")
+              );
+            }))
+          )
+        )
+      ),
+      h("button",{className:"fw-btn fw-btn--refresh",style:{width:"100%",marginTop:8},onClick:loadSkins},"↻ Refresh")
+    )
+  );
+}
 
 // ── PAIRINGS ─────────────────────────────────────────────────────────────────
 
@@ -973,77 +1052,53 @@ function PairingsTab({playerId, tourType, todayEvent}) {
   const myLast = myName.split(",")[0].toLowerCase();
   const domain = TOUR_DOMAINS[tourType];
 
-  // ── fetch pairings via Claude API (artifact only; local HTML shows prompt) ──
+  // ── fetch pairings via Cloudflare Worker ──────────────────────────────────────
   async function loadPairings() {
     if (!todayEvent) return;
-    if (!IS_HOSTED) { setErrMsg("Live data requires hosted version."); return; }
     setLoading(true); setErrMsg(null);
-    const tourPath = "columbus_tour_pages";
-    const prompt = `Visit https://www.${domain}/${tourPath}/Pairings.aspx and return ALL pairings groups for the current tournament as JSON only, no markdown.
-Format:
-{"posted":true,"course":"course name","date":"date","shotgun":true,"groups":[{"startHole":1,"teeTime":"8:00 AM","players":["Last, First","Last, First","Last, First"]}]}
-If it is a shotgun start set shotgun:true and include the starting hole for each group.
-If pairings are not yet posted return: {"posted":false}
-Return ONLY the JSON.`;
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          model:"claude-sonnet-4-20250514", max_tokens:2000,
-          tools:[{type:"web_search_20250305",name:"web_search"}],
-          messages:[{role:"user",content:prompt}],
-        }),
-      });
-      if (!res.ok) throw new Error("API "+res.status);
-      const data = await res.json();
-      const text = data.content.filter(b=>b.type==="text").map(b=>b.text).join("");
-      const m = text.match(/\{[\s\S]*\}/);
-      if (m) {
-        const p = JSON.parse(m[0]);
-        setPairings(p);
-        // Save my group to localStorage so leaderboard can highlight them
-        if (p.posted && p.groups) {
-          const myG = p.groups.find(g => g.players?.some(pl => pl.toLowerCase().includes(myLast)));
-          if (myG) lsSet("gw_myGroup", myG.players);
-        }
+      const res = await fetch(`${WORKER_URL}/pairings?tid=${todayEvent.tid}&tour=${tourType}`);
+      if (!res.ok) throw new Error("Worker " + res.status);
+      const p = await res.json();
+      setPairings(p);
+      // Save my group to localStorage so leaderboard can highlight them
+      if (p.posted && p.groups) {
+        const myG = p.groups.find(g => g.players?.some(pl => pl.toLowerCase().includes(myLast)));
+        if (myG) lsSet("gw_myGroup", myG.players);
       }
-      else { setErrMsg("Could not read pairings page."); }
     } catch(e) { setErrMsg("Fetch failed: "+e.message); }
     setLoading(false);
     setLastFetch(new Date());
   }
 
-  // ── fetch live scores for each player in my group ──
+  // ── fetch live scores for my group from Worker leaderboard ───────────────────
   async function loadGroupScores(players) {
-    if (!players || !players.length || !todayEvent || !IS_HOSTED) return;
+    if (!players || !players.length || !todayEvent) return;
     setScoresLoading(true);
-    const prompt = `Visit https://www.${domain}/livescore/leaderboard.aspx and find the current live scores for these players: ${players.join(", ")}.
-Return ONLY a JSON array:
-[{"name":"Last, First","gross":42,"toPar":-1,"holesPlayed":9},...]
-toPar is their score relative to par (negative = under par).
-If a player has not started yet return holesPlayed:0 and omit gross/toPar.
-Return ONLY the JSON array.`;
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          model:"claude-sonnet-4-20250514", max_tokens:800,
-          tools:[{type:"web_search_20250305",name:"web_search"}],
-          messages:[{role:"user",content:prompt}],
-        }),
-      });
+      const res = await fetch(`${WORKER_URL}/leaderboard?tid=${todayEvent.tid}&tour=${tourType}`);
       if (!res.ok) throw new Error();
       const data = await res.json();
-      const text = data.content.filter(b=>b.type==="text").map(b=>b.text).join("");
-      const m = text.match(/\[[\s\S]*\]/);
-      if (m) {
-        const arr = JSON.parse(m[0]);
-        const map = {};
-        arr.forEach(p => { map[p.name.toLowerCase()] = p; });
-        setScores(map);
-      }
+      // Build map of player name -> score data
+      const map = {};
+      (data.players || []).forEach(p => {
+        map[p.player.toLowerCase()] = {
+          name: p.player,
+          gross: parseInt(p.total) || 0,
+          thru: p.thru,
+          currently: p.currently,
+          pos: p.pos,
+          flight: p.flight,
+        };
+      });
+      // Filter to just our group players
+      const groupMap = {};
+      players.forEach(name => {
+        const key = name.toLowerCase();
+        const found = Object.keys(map).find(k => k.includes(key.split(",")[0]) || key.includes(k.split(",")[0]));
+        if (found) groupMap[name.toLowerCase()] = map[found];
+      });
+      setScores(groupMap);
     } catch {}
     setScoresLoading(false);
   }
@@ -1270,22 +1325,31 @@ function SpectatorTab({tourType,todayEvent}){
   }
 
   async function fetchPlayer(name){
-    if (!IS_HOSTED) { setPlayerData(p=>({...p,[name]:{found:false,error:true}})); return; }
     setLoading(p=>({...p,[name]:true}));
-    const prompt=`Visit https://www.${domain}/livescore/leaderboard.aspx and find player "${name}". Return ONLY JSON:
-{"found":true,"leaderboard":{"pos":3,"flight":"C Flight","score":91,"points":225,"earnings":60,"birdies":1},"skins":{"count":1,"amount":60}}
-If not found return: {"found":false}`;
     try{
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:600,
-          tools:[{type:"web_search_20250305",name:"web_search"}],
-          messages:[{role:"user",content:prompt}]}),
-      });
+      const res=await fetch(`${WORKER_URL}/leaderboard?tid=${todayEvent?.tid||""}&tour=${tourType}`);
+      if(!res.ok) throw new Error();
       const data=await res.json();
-      const text=data.content.filter(b=>b.type==="text").map(b=>b.text).join("");
-      const m=text.match(/\{[\s\S]*\}/);
-      setPlayerData(p=>({...p,[name]:m?JSON.parse(m[0]):{found:false}}));
+      // Search for this player in the leaderboard results
+      const nameLower=name.toLowerCase().split(",")[0];
+      const found=(data.players||[]).find(p=>
+        p.player.toLowerCase().includes(nameLower)||
+        nameLower.includes(p.player.toLowerCase().split(",")[0])
+      );
+      if(found){
+        setPlayerData(p=>({...p,[name]:{
+          found:true,
+          leaderboard:{
+            pos:found.pos,
+            flight:found.flight,
+            score:found.total,
+            thru:found.thru,
+            currently:found.currently,
+          }
+        }}));
+      } else {
+        setPlayerData(p=>({...p,[name]:{found:false}}));
+      }
     }catch{
       setPlayerData(p=>({...p,[name]:{found:false,error:true}}));
     }
@@ -1293,24 +1357,7 @@ If not found return: {"found":false}`;
   }
 
   async function fetchStandings(){
-    if (!IS_HOSTED) { setStdLoading(false); return; }
-    setStdLoading(true);
-    const year=new Date().getFullYear();
-    const prompt=`Visit https://www.${domain}/columbus_tour_pages/Standings.aspx and get the ${year} season points standings. Return ONLY a JSON array of top 20:
-[{"pos":1,"name":"Last, First","points":2450,"events":6,"wins":1},...]
-Return ONLY the JSON array.`;
-    try{
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1200,
-          tools:[{type:"web_search_20250305",name:"web_search"}],
-          messages:[{role:"user",content:prompt}]}),
-      });
-      const data=await res.json();
-      const text=data.content.filter(b=>b.type==="text").map(b=>b.text).join("");
-      const m=text.match(/\[[\s\S]*\]/);
-      if(m)setStandings(JSON.parse(m[0]));
-    }catch{}
+    // Standings scraping coming soon — Worker route not yet implemented
     setStdLoading(false);
   }
 
@@ -1559,8 +1606,8 @@ function App(){
     // Scrollable content
     h("div",{className:"fw-shell-scroll"},
       tab==="pairings"    &&h(PairingsTab,{playerId,tourType,todayEvent}),
-      tab==="leaderboard" &&h(LeaderboardTab,{playerId,tourType}),
-      tab==="skins"       &&h(SkinsTab,{playerId,tourType}),
+      tab==="leaderboard" &&h(LeaderboardTab,{playerId,tourType,todayEvent:getTodayTournament(tourType)}),
+      tab==="skins"       &&h(SkinsTab,{playerId,tourType,todayEvent:getTodayTournament(tourType)}),
       tab==="spectator"   &&h(SpectatorTab,{tourType,todayEvent}),
     )
   );
