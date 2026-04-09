@@ -1086,8 +1086,10 @@ function PairingsTab({playerId, tourType, todayEvent}) {
       setPairings(p);
       // Save my group to localStorage so leaderboard can highlight them
       if (p.posted && p.groups) {
-        const myG = p.groups.find(g => g.players?.some(pl => pl.toLowerCase().includes(myLast)));
-        if (myG) lsSet("gw_myGroup", myG.players);
+        const myG = p.groups.find(g => g.players?.some(pl =>
+          (pl.name||pl).toLowerCase().includes(myLast)
+        ));
+        if (myG) lsSet("gw_myGroup", myG.players.map(pl => pl.name||pl));
       }
     } catch(e) { setErrMsg("Fetch failed: "+e.message); }
     setLoading(false);
@@ -1102,23 +1104,16 @@ function PairingsTab({playerId, tourType, todayEvent}) {
       const res = await fetch(`${WORKER_URL}/leaderboard?tid=${todayEvent.tid}&tour=${tourType}`);
       if (!res.ok) throw new Error();
       const data = await res.json();
-      // Build map of player name -> score data
+      // Build map of player name -> score data from leaderboard
       const map = {};
       (data.players || []).forEach(p => {
-        map[p.player.toLowerCase()] = {
-          name: p.player,
-          gross: parseInt(p.total) || 0,
-          thru: p.thru,
-          currently: p.currently,
-          pos: p.pos,
-          flight: p.flight,
-        };
+        if (p.player) map[p.player.toLowerCase()] = p;
       });
-      // Filter to just our group players
+      // Match to our group players by last name
       const groupMap = {};
       players.forEach(name => {
-        const key = name.toLowerCase();
-        const found = Object.keys(map).find(k => k.includes(key.split(",")[0]) || key.includes(k.split(",")[0]));
+        const lastName = (name.split(",")[0] || "").toLowerCase().trim();
+        const found = Object.keys(map).find(k => k.includes(lastName) || lastName.includes(k.split(",")[0]));
         if (found) groupMap[name.toLowerCase()] = map[found];
       });
       setScores(groupMap);
@@ -1131,10 +1126,13 @@ function PairingsTab({playerId, tourType, todayEvent}) {
   // Auto-refresh scores every 5 min on tournament day
   useEffect(() => {
     if (!todayEvent || !pairings?.posted) return;
-    const myGroup = pairings.groups?.find(g => g.players?.some(p => p.toLowerCase().includes(myLast)));
-    if (myGroup) loadGroupScores(myGroup.players);
+    const myGroup = pairings.groups?.find(g => g.players?.some(p =>
+      (p.name||p).toLowerCase().includes(myLast)
+    ));
+    const myGroupNames = myGroup?.players?.map(p => p.name||p) || [];
+    if (myGroupNames.length) loadGroupScores(myGroupNames);
     const iv = setInterval(() => {
-      if (myGroup) loadGroupScores(myGroup.players);
+      if (myGroupNames.length) loadGroupScores(myGroupNames);
     }, 5 * 60 * 1000);
     return () => clearInterval(iv);
   }, [pairings]);
@@ -1199,7 +1197,7 @@ function PairingsTab({playerId, tourType, todayEvent}) {
   }
 
   // ── tournament day view ──
-  const myGroup = pairings?.groups?.find(g => g.players?.some(p => p.toLowerCase().includes(myLast)));
+  const myGroup = pairings?.groups?.find(g => g.players?.some(p => (p.name||p).toLowerCase().includes(myLast)));
   const otherGroups = pairings?.groups?.filter(g => g !== myGroup) || [];
 
   function toParStr(n) {
@@ -1214,20 +1212,26 @@ function PairingsTab({playerId, tourType, todayEvent}) {
     return "#dc2626";
   }
 
-  function PlayerRow({name, isMe}) {
+  function PlayerRow({player, isMe}) {
+    const name = player.name || player;
+    const flight = player.flight || "";
     const key = name.toLowerCase();
     const sc = scores?.[key] || scores?.[Object.keys(scores||{}).find(k=>k.includes(name.split(",")[0].toLowerCase()))];
-    const started = sc && sc.holesPlayed > 0;
-    return h("div", {className:"fw-player-row "+(isMe?"fw-player-row--me":"")},
-      h("div", {className:"fw-player-name "+(isMe?"fw-player-name--me":"")},
-        name + (isMe?" ⭐":"")),
+    const started = sc && sc.thru && sc.thru !== "F";
+    return h("div", {className:"fw-player-row "+(isMe?"fw-player-row--me":""),
+      style:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 13px",
+        borderBottom:"1px solid rgba(255,255,255,0.06)"}},
+      h("div", null,
+        h("div", {className:"fw-player-name "+(isMe?"fw-player-name--me":""),style:{fontSize:14}},
+          name + (isMe?" ⭐":"")),
+        flight && h("div", {style:{fontSize:11,color:"var(--muted)",marginTop:2}}, flight+" Flight")
+      ),
       started
         ? h("div", {className:"fw-score-chips"},
-            h("div", {className:"fw-score-gross"}, sc.gross),
-            h("div", {className:"fw-score-par "+(sc.toPar<0?"fw-score-par--under":sc.toPar>0?"fw-score-par--over":"fw-score-par--even")}, toParStr(sc.toPar)),
-            h("div", {className:"fw-score-thru"}, "thru "+sc.holesPlayed)
+            h("div", {className:"fw-score-gross"}, sc.total),
+            h("div", {style:{fontSize:11,color:"var(--muted)"}}, "thru "+sc.thru)
           )
-        : h("div", {className:"fw-status fw-status--muted",style:{fontSize:11}}, scoresLoading?"…":"—")
+        : h("div", {style:{fontSize:11,color:"var(--muted)"}}, scoresLoading?"…":"—")
     );
   }
 
@@ -1236,18 +1240,19 @@ function PairingsTab({playerId, tourType, todayEvent}) {
       h("div", {className:"fw-group-header "+(isMyGroup?"fw-group-header--mine":"")},
         h("div", null,
           h("div", {className:"fw-group-label "+(isMyGroup?"fw-group-label--mine":"")},
-            isMyGroup ? "⭐ MY GROUP" : "GROUP"),
+            (isMyGroup ? "⭐ MY GROUP — " : "")+"Group "+group.group),
           h("div", {className:"fw-group-meta "+(isMyGroup?"fw-group-meta--mine":"")},
-            "Hole "+group.startHole+(group.teeTime ? "  ·  "+group.teeTime : ""))
+            "Hole "+group.startHole+"  ·  "+group.teeTime+(group.flight?" · "+group.flight+" Flight":""))
         ),
         isMyGroup && h("button", {
           onClick:()=>loadGroupScores(group.players), disabled:scoresLoading,
           className:"fw-btn fw-btn--ghost"},
           scoresLoading?"…":"↻ Scores")
       ),
-      group.players?.map((p,i) =>
-        h(PlayerRow, {key:i, name:p, isMe:myLast&&p.toLowerCase().includes(myLast)})
-      )
+      group.players?.map((p,i) => {
+        const nm = p.name||p;
+        return h(PlayerRow, {key:i, player:p, isMe:myLast&&nm.toLowerCase().includes(myLast)});
+      })
     );
   }
 
