@@ -874,24 +874,26 @@ function detectRegion(id){
   return MEMBER_MAP[String(id)] || MEMBER_MAP[String(parseInt(id))] || ID_REGION_MAP[parseInt(id)] || null;
 }
 
-function searchMembersLocal(query) {
+function searchMembersLocal(query, tourFilter) {
   const q = query.trim().toLowerCase();
   if (!q || q.length < 2) return [];
   const results = [];
-  // Search regular members
-  REGULAR_MEMBERS.forEach(m => {
-    if (m.name.toLowerCase().includes(q)) {
-      results.push({...m, tour:"regular", region:"columbus"});
-    }
-  });
-  // Search senior members
-  SENIOR_MEMBERS.forEach(m => {
-    if (m.name.toLowerCase().includes(q)) {
-      // avoid duplicate if same person on both tours
-      const exists = results.find(r => r.id === m.id && r.tour === "senior");
-      if (!exists) results.push({...m, tour:"senior", region:"columbus"});
-    }
-  });
+  // Only search tours matching the current selection
+  if (!tourFilter || tourFilter === "regular") {
+    REGULAR_MEMBERS.forEach(m => {
+      if (m.name.toLowerCase().includes(q)) {
+        results.push({...m, tour:"regular", region:"columbus"});
+      }
+    });
+  }
+  if (!tourFilter || tourFilter === "senior") {
+    SENIOR_MEMBERS.forEach(m => {
+      if (m.name.toLowerCase().includes(q)) {
+        const exists = results.find(r => r.id === m.id);
+        if (!exists) results.push({...m, tour:"senior", region:"columbus"});
+      }
+    });
+  }
   return results.slice(0, 8);
 }
 function getWindDir(deg){
@@ -1252,7 +1254,7 @@ function PairingsTab({playerId, playerName, tourType, todayEvent, nextEvent}) {
           h("div", {className:"fw-group-label "+(isMyGroup?"fw-group-label--mine":"")},
             (isMyGroup ? "⭐ MY GROUP — " : "")+"Group "+group.group),
           h("div", {className:"fw-group-meta "+(isMyGroup?"fw-group-meta--mine":"")},
-            "Hole "+group.startHole+"  ·  "+group.teeTime+(group.flight?" · "+group.flight+" Flight":""))
+            group.teeTime+"  ·  Hole "+group.startHole+(group.flight?" · "+group.flight+" Flight":""))
         ),
         isMyGroup && h("button", {
           onClick:()=>loadGroupScores(group.players), disabled:scoresLoading,
@@ -1335,7 +1337,7 @@ function SpectatorTab({tourType,todayEvent}){
     setSelectedMember(null);
     setNotInList(false);
     if (!val.trim() || val.length < 2) { setWatchSuggestions([]); return; }
-    const results = searchMembersLocal(val);
+    const results = searchMembersLocal(val, tourType);
     setWatchSuggestions(results);
   }
 
@@ -1546,7 +1548,7 @@ function App(){
   // Local member search — instant, no API needed
   function searchMembers(val) {
     if (!val || val.length < 2) { setSuggestions([]); return; }
-    const results = searchMembersLocal(val);
+    const results = searchMembersLocal(val, tourType);
     setSuggestions(results);
   }
 
