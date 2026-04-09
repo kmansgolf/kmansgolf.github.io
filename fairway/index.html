@@ -1149,63 +1149,60 @@ function PairingsTab({playerId, tourType, todayEvent, nextEvent}) {
     return () => clearInterval(iv);
   }, [pairings]);
 
-  // ── no tournament today ──
+  // ── no tournament today — show schedule + pairings if posted ──
   if (!todayEvent) {
     const today2 = new Date().toISOString().split("T")[0];
     const next4 = (SCHEDULE[tourType]?.filter(t => t.date > today2) || []).slice(0, 4);
-    return h("div", {className:"fw-tab-content"},
-      h("div", {className:"fw-card fw-card--dark",style:{marginBottom:16}},
-        h("div", {className:"fw-card-body"},
-        h("div", {className:"fw-card-title fw-card-title--light",style:{marginBottom:10}}, "NEXT 4 TOURNAMENTS"),
-        next4.length === 0
-          ? h("div", {className:"fw-status fw-status--muted"}, "No upcoming tournaments found.")
-          : next4.map((ev,i) => {
-              const d = new Date(ev.date+"T00:00:00");
-              const daysOut = Math.round((d - new Date()) / (1000*60*60*24));
-              const isNext = i===0;
-              return h("div", {key:ev.date, style:{
-                display:"flex", justifyContent:"space-between", alignItems:"center",
-                background: isNext?"rgba(240,192,64,0.12)":"rgba(255,255,255,0.04)",
-                border: isNext?"1px solid rgba(240,192,64,0.4)":"1px solid rgba(255,255,255,0.06)",
-                borderRadius:7, padding:"9px 12px", marginBottom:6,
-              }},
-                h("div", null,
-                  h("div", {style:{fontSize:13,fontWeight:isNext?700:400,color:isNext?"#f0c040":"#e2e8f0"}}, ev.course),
-                  h("div", {style:{display:"flex",gap:6,alignItems:"center",marginTop:2}},
-                    h("span",{style:{fontSize:11,color:"#94a3b8"}},
-                      d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}) +
-                      (ev.twoDay&&ev.endDate?" – "+new Date(ev.endDate+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}):"")
-                    ),
-                    ev.twoDay&&h("span",{style:{fontSize:9,fontWeight:700,padding:"1px 5px",borderRadius:3,
-                      background:"rgba(96,165,250,0.15)",color:"#60a5fa"}},"2-DAY")
-                  )
-                ),
-                h("div", {style:{fontSize:14,fontWeight:700,color:isNext?"#f0c040":"#64748b"}}, daysOut+"d")
-              );
-            })
-      )),
-      // upcoming pairings check
-      h("div", {className:"fw-pairings-check"},
-        h("div", {style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}},
-          h("div", {className:"fw-card-title fw-card-title--light"}, "PAIRINGS"),
-          h("button", {onClick:loadPairings, disabled:loading, className:"fw-btn fw-btn--primary"},
-            loading ? "…" : "↻ Check")
-        ),
+
+    // If pairings are already posted for next event, fall through to full pairings view below
+    if (pairings?.posted) {
+      // fall through — renders full pairings view
+    } else {
+      return h("div", {className:"fw-tab-content"},
+        h("div", {className:"fw-card fw-card--dark",style:{marginBottom:16}},
+          h("div", {className:"fw-card-body"},
+          h("div", {className:"fw-card-title fw-card-title--light",style:{marginBottom:10}}, "NEXT 4 TOURNAMENTS"),
+          next4.length === 0
+            ? h("div", {className:"fw-status fw-status--muted"}, "No upcoming tournaments found.")
+            : next4.map((ev,i) => {
+                const d = new Date(ev.date+"T00:00:00");
+                const daysOut = Math.round((d - new Date()) / (1000*60*60*24));
+                const isNext = i===0;
+                return h("div", {key:ev.date, style:{
+                  display:"flex", justifyContent:"space-between", alignItems:"center",
+                  background: isNext?"rgba(61,220,132,0.08)":"rgba(255,255,255,0.04)",
+                  border: isNext?"1px solid rgba(61,220,132,0.3)":"1px solid rgba(255,255,255,0.06)",
+                  borderRadius:7, padding:"9px 12px", marginBottom:6,
+                }},
+                  h("div", null,
+                    h("div", {style:{fontSize:13,fontWeight:isNext?700:400,color:isNext?"var(--green)":"var(--text)"}}, ev.course),
+                    h("div", {style:{display:"flex",gap:6,alignItems:"center",marginTop:2}},
+                      h("span",{style:{fontSize:11,color:"var(--muted)"}},
+                        d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}) +
+                        (ev.twoDay&&ev.endDate?" – "+new Date(ev.endDate+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}):"")
+                      ),
+                      ev.twoDay&&h("span",{style:{fontSize:9,fontWeight:700,padding:"1px 5px",borderRadius:3,
+                        background:"rgba(96,165,250,0.15)",color:"#60a5fa"}},"2-DAY")
+                    )
+                  ),
+                  h("div", {style:{fontSize:14,fontWeight:700,color:isNext?"var(--green)":"var(--muted)"}}, daysOut+"d")
+                );
+              })
+        )),
         loading
-          ? h("div", {className:"fw-status fw-status--muted"}, "Checking for pairings…")
+          ? h("div", {style:{padding:"16px",textAlign:"center",color:"var(--muted)"}}, "Loading pairings…")
           : errMsg
           ? h("div", {className:"fw-status fw-status--error"}, errMsg)
           : !pairings
-          ? h("div", {className:"fw-status fw-status--muted"}, "Tap Check to see if pairings are posted for the next event.")
-          : !pairings.posted
-          ? h("div", {className:"fw-status fw-status--muted"},
+          ? h("div", {style:{padding:"16px",textAlign:"center",color:"var(--muted)",fontSize:13}},
+              "Loading pairings for "+activeEvent?.course+"…")
+          : h("div", {style:{padding:"16px",textAlign:"center",color:"var(--muted)",fontSize:13}},
               pairings.availableTournaments?.length > 0
-                ? "Pairings not yet posted for this event. Next available: " + pairings.availableTournaments[0]?.label
+                ? "Pairings not yet posted. Next available: " + pairings.availableTournaments[0]?.label
                 : (pairings.message || "Pairings not yet posted — check back closer to tournament day.")
             )
-          : h("div", {className:"fw-status fw-status--success",style:{fontWeight:700}}, "✓ Pairings posted — switch to tournament day to view.")
-      )
-    );
+      );
+    }
   }
 
   // ── tournament day view ──
