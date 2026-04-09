@@ -1572,12 +1572,14 @@ function App(){
   return h("div",{className:"fw-root"},
     h("div",{className:"fw-shell-fixed"},
       h("div",{className:"fw-header"},
-        h("div",{className:"fw-header-inner"},
-          h("div",{className:"fw-logo-icon"},"⛳"),
-          h("div",null,
-            h("div",{className:"fw-logo-name"},"THE FAIRWAY"),
-            h("div",{className:"fw-logo-sub"},"TOURNAMENT TRACKER")
-          )
+        h("div",{className:"fw-header-inner",style:{justifyContent:"space-between",alignItems:"center",paddingBottom:"10px"}},
+          h("a",{href:"/",style:{textDecoration:"none",display:"flex",alignItems:"baseline",gap:0}},
+            h("span",{style:{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"20px",fontWeight:800,letterSpacing:"-0.3px",color:"#f5f5f7"}},"kmans"),
+            h("span",{style:{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"20px",fontWeight:800,letterSpacing:"-0.3px",color:"#3ddc84"}},"golf"),
+            h("span",{style:{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"14px",color:"rgba(255,255,255,0.3)",margin:"0 6px"}},"·"),
+            h("span",{style:{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"14px",fontWeight:700,letterSpacing:"1px",color:"rgba(255,255,255,0.65)"}},"THE FAIRWAY")
+          ),
+          h("button",{id:"fw-theme-btn",onClick:fwToggleTheme,style:{background:"none",border:"0.5px solid rgba(255,255,255,0.2)",borderRadius:"16px",padding:"4px 10px",color:"#6e6e73",fontFamily:"'Barlow Condensed',sans-serif",fontSize:"11px",fontWeight:700,letterSpacing:"0.5px",cursor:"pointer",whiteSpace:"nowrap"}},"☀️")
         )
       ),
 
@@ -1636,6 +1638,28 @@ function App(){
   );
 }
 
+// Store theme globally so React button can read it
+window._fwTheme = localStorage.getItem('range_theme') || 'dark';
+
+function fwApplyTheme(t) {
+  window._fwTheme = t;
+  const isLight = t === 'light';
+  document.body.setAttribute('data-theme', isLight ? 'light' : '');
+  // Update button if it exists in DOM (React may have rendered it)
+  const btn = document.getElementById('fw-theme-btn');
+  if (btn) btn.textContent = isLight ? '🌙' : '☀️';
+  // Store on body so button can read on render
+  document.body.dataset.themeIcon = isLight ? '🌙' : '☀️';
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', isLight ? '#faf8f4' : '#000000');
+  localStorage.setItem('range_theme', t);
+}
+function fwToggleTheme() {
+  fwApplyTheme((localStorage.getItem('range_theme')||'dark')==='light'?'dark':'light');
+}
+// Apply on load
+fwApplyTheme(localStorage.getItem('range_theme')||'dark');
+
 ReactDOM.createRoot(document.getElementById("root")).render(h(App,null));
 
 // ── PULL TO REFRESH ──
@@ -1693,20 +1717,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(h(App,null));
 })();
 
 // ── THEME ─────────────────────────────────────────────────────────────────────
-function fwApplyTheme(t) {
-  const isLight = t === 'light';
-  document.body.setAttribute('data-theme', isLight ? 'light' : '');
-  const btn = document.getElementById('fw-theme-btn');
-  if (btn) btn.textContent = isLight ? '🌙' : '☀️';
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', isLight ? '#faf8f4' : '#000000');
-  localStorage.setItem('range_theme', t);
-}
-function fwToggleTheme() {
-  fwApplyTheme((localStorage.getItem('range_theme')||'dark')==='light'?'dark':'light');
-}
-// Apply on load
-fwApplyTheme(localStorage.getItem('range_theme')||'dark');
 
 // ── SWIPE DOWN TO REFRESH ─────────────────────────────────────────────────────
 (function(){
