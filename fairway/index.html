@@ -906,13 +906,13 @@ function lsSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch
 
 // ── COUNTDOWN ─────────────────────────────────────────────────────────────────
 // ── LEADERBOARD ───────────────────────────────────────────────────────────────
-function LeaderboardTab({playerId, tourType, todayEvent}){
+function LeaderboardTab({playerId, playerName, tourType, todayEvent}){
   const [data,    setData]    = useState(null);
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState(null);
   const [lastFetch,setLastFetch] = useState(null);
 
-  const myName = ID_REGION_MAP[parseInt(playerId)]?.name || "";
+  const myName = playerName || ID_REGION_MAP[parseInt(playerId)]?.name || "";
   const myLast = myName.split(",")[0].toLowerCase();
   const myGroup = ls("gw_myGroup", []);
   const inMyGroup = (name) => myGroup.some(p=>p.toLowerCase()===name.toLowerCase()) ||
@@ -985,13 +985,13 @@ function LeaderboardTab({playerId, tourType, todayEvent}){
 }
 
 // ── SKINS ─────────────────────────────────────────────────────────────────────
-function SkinsTab({playerId, tourType, todayEvent}){
+function SkinsTab({playerId, playerName, tourType, todayEvent}){
   const [data,    setData]    = useState(null);
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState(null);
   const [lastFetch,setLastFetch] = useState(null);
 
-  const myName = ID_REGION_MAP[parseInt(playerId)]?.name || "";
+  const myName = playerName || ID_REGION_MAP[parseInt(playerId)]?.name || "";
   const myLast = myName.split(",")[0].toLowerCase();
 
   async function loadSkins() {
@@ -1073,7 +1073,7 @@ function SkinsTab({playerId, tourType, todayEvent}){
 
 // ── PAIRINGS ─────────────────────────────────────────────────────────────────
 
-function PairingsTab({playerId, tourType, todayEvent, nextEvent}) {
+function PairingsTab({playerId, playerName, tourType, todayEvent, nextEvent}) {
   // Use today's event if playing, otherwise show next upcoming
   const activeEvent = todayEvent || nextEvent;
   const [pairings, setPairings] = useState(null);
@@ -1083,7 +1083,8 @@ function PairingsTab({playerId, tourType, todayEvent, nextEvent}) {
   const [errMsg,   setErrMsg]   = useState(null);
   const [lastFetch,setLastFetch]= useState(null);
 
-  const myName = ID_REGION_MAP[parseInt(playerId)]?.name || "";
+  // Use searched playerName first, fall back to ID_REGION_MAP
+  const myName = playerName || ID_REGION_MAP[parseInt(playerId)]?.name || "";
   const myLast = myName.split(",")[0].toLowerCase();
   const domain = TOUR_DOMAINS[tourType];
 
@@ -1650,9 +1651,9 @@ function App(){
 
     // Scrollable content
     h("div",{className:"fw-shell-scroll"},
-      tab==="pairings"    &&h(PairingsTab,{playerId,tourType,todayEvent,nextEvent:getNextTournament(tourType)}),
-      tab==="leaderboard" &&h(LeaderboardTab,{playerId,tourType,todayEvent:getTodayTournament(tourType)}),
-      tab==="skins"       &&h(SkinsTab,{playerId,tourType,todayEvent:getTodayTournament(tourType)}),
+      tab==="pairings"    &&h(PairingsTab,{playerId,playerName,tourType,todayEvent,nextEvent:getNextTournament(tourType)}),
+      tab==="leaderboard" &&h(LeaderboardTab,{playerId,playerName,tourType,todayEvent:getTodayTournament(tourType)}),
+      tab==="skins"       &&h(SkinsTab,{playerId,playerName,tourType,todayEvent:getTodayTournament(tourType)}),
       tab==="spectator"   &&h(SpectatorTab,{tourType,todayEvent}),
     )
   );
