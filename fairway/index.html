@@ -1188,7 +1188,11 @@ function PairingsTab({playerId, tourType, todayEvent}) {
           : !pairings
           ? h("div", {className:"fw-status fw-status--muted"}, "Tap Check to see if pairings are posted for the next event.")
           : !pairings.posted
-          ? h("div", {className:"fw-status fw-status--muted"}, "Pairings not yet posted for "+next4[0]?.course+".")
+          ? h("div", {className:"fw-status fw-status--muted"},
+              pairings.availableTournaments?.length > 0
+                ? "Pairings not yet posted for this event. Next available: " + pairings.availableTournaments[0]?.label
+                : (pairings.message || "Pairings not yet posted — check back closer to tournament day.")
+            )
           : h("div", {className:"fw-status fw-status--success",style:{fontWeight:700}}, "✓ Pairings posted — switch to tournament day to view.")
       )
     );
