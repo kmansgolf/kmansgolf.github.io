@@ -1102,7 +1102,8 @@ function PairingsTab({playerId, playerName, tourType, todayEvent, nextEvent}) {
       // Save my group to localStorage so leaderboard can highlight them
       if (p.posted && p.groups) {
         const myG = p.groups.find(g => g.players?.some(pl =>
-          (pl.name||pl).toLowerCase().includes(myLast)
+          (playerId && pl.id === String(playerId)) ||
+          (myLast && (pl.name||pl).toLowerCase().includes(myLast))
         ));
         if (myG) lsSet("gw_myGroup", myG.players.map(pl => pl.name||pl));
       }
@@ -1142,7 +1143,8 @@ function PairingsTab({playerId, playerName, tourType, todayEvent, nextEvent}) {
   useEffect(() => {
     if (!todayEvent || !pairings?.posted) return;
     const myGroup = pairings.groups?.find(g => g.players?.some(p =>
-      (p.name||p).toLowerCase().includes(myLast)
+      (playerId && p.id === String(playerId)) ||
+      (myLast && (p.name||p).toLowerCase().includes(myLast))
     ));
     const myGroupNames = myGroup?.players?.map(p => p.name||p) || [];
     if (myGroupNames.length) loadGroupScores(myGroupNames);
@@ -1209,7 +1211,11 @@ function PairingsTab({playerId, playerName, tourType, todayEvent, nextEvent}) {
   }
 
   // ── tournament day view ──
-  const myGroup = pairings?.groups?.find(g => g.players?.some(p => (p.name||p).toLowerCase().includes(myLast)));
+  // Match by member ID first (exact), then fall back to last name
+  const myGroup = pairings?.groups?.find(g => g.players?.some(p =>
+    (playerId && p.id === String(playerId)) ||
+    (myLast && (p.name||p).toLowerCase().includes(myLast))
+  ));
   const otherGroups = pairings?.groups?.filter(g => g !== myGroup) || [];
 
   function toParStr(n) {
@@ -1263,7 +1269,9 @@ function PairingsTab({playerId, playerName, tourType, todayEvent, nextEvent}) {
       ),
       group.players?.map((p,i) => {
         const nm = p.name||p;
-        return h(PlayerRow, {key:i, player:p, isMe:myLast&&nm.toLowerCase().includes(myLast)});
+        const isme = (playerId && p.id === String(playerId)) ||
+                     (myLast && nm.toLowerCase().includes(myLast));
+        return h(PlayerRow, {key:i, player:p, isMe:isme});
       })
     );
   }
