@@ -908,7 +908,8 @@ function lsSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch
 
 // ── COUNTDOWN ─────────────────────────────────────────────────────────────────
 // ── LEADERBOARD ───────────────────────────────────────────────────────────────
-function LeaderboardTab({playerId, playerName, tourType, todayEvent}){
+function LeaderboardTab({playerId, playerName, tourType, todayEvent, nextEvent}){
+  const activeEvent = todayEvent || nextEvent;
   const [data,    setData]    = useState(null);
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState(null);
@@ -921,10 +922,10 @@ function LeaderboardTab({playerId, playerName, tourType, todayEvent}){
     (myLast && name.toLowerCase().includes(myLast));
 
   async function loadLeaderboard() {
-    if (!todayEvent) return;
+    if (!activeEvent) return;
     setLoading(true); setError(null);
     try {
-      const res = await fetch(`${WORKER_URL}/leaderboard?tid=${todayEvent.tid}&tour=${tourType}`);
+      const res = await fetch(`${WORKER_URL}/leaderboard?tid=${activeEvent.tid}&tour=${tourType}`);
       if (!res.ok) throw new Error("Worker " + res.status);
       const json = await res.json();
       setData(json);
@@ -933,16 +934,16 @@ function LeaderboardTab({playerId, playerName, tourType, todayEvent}){
     setLoading(false);
   }
 
-  useEffect(() => { loadLeaderboard(); }, [tourType, todayEvent?.tid]);
+  useEffect(() => { loadLeaderboard(); }, [tourType, activeEvent?.tid]);
 
   // Auto-refresh every 2 min on tournament day
   useEffect(() => {
-    if (!todayEvent) return;
+    if (!activeEvent) return;
     const iv = setInterval(loadLeaderboard, 2 * 60 * 1000);
     return () => clearInterval(iv);
-  }, [tourType, todayEvent?.tid]);
+  }, [tourType, activeEvent?.tid]);
 
-  if (!todayEvent) return h("div",{className:"fw-tab-content"},
+  if (!activeEvent) return h("div",{className:"fw-tab-content"},
     h("div",{className:"fw-empty"},
       h("div",{className:"fw-empty-icon"},"📋"),
       h("div",{className:"fw-empty-title"},"No Tournament Today"),
@@ -987,7 +988,8 @@ function LeaderboardTab({playerId, playerName, tourType, todayEvent}){
 }
 
 // ── SKINS ─────────────────────────────────────────────────────────────────────
-function SkinsTab({playerId, playerName, tourType, todayEvent}){
+function SkinsTab({playerId, playerName, tourType, todayEvent, nextEvent}){
+  const activeEvent = todayEvent || nextEvent;
   const [data,    setData]    = useState(null);
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState(null);
@@ -997,10 +999,10 @@ function SkinsTab({playerId, playerName, tourType, todayEvent}){
   const myLast = myName.split(",")[0].toLowerCase();
 
   async function loadSkins() {
-    if (!todayEvent) return;
+    if (!activeEvent) return;
     setLoading(true); setError(null);
     try {
-      const res = await fetch(`${WORKER_URL}/skins?tid=${todayEvent.tid}&tour=${tourType}`);
+      const res = await fetch(`${WORKER_URL}/skins?tid=${activeEvent.tid}&tour=${tourType}`);
       if (!res.ok) throw new Error("Worker " + res.status);
       const json = await res.json();
       setData(json);
@@ -1009,9 +1011,9 @@ function SkinsTab({playerId, playerName, tourType, todayEvent}){
     setLoading(false);
   }
 
-  useEffect(() => { loadSkins(); }, [tourType, todayEvent?.tid]);
+  useEffect(() => { loadSkins(); }, [tourType, activeEvent?.tid]);
 
-  if (!todayEvent) return h("div",{className:"fw-tab-content"},
+  if (!activeEvent) return h("div",{className:"fw-tab-content"},
     h("div",{className:"fw-empty"},
       h("div",{className:"fw-empty-icon"},"💰"),
       h("div",{className:"fw-empty-title"},"No Tournament Today"),
@@ -1024,7 +1026,7 @@ function SkinsTab({playerId, playerName, tourType, todayEvent}){
     loading && !data && h("div",{className:"fw-status fw-status--muted"},"Loading skins..."),
     error && h("div",{className:"fw-status fw-status--error"},"⚠ "+error),
     data && !data.posted && h("div",null,
-      h("div",{style:{fontWeight:700,fontSize:15,marginBottom:8}},todayEvent.course),
+      h("div",{style:{fontWeight:700,fontSize:15,marginBottom:8}},activeEvent.course),
       h("div",{className:"fw-status fw-status--muted"},"Skins results not yet posted. Check back mid-round."),
       h("button",{className:"fw-btn fw-btn--refresh",style:{width:"100%",marginTop:12},onClick:loadSkins},"↻ Check Again")
     ),
@@ -1381,7 +1383,8 @@ function SpectatorTab({tourType,todayEvent}){
   async function fetchPlayer(name){
     setLoading(p=>({...p,[name]:true}));
     try{
-      const res=await fetch(`${WORKER_URL}/leaderboard?tid=${todayEvent?.tid||""}&tour=${tourType}`);
+      const watchEvent = todayEvent || nextEvent;
+    const res=await fetch(`${WORKER_URL}/leaderboard?tid=${watchEvent?.tid||""}&tour=${tourType}`);
       if(!res.ok) throw new Error();
       const data=await res.json();
       // Search for this player in the leaderboard results
@@ -1662,8 +1665,8 @@ function App(){
     // Scrollable content
     h("div",{className:"fw-shell-scroll"},
       tab==="pairings"    &&h(PairingsTab,{playerId,playerName,tourType,todayEvent,nextEvent:getNextTournament(tourType)}),
-      tab==="leaderboard" &&h(LeaderboardTab,{playerId,playerName,tourType,todayEvent:getTodayTournament(tourType)}),
-      tab==="skins"       &&h(SkinsTab,{playerId,playerName,tourType,todayEvent:getTodayTournament(tourType)}),
+      tab==="leaderboard" &&h(LeaderboardTab,{playerId,playerName,tourType,todayEvent:getTodayTournament(tourType),nextEvent:getNextTournament(tourType)}),
+      tab==="skins"       &&h(SkinsTab,{playerId,playerName,tourType,todayEvent:getTodayTournament(tourType),nextEvent:getNextTournament(tourType)}),
       tab==="spectator"   &&h(SpectatorTab,{tourType,todayEvent}),
     )
   );
