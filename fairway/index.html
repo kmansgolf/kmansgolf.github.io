@@ -1031,45 +1031,90 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, nextEvent}){
       h("button",{className:"fw-btn fw-btn--refresh",style:{width:"100%",marginTop:12},onClick:loadSkins},"↻ Check Again")
     ),
     data && data.posted && h("div",null,
-      h("div",{style:{display:"flex",justifyContent:"center",alignItems:"baseline",gap:10,margin:"0 0 20px"}},
-        h("span",{style:{color:"var(--muted)",fontSize:13,letterSpacing:2,fontWeight:700}},"TOTAL POT"),
-        h("span",{style:{fontSize:36,fontWeight:700,color:"var(--green)"}},data.pot?"$"+data.pot:"—")
-      ),
-      data.holes.length > 0 && h("div",null,
-        h("div",{className:"fw-section-label"},"HOLE-BY-HOLE"),
-        h("div",{style:{overflowX:"auto",marginBottom:20}},
-          h("table",{className:"fw-table"},
-            h("thead",null,h("tr",null,["HOLE","WINNER","SCORE","WIN"].map(col=>
-              h("th",{key:col,style:{textAlign:col==="WINNER"?"left":"center"}},col)))),
-            h("tbody",null,data.holes.map((r,i)=>{
-              const me = myLast && r.winner.toLowerCase().includes(myLast);
-              return h("tr",{key:i,className:me?"fw-row--me":i%2===0?"fw-row--alt":""},
-                h("td",{style:{textAlign:"center",fontWeight:700}},r.hole),
-                h("td",{style:{fontWeight:me?700:400}},r.winner+(me?" ⭐":"")),
-                h("td",{style:{textAlign:"center"}},r.score),
-                h("td",{style:{textAlign:"center",color:"var(--green)",fontWeight:700}},r.amount?"$"+r.amount:"—")
-              );
-            }))
-          )
-        )
-      ),
-      data.totals.length > 0 && h("div",null,
-        h("div",{className:"fw-section-label"},"TOTALS"),
+
+      // ── Overall winners summary ──
+      data.overallWinners?.length > 0 && h("div",{style:{marginBottom:20}},
+        h("div",{className:"fw-section-label"},"TOTAL WINNINGS"),
         h("div",{style:{overflowX:"auto"}},
           h("table",{className:"fw-table"},
-            h("thead",null,h("tr",null,["PLAYER","SKINS","WINNINGS"].map(col=>
-              h("th",{key:col,style:{textAlign:col==="PLAYER"?"left":"center"}},col)))),
-            h("tbody",null,data.totals.map((r,i)=>{
-              const me = myLast && r.name.toLowerCase().includes(myLast);
+            h("thead",null,h("tr",null,
+              h("th",{style:{textAlign:"left"}},"PLAYER"),
+              h("th",{style:{textAlign:"right"}},"WINNINGS")
+            )),
+            h("tbody",null,data.overallWinners.map((w,i)=>{
+              const me = (playerId && w.id===String(playerId)) ||
+                         (myLast && w.name.toLowerCase().includes(myLast));
               return h("tr",{key:i,className:me?"fw-row--me":i%2===0?"fw-row--alt":""},
-                h("td",{style:{fontWeight:me?700:400}},r.name+(me?" ⭐":"")),
-                h("td",{style:{textAlign:"center",fontWeight:700}},r.skins),
-                h("td",{style:{textAlign:"center",color:"var(--green)",fontWeight:700}},r.winnings?"$"+r.winnings:"—")
+                h("td",{style:{fontWeight:me?700:400}},w.name+(me?" ⭐":"")),
+                h("td",{style:{textAlign:"right",color:"var(--green)",fontWeight:700,fontFamily:"var(--font-mono)"}},
+                  "$"+w.winnings.toFixed(0))
               );
             }))
           )
         )
       ),
+
+      // ── Per-flight sections ──
+      data.sections?.map((sec,si) => {
+        if (sec.type === "CTP") return h("div",{key:si,style:{marginBottom:16}},
+          h("div",{className:"fw-section-label"},sec.name),
+          h("div",{style:{fontSize:13,color:"var(--muted)",padding:"6px 0"}},
+            "Pot: "+(sec.pot||"—")+"  ·  "+sec.players+" players")
+        );
+
+        return h("div",{key:si,style:{marginBottom:24}},
+          // Section header with pot info
+          h("div",{style:{marginBottom:8}},
+            h("div",{className:"fw-section-label"},sec.name),
+            h("div",{style:{fontSize:11,color:"var(--muted)",marginTop:2}},
+              sec.type+" · Pot: "+sec.pot+" · "+sec.skinValue+"/skin · "+sec.totalSkins+" skins")
+          ),
+
+          // Winners for this flight
+          sec.winners?.length > 0 && h("div",{style:{marginBottom:10}},
+            h("table",{className:"fw-table"},
+              h("thead",null,h("tr",null,
+                h("th",{style:{textAlign:"left"}},"WINNER"),
+                h("th",{style:{textAlign:"center"}},"SKINS"),
+                h("th",{style:{textAlign:"right"}},"WIN")
+              )),
+              h("tbody",null,sec.winners.map((w,i)=>{
+                const me = myLast && w.name.toLowerCase().includes(myLast);
+                return h("tr",{key:i,className:me?"fw-row--me":i%2===0?"fw-row--alt":""},
+                  h("td",{style:{fontWeight:me?700:400}},w.name+(me?" ⭐":"")),
+                  h("td",{style:{textAlign:"center",fontWeight:700}},w.skins),
+                  h("td",{style:{textAlign:"right",color:"var(--green)",fontWeight:700,fontFamily:"var(--font-mono)"}},
+                    "$"+w.winnings.toFixed(0))
+                );
+              }))
+            )
+          ),
+
+          // Hole-by-hole for this flight
+          sec.holes?.length > 0 && h("details",{style:{fontSize:12}},
+            h("summary",{style:{color:"var(--muted)",cursor:"pointer",padding:"4px 0",userSelect:"none"}},
+              "Hole-by-hole ("+sec.holes.length+" skins)"),
+            h("table",{className:"fw-table",style:{marginTop:6}},
+              h("thead",null,h("tr",null,
+                h("th",{style:{textAlign:"center"}},"HOLE"),
+                h("th",{style:{textAlign:"left"}},"PLAYER"),
+                h("th",{style:{textAlign:"center"}},"SCORE"),
+                h("th",{style:{textAlign:"center"}},"TYPE")
+              )),
+              h("tbody",null,sec.holes.map((r,i)=>{
+                const me = myLast && r.player.toLowerCase().includes(myLast);
+                return h("tr",{key:i,className:me?"fw-row--me":i%2===0?"fw-row--alt":""},
+                  h("td",{style:{textAlign:"center",fontWeight:700}},r.hole),
+                  h("td",{style:{fontWeight:me?700:400}},r.player+(me?" ⭐":"")),
+                  h("td",{style:{textAlign:"center"}},""+r.score),
+                  h("td",{style:{textAlign:"center",color:"var(--muted)",fontSize:11}},r.type)
+                );
+              }))
+            )
+          )
+        );
+      }),
+
       h("button",{className:"fw-btn fw-btn--refresh",style:{width:"100%",marginTop:8},onClick:loadSkins},"↻ Refresh")
     )
   );
