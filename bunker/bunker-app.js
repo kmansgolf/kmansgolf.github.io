@@ -973,11 +973,19 @@ function buildSkinsPanel() {
 }
 
 function buildWolfPanel() {
-  const panel = el('div','game-panel');
+  const panel = el('div','game-panel open');
   const money = calcWolfMoney();
   const points = calcWolfPoints();
+  
+  // Find current leader for summary
+  const maxPts = Math.max(...points);
+  const leaders = state.players.filter((p,i) => points[i] === maxPts && maxPts > 0).map(p => p.name);
+  const summaryText = maxPts > 0 
+    ? `${leaders.join(' & ')} +${maxPts}pts` 
+    : 'All square';
+  
   const hdr = el('div','game-panel-header');
-  hdr.innerHTML = `<span class="gp-icon">🐺</span><span class="gp-title">Wolf</span><span class="gp-summary">Points · settle at 18</span><span class="gp-chevron">▼</span>`;
+  hdr.innerHTML = `<span class="gp-icon">🐺</span><span class="gp-title">Wolf</span><span class="gp-summary">${summaryText}</span><span class="gp-chevron">▼</span>`;
   hdr.onclick = () => panel.classList.toggle('open');
 
   const body = el('div','game-panel-body');
