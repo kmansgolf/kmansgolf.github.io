@@ -290,29 +290,6 @@ function toggleTheme() {
   const current = localStorage.getItem('bunker_theme') || 'dark';
   applyTheme(current === 'light' ? 'dark' : 'light');
 }
-// ── SWIPE DOWN TO REFRESH (history tab only) ─────────────────────────────────
-(function(){
-  let ty=0, ready=false;
-  const ind=document.createElement('div');
-  ind.style.cssText='position:fixed;top:0;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:center;font-family:Barlow Condensed,sans-serif;font-size:11px;letter-spacing:2px;color:#3ddc84;background:rgba(0,0,0,0.92);transform:translateY(-44px);transition:transform 0.2s ease;z-index:9999;pointer-events:none;';
-  ind.textContent='↓ RELEASE TO REFRESH';
-  document.body.appendChild(ind);
-  document.addEventListener('touchstart',e=>{ty=e.touches[0].clientY;},{passive:true});
-  document.addEventListener('touchmove',e=>{
-    const active=document.querySelector('.view.active');
-    if(!active||active.id!=='history-view') return;
-    const scroll=active.querySelector('.play-content');
-    if(scroll&&scroll.scrollTop>0) return;
-    const dy=e.touches[0].clientY-ty;
-    if(dy>60){ind.style.transform='translateY(0)';ready=true;}
-    else{ind.style.transform='translateY(-44px)';ready=false;}
-  },{passive:true});
-  document.addEventListener('touchend',()=>{
-    ind.style.transform='translateY(-44px)';
-    if(ready){ready=false;setTimeout(()=>location.reload(),200);}
-  });
-})();
-
 // Apply saved theme on load
 (function() {
   const saved = localStorage.getItem('bunker_theme') || 'dark';
