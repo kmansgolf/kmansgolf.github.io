@@ -1,4 +1,3 @@
-
 // ═══ STATE ═══════════════════════════════════════════
 let state = {
   players: [], games: [], bets: {}, currentHole: 0,
@@ -316,7 +315,8 @@ function saveRound() {
     games: [...state.games],
     bets: {...state.bets},
     gameMoney,
-    holesPlayed: (state.players[0]?.scores||[]).filter(s=>s!==null).length
+    holesPlayed: (state.players[0]?.scores||[]).filter(s=>s!==null).length,
+    wolfPicks: state.games.includes('wolf') ? [...state.wolf.picks] : null
   };
 
   // Replace if same round (same id), otherwise append
@@ -375,6 +375,11 @@ function renderHistory() {
   }
   content.appendChild(lb);
 
+  // ── SEASON STATS ──
+  if (rounds.length > 0) {
+    renderSeasonStats(content);
+  }
+
   // Round history list
   if (rounds.length > 0) {
     const histLabel = el('div','history-section-label'); histLabel.textContent = 'Round History';
@@ -417,6 +422,167 @@ function renderHistory() {
   syncWrap.appendChild(syncToggle);
   syncWrap.appendChild(syncPanel);
   content.appendChild(syncWrap);
+}
+
+function renderSeasonStats(content) {
+  const seasonStats = calcSeasonStats();
+  const playerNames = Object.keys(seasonStats);
+  if (playerNames.length === 0) return;
+
+  // Check which games have been played
+  const hasWolf = playerNames.some(n => seasonStats[n].wolfRounds > 0);
+  const hasSkins = playerNames.some(n => seasonStats[n].skinsRounds > 0);
+  const hasRabbit = playerNames.some(n => seasonStats[n].rabbitRounds > 0);
+  const hasNassau = playerNames.some(n => seasonStats[n].nassauRounds > 0);
+
+  if (!hasWolf && !hasSkins && !hasRabbit && !hasNassau) return;
+
+  const statsSection = el('div');
+  statsSection.style.cssText = 'margin:16px 0;';
+
+  const sTitle = el('div','history-section-label');
+  sTitle.textContent = '📊 Season Stats';
+  statsSection.appendChild(sTitle);
+
+  // Collapsible stats panel
+  const statsPanel = el('div');
+  statsPanel.style.cssText = 'background:var(--navy-mid);border-radius:var(--r-md);overflow:hidden;';
+
+  // Wolf season stats
+  if (hasWolf) {
+    const wolfSection = el('div');
+    wolfSection.style.cssText = 'padding:14px;border-bottom:1px solid var(--border);';
+    
+    const wolfTitle = el('div');
+    wolfTitle.style.cssText = 'font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);margin-bottom:10px;';
+    wolfTitle.textContent = '🐺 WOLF SEASON';
+    wolfSection.appendChild(wolfTitle);
+
+    const wolfGrid = el('div');
+    wolfGrid.style.cssText = 'display:grid;grid-template-columns:repeat(2,1fr);gap:8px;';
+
+    playerNames.sort((a,b) => seasonStats[b].totalMoney - seasonStats[a].totalMoney).forEach(name => {
+      const ps = seasonStats[name];
+      if (ps.wolfRounds === 0) return;
+      
+      const loneWinPct = ps.loneWolfAttempts > 0 
+        ? Math.round(ps.loneWolfWins / ps.loneWolfAttempts * 100) 
+        : 0;
+      const pickedWinPct = ps.timesPicked > 0 
+        ? Math.round(ps.timesPickedWon / ps.timesPicked * 100) 
+        : 0;
+
+      const cell = el('div');
+      cell.style.cssText = 'background:var(--white);border-radius:var(--r);padding:10px;';
+      cell.innerHTML = `
+        <div style="font-weight:700;color:var(--text);margin-bottom:6px;">${name}</div>
+        <div style="font-size:0.72rem;color:var(--muted);line-height:1.7;">
+          <div>🐺 Lone Wolf: <span style="color:var(--text);">${ps.loneWolfWins}/${ps.loneWolfAttempts}</span> <span style="color:${loneWinPct >= 50 ? 'var(--green)' : 'var(--red)'};">(${loneWinPct}%)</span></div>
+          <div>👆 Picked: <span style="color:var(--text);">${ps.timesPicked}x</span> <span style="color:${pickedWinPct >= 50 ? 'var(--green)' : 'var(--red)'};">(won ${pickedWinPct}%)</span></div>
+        </div>`;
+      wolfGrid.appendChild(cell);
+    });
+
+    wolfSection.appendChild(wolfGrid);
+    statsPanel.appendChild(wolfSection);
+  }
+
+  // Skins season stats
+  if (hasSkins) {
+    const skinsSection = el('div');
+    skinsSection.style.cssText = 'padding:14px;border-bottom:1px solid var(--border);';
+    
+    const skinsTitle = el('div');
+    skinsTitle.style.cssText = 'font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);margin-bottom:10px;';
+    skinsTitle.textContent = '🎰 SKINS SEASON';
+    skinsSection.appendChild(skinsTitle);
+
+    const skinsGrid = el('div');
+    skinsGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center;';
+
+    playerNames.sort((a,b) => seasonStats[b].totalSkinsWon - seasonStats[a].totalSkinsWon).forEach(name => {
+      const ps = seasonStats[name];
+      if (ps.skinsRounds === 0) return;
+      
+      const cell = el('div');
+      cell.style.cssText = 'background:var(--white);border-radius:var(--r);padding:8px;';
+      cell.innerHTML = `
+        <div style="font-size:0.7rem;color:var(--text);font-weight:600;margin-bottom:4px;">${name}</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--gold);">${ps.totalSkinsWon}</div>
+        <div style="font-size:0.6rem;color:var(--muted);">total skins</div>
+        ${ps.biggestSkin > 1 ? `<div style="font-size:0.6rem;color:var(--amber);margin-top:2px;">🔥 ${ps.biggestSkin}-way best</div>` : ''}`;
+      skinsGrid.appendChild(cell);
+    });
+
+    skinsSection.appendChild(skinsGrid);
+    statsPanel.appendChild(skinsSection);
+  }
+
+  // Rabbit season stats
+  if (hasRabbit) {
+    const rabbitSection = el('div');
+    rabbitSection.style.cssText = 'padding:14px;border-bottom:1px solid var(--border);';
+    
+    const rabbitTitle = el('div');
+    rabbitTitle.style.cssText = 'font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);margin-bottom:10px;';
+    rabbitTitle.textContent = '🐇 RABBIT SEASON';
+    rabbitSection.appendChild(rabbitTitle);
+
+    const rabbitGrid = el('div');
+    rabbitGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center;';
+
+    playerNames.sort((a,b) => seasonStats[b].timesHeldAtPayout - seasonStats[a].timesHeldAtPayout).forEach(name => {
+      const ps = seasonStats[name];
+      if (ps.rabbitRounds === 0) return;
+      
+      const cell = el('div');
+      cell.style.cssText = 'background:var(--white);border-radius:var(--r);padding:8px;';
+      cell.innerHTML = `
+        <div style="font-size:0.7rem;color:var(--text);font-weight:600;margin-bottom:4px;">${name}</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--green);">${ps.timesHeldAtPayout}</div>
+        <div style="font-size:0.6rem;color:var(--muted);">payouts</div>
+        <div style="font-size:0.6rem;color:var(--amber);margin-top:2px;">${ps.steals} steals</div>`;
+      rabbitGrid.appendChild(cell);
+    });
+
+    rabbitSection.appendChild(rabbitGrid);
+    statsPanel.appendChild(rabbitSection);
+  }
+
+  // Nassau season stats
+  if (hasNassau) {
+    const nassauSection = el('div');
+    nassauSection.style.cssText = 'padding:14px;';
+    
+    const nassauTitle = el('div');
+    nassauTitle.style.cssText = 'font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);margin-bottom:10px;';
+    nassauTitle.textContent = '🏆 NASSAU SEASON';
+    nassauSection.appendChild(nassauTitle);
+
+    const nassauGrid = el('div');
+    nassauGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center;';
+
+    const nassauWins = playerNames.map(n => ({name: n, wins: seasonStats[n].frontWins + seasonStats[n].backWins + seasonStats[n].overallWins, sweeps: seasonStats[n].sweeps}));
+    nassauWins.sort((a,b) => b.wins - a.wins).forEach(({name, wins, sweeps}) => {
+      const ps = seasonStats[name];
+      if (ps.nassauRounds === 0) return;
+      
+      const cell = el('div');
+      cell.style.cssText = 'background:var(--white);border-radius:var(--r);padding:8px;';
+      cell.innerHTML = `
+        <div style="font-size:0.7rem;color:var(--text);font-weight:600;margin-bottom:4px;">${name}</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--gold);">${wins}</div>
+        <div style="font-size:0.6rem;color:var(--muted);">total wins</div>
+        ${sweeps > 0 ? `<div style="font-size:0.6rem;color:var(--gold);margin-top:2px;">🧹 ${sweeps} sweeps</div>` : ''}`;
+      nassauGrid.appendChild(cell);
+    });
+
+    nassauSection.appendChild(nassauGrid);
+    statsPanel.appendChild(nassauSection);
+  }
+
+  statsSection.appendChild(statsPanel);
+  content.appendChild(statsSection);
 }
 
 function buildRoundCard(r, idx) {
@@ -687,20 +853,26 @@ function buildWolfUI(h) {
   const wolfIdx = h % 4;
   const wolfName = state.players[wolfIdx].name;
   const pick = state.wolf.picks[h];
+  const isLone = pick === null || pick === 'lone';
 
   const wrap = el('div','game-panel');
   wrap.classList.add('open');
   const hdr = el('div','game-panel-header');
-  hdr.innerHTML = `<span class="gp-icon">🐺</span><span class="gp-title">Wolf Decision</span><span class="gp-summary c${wolfIdx}">${wolfName} is Wolf</span>`;
+  const partnerName = (!isLone && typeof pick === 'number') ? state.players[pick].name : null;
+  const summaryText = isLone ? `${wolfName} is Lone Wolf 🐺` : `${wolfName} + ${partnerName}`;
+  hdr.innerHTML = `<span class="gp-icon">🐺</span><span class="gp-title">Wolf Decision</span><span class="gp-summary c${wolfIdx}">${summaryText}</span>`;
   hdr.onclick = () => wrap.classList.toggle('open');
   const body = el('div','game-panel-body');
 
-  const lbl = el('div','wolf-label'); lbl.textContent = `${wolfName} chooses a partner or goes Lone:`;
+  const lbl = el('div','wolf-label'); 
+  lbl.textContent = isLone ? `${wolfName} is going solo. Tap a player to pick a partner:` : `${wolfName} picked ${partnerName}. Tap again to go solo:`;
   const picker = el('div','wolf-picker');
 
   state.players.forEach((p,i) => {
     if (i === wolfIdx) {
-      const btn = el('button','wolf-pick-btn wolf-is'); btn.textContent = `${p.name} (Wolf)`; btn.disabled = true;
+      const btn = el('button','wolf-pick-btn wolf-is'); 
+      btn.textContent = `${p.name} 🐺`;
+      btn.disabled = true;
       picker.appendChild(btn);
       return;
     }
@@ -708,20 +880,12 @@ function buildWolfUI(h) {
     btn.textContent = p.name;
     if (pick === i) btn.classList.add('picked');
     btn.onclick = () => {
+      // Toggle: if already picked, go back to lone wolf (null)
       state.wolf.picks[h] = (state.wolf.picks[h] === i) ? null : i;
       recalc(); renderHole();
     };
     picker.appendChild(btn);
   });
-
-  const loneBtn = el('button','wolf-pick-btn');
-  loneBtn.textContent = '🐺 Lone Wolf';
-  if (pick === 'lone') loneBtn.classList.add('lone');
-  loneBtn.onclick = () => {
-    state.wolf.picks[h] = (state.wolf.picks[h] === 'lone') ? null : 'lone';
-    recalc(); renderHole();
-  };
-  picker.appendChild(loneBtn);
 
   body.append(lbl, picker);
   wrap.append(hdr, body);
@@ -835,60 +999,67 @@ function buildWolfPanel() {
     body.appendChild(row);
   });
 
-  // Minimal payouts with context
+  // Simplified payouts (minimum transactions)
   const payouts = calcPayouts(money);
-  const owes = pairwiseOwed(points, state.bets.wolf);
   if (payouts.length > 0) {
     const divider = el('div');
-    divider.style.cssText = 'border-top:1px solid var(--border);margin:8px 0 6px;';
+    divider.style.cssText = 'border-top:1px solid var(--border);margin:10px 0 8px;';
     body.appendChild(divider);
+    
     const label = el('div');
-    label.style.cssText = 'font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:0 0 6px;font-family:var(--font-display);font-weight:700;';
-    label.textContent = 'Who Pays Who';
+    label.style.cssText = 'font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--green);padding:0 0 8px;font-family:var(--font-display);font-weight:700;';
+    label.textContent = '✓ Quick Settle';
     body.appendChild(label);
+    
     payouts.forEach(({from, to, amt}) => {
-      const wrap = el('div');
-      wrap.style.cssText = 'margin-bottom:12px;';
-
-      // Main payout row
       const row = el('div');
-      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;';
+      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:6px 0;';
       row.innerHTML = `
-        <div style="display:flex;align-items:center;gap:8px;font-size:0.88rem;font-weight:600;flex:1;min-width:0;">
-          <span style="background:var(--navy);color:var(--gold);font-family:var(--font-display);font-size:0.62rem;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;">${state.players[from].name}</span>
-          <span style="color:var(--muted);font-size:0.75rem;white-space:nowrap;">pays</span>
-          <span style="background:var(--navy);color:var(--gold);font-family:var(--font-display);font-size:0.62rem;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;">${state.players[to].name}</span>
+        <div style="display:flex;align-items:center;gap:6px;font-size:0.85rem;">
+          <span style="color:${COLORS[from]};font-weight:600;">${state.players[from].name}</span>
+          <span style="color:var(--muted);font-size:0.75rem;">→</span>
+          <span style="color:${COLORS[to]};font-weight:600;">${state.players[to].name}</span>
         </div>
-        <div style="font-family:var(--font-display);font-size:1rem;font-weight:800;color:var(--green);white-space:nowrap;padding-left:8px;">${fmt(amt)}</div>`;
-
-      // Context note — figure out what debts this payment is covering
-      const directOwed = owes[from][to]; // what from directly owes to
-      const context = el('div');
-      context.style.cssText = 'font-size:0.72rem;color:var(--muted);font-style:italic;padding-left:2px;line-height:1.4;';
-
-      // Find other players whose debt is being routed through this payment
-      const others = [0,1,2,3].filter(i => i !== from && i !== to);
-      const routedThrough = others.filter(k => owes[k][to] > 0 && owes[from][k] > 0);
-
-      if (directOwed > 0 && routedThrough.length === 0) {
-        // Pure direct debt
-        const ptDiff = points[to] - points[from];
-        context.textContent = `${state.players[from].name} owes ${state.players[to].name} directly (${ptDiff}pt diff)`;
-      } else if (directOwed > 0 && routedThrough.length > 0) {
-        // Covers own debt + part of someone else's
-        const names = routedThrough.map(k => state.players[k].name).join(' & ');
-        context.textContent = `Covers own debt + part of ${names}'s debt to ${state.players[to].name}`;
-      } else {
-        // Purely covering someone else's debt
-        const names = routedThrough.map(k => state.players[k].name).join(' & ');
-        context.textContent = routedThrough.length > 0
-          ? `Covering ${names}'s debt to ${state.players[to].name}`
-          : `${state.players[from].name} settles with ${state.players[to].name}`;
-      }
-
-      wrap.append(row, context);
-      body.appendChild(wrap);
+        <div style="font-family:var(--font-display);font-size:1rem;font-weight:800;color:var(--gold);">$${amt.toFixed(2).replace(/\.00$/,'')}</div>`;
+      body.appendChild(row);
     });
+
+    // Pairwise breakdown toggle
+    const pairwise = buildPairwiseBreakdown(points, state.bets.wolf, state.players);
+    if (pairwise.length > 0) {
+      const toggleWrap = el('div');
+      toggleWrap.style.cssText = 'margin-top:10px;border-top:1px solid var(--border);padding-top:8px;';
+      
+      const toggleBtn = el('div');
+      toggleBtn.style.cssText = 'font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;';
+      toggleBtn.innerHTML = '<span>Full Breakdown</span><span class="pw-chevron">▼</span>';
+      
+      const pairwiseBody = el('div');
+      pairwiseBody.style.cssText = 'display:none;margin-top:8px;';
+      
+      pairwise.forEach(({fromName, toName, amount, pointDiff, from, to}) => {
+        const pRow = el('div');
+        pRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:0.78rem;';
+        pRow.innerHTML = `
+          <div>
+            <span style="color:${COLORS[from]};">${fromName}</span>
+            <span style="color:var(--muted);"> → </span>
+            <span style="color:${COLORS[to]};">${toName}</span>
+            <span style="color:var(--muted);font-size:0.65rem;"> (${pointDiff}pt)</span>
+          </div>
+          <div style="color:var(--text);">$${amount.toFixed(2).replace(/\.00$/,'')}</div>`;
+        pairwiseBody.appendChild(pRow);
+      });
+
+      toggleBtn.onclick = () => {
+        const isOpen = pairwiseBody.style.display !== 'none';
+        pairwiseBody.style.display = isOpen ? 'none' : 'block';
+        toggleBtn.querySelector('.pw-chevron').textContent = isOpen ? '▼' : '▲';
+      };
+
+      toggleWrap.append(toggleBtn, pairwiseBody);
+      body.appendChild(toggleWrap);
+    }
   }
 
   panel.append(hdr, body);
@@ -1043,18 +1214,19 @@ function calcWolfPoints() {
     if (scores.some(s => s === null)) continue;
     const wolfIdx = h % 4;
     const pick = state.wolf.picks[h];
-    if (pick === null) continue;
-    if (pick === 'lone') {
+    // null or 'lone' = Lone Wolf (default behavior)
+    if (pick === null || pick === 'lone') {
       const wolfScore = scores[wolfIdx];
       const others = [0,1,2,3].filter(i => i !== wolfIdx);
       const bestOther = Math.min(...others.map(i => scores[i]));
       if (wolfScore < bestOther) {
         // Lone wolf wins: wolf +4, opponents get nothing
         points[wolfIdx] += 4;
-      } else {
+      } else if (wolfScore > bestOther) {
         // Lone wolf loses: each opponent +1, wolf gets nothing
         others.forEach(i => points[i] += 1);
       }
+      // Tie: nobody gets points
     } else {
       const team1 = [wolfIdx, pick];
       const team2 = [0,1,2,3].filter(i => !team1.includes(i));
@@ -1078,9 +1250,14 @@ function calcWolfMoney() {
   const points = calcWolfPoints();
   const bet = state.bets.wolf;
   const n = state.players.length;
-  const avg = points.reduce((a,b) => a+b, 0) / n;
-  // Money is relative to the average — if everyone is tied, everyone gets $0.
-  return points.map(p => Math.round((p - avg) * bet * 100) / 100);
+  // Pairwise settlement: each player settles with every other based on point difference
+  return points.map((myPoints, i) => {
+    let total = 0;
+    for (let j = 0; j < n; j++) {
+      if (i !== j) total += (myPoints - points[j]) * bet;
+    }
+    return Math.round(total * 100) / 100;
+  });
 }
 
 function calcNassauMoney() {
@@ -1140,23 +1317,396 @@ function calcPayouts(money) {
 }
 
 function pairwiseOwed(points, bet) {
-  // owes[i][j] = amount i owes j based on point totals
-  // Since points are strictly non-negative (no one loses points),
-  // player with more points is owed by player with fewer points.
-  // We use the money array directly to derive context notes.
-  const money = points.map(p => Math.round(p * bet * 100) / 100);
-  const owes = Array.from({length:4}, () => Array(4).fill(0));
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
+  // Returns owes[i][j] = amount player i owes player j based on point difference
+  // If i has fewer points than j, i owes j the difference × bet
+  const n = points.length;
+  const owes = Array.from({length:n}, () => Array(n).fill(0));
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
       if (i === j) continue;
-      // i owes j if i has fewer points and j has more
       if (points[i] < points[j]) {
-        const share = Math.round((points[j] - points[i]) * bet / 3 * 100) / 100;
-        owes[i][j] = share;
+        owes[i][j] = Math.round((points[j] - points[i]) * bet * 100) / 100;
       }
     }
   }
   return owes;
+}
+
+// Build human-readable pairwise breakdown for display
+function buildPairwiseBreakdown(points, bet, players) {
+  const owes = pairwiseOwed(points, bet);
+  const lines = [];
+  for (let i = 0; i < players.length; i++) {
+    for (let j = 0; j < players.length; j++) {
+      if (owes[i][j] > 0) {
+        lines.push({
+          from: i,
+          to: j,
+          fromName: players[i].name,
+          toName: players[j].name,
+          amount: owes[i][j],
+          pointDiff: points[j] - points[i]
+        });
+      }
+    }
+  }
+  return lines;
+}
+
+// ═══ PER-ROUND STATS ══════════════════════════════════════════════════
+function calcRoundStats() {
+  if (!state.players?.length) return null;
+  const stats = {
+    wolf: state.games.includes('wolf') ? calcWolfStats() : null,
+    skins: state.games.includes('skins') ? calcSkinsStats() : null,
+    rabbit: state.games.includes('rabbit') ? calcRabbitStats() : null,
+    nassau: state.games.includes('nassau') ? calcNassauStats() : null
+  };
+  return stats;
+}
+
+function calcWolfStats() {
+  const n = state.players.length;
+  const stats = state.players.map(() => ({
+    timesWolf: 0,
+    loneWolfAttempts: 0,
+    loneWolfWins: 0,
+    loneWolfLosses: 0,
+    timesPicked: 0,
+    timesPickedWon: 0,
+    timesPickedLost: 0,
+    partnersWith: {} // { playerIdx: { picked: n, won: n } }
+  }));
+
+  for (let h = 0; h < 18; h++) {
+    const scores = state.players.map(p => p.scores[h]);
+    if (scores.some(s => s === null)) continue;
+
+    const wolfIdx = h % 4;
+    const pick = state.wolf.picks[h];
+    stats[wolfIdx].timesWolf++;
+
+    if (pick === null || pick === 'lone') {
+      // Lone wolf
+      stats[wolfIdx].loneWolfAttempts++;
+      const wolfScore = scores[wolfIdx];
+      const others = [0,1,2,3].filter(i => i !== wolfIdx);
+      const bestOther = Math.min(...others.map(i => scores[i]));
+      if (wolfScore < bestOther) {
+        stats[wolfIdx].loneWolfWins++;
+      } else if (wolfScore > bestOther) {
+        stats[wolfIdx].loneWolfLosses++;
+      }
+      // Tie = neither win nor loss
+    } else {
+      // Picked a partner
+      const partnerIdx = pick;
+      stats[partnerIdx].timesPicked++;
+      
+      // Track partner relationships
+      if (!stats[wolfIdx].partnersWith[partnerIdx]) {
+        stats[wolfIdx].partnersWith[partnerIdx] = { picked: 0, won: 0 };
+      }
+      stats[wolfIdx].partnersWith[partnerIdx].picked++;
+
+      // Determine if they won
+      const team1 = [wolfIdx, partnerIdx];
+      const team2 = [0,1,2,3].filter(i => !team1.includes(i));
+      const best1 = Math.min(...team1.map(i => scores[i]));
+      const best2 = Math.min(...team2.map(i => scores[i]));
+      
+      if (best1 < best2) {
+        stats[partnerIdx].timesPickedWon++;
+        stats[wolfIdx].partnersWith[partnerIdx].won++;
+      } else if (best2 < best1) {
+        stats[partnerIdx].timesPickedLost++;
+      }
+    }
+  }
+  return stats;
+}
+
+function calcSkinsStats() {
+  const skins = calcSkins();
+  const stats = state.players.map(() => ({
+    skinsWon: 0,
+    biggestSkin: 0, // carryovers when won
+    birdiesSkins: 0,
+    parSkins: 0
+  }));
+
+  let carryover = 0;
+  for (let h = 0; h < 18; h++) {
+    const s = skins[h];
+    if (s === 'carry') {
+      carryover++;
+    } else if (typeof s === 'number') {
+      const skinValue = carryover + 1;
+      stats[s].skinsWon++;
+      if (skinValue > stats[s].biggestSkin) {
+        stats[s].biggestSkin = skinValue;
+      }
+      // Check if birdie or par
+      const score = state.players[s].scores[h];
+      const par = state.pars[h];
+      if (score < par) stats[s].birdiesSkins++;
+      else if (score === par) stats[s].parSkins++;
+      carryover = 0;
+    }
+  }
+  return stats;
+}
+
+function calcRabbitStats() {
+  const stats = state.players.map(() => ({
+    timesHeldAtPayout: 0,
+    steals: 0,
+    chokes: 0, // had rabbit going into payout hole but lost it
+    totalHolesHeld: 0
+  }));
+
+  let holder = null;
+  let prevHolder = null;
+
+  for (let h = 0; h < 18; h++) {
+    const scores = state.players.map(p => p.scores[h]);
+    if (scores.some(s => s === null)) continue;
+
+    const low = Math.min(...scores);
+    const winners = scores.reduce((a, s, i) => s === low ? [...a, i] : a, []);
+    
+    prevHolder = holder;
+    
+    if (winners.length === 1) {
+      const winner = winners[0];
+      if (holder !== winner && holder !== null) {
+        // Steal!
+        stats[winner].steals++;
+      }
+      holder = winner;
+    }
+    // Tie = holder keeps it (or stays null)
+
+    if (holder !== null) {
+      stats[holder].totalHolesHeld++;
+    }
+
+    // Payout holes: 6, 12, 18 (indices 5, 11, 17)
+    if ((h === 5 || h === 11 || h === 17) && holder !== null) {
+      stats[holder].timesHeldAtPayout++;
+    }
+
+    // Choke detection: had it going into payout hole but lost it on that hole
+    if ((h === 5 || h === 11 || h === 17) && prevHolder !== null && holder !== prevHolder) {
+      stats[prevHolder].chokes++;
+    }
+  }
+  return stats;
+}
+
+function calcNassauStats() {
+  const nassau = calcNassauMoney();
+  const stats = state.players.map(() => ({
+    frontWins: 0,
+    backWins: 0,
+    overallWins: 0,
+    sweeps: 0
+  }));
+
+  // Determine winners for each segment
+  const frontScores = state.players.map(p => p.scores.slice(0,9).reduce((a,s)=>a+(s||0),0));
+  const backScores = state.players.map(p => p.scores.slice(9,18).reduce((a,s)=>a+(s||0),0));
+  const overallScores = state.players.map(p => p.scores.reduce((a,s)=>a+(s||0),0));
+
+  const frontPlayed = (state.players[0]?.scores||[]).slice(0,9).filter(s=>s!==null).length === 9;
+  const backPlayed = (state.players[0]?.scores||[]).slice(9,18).filter(s=>s!==null).length === 9;
+
+  let frontWinner = null, backWinner = null, overallWinner = null;
+
+  if (frontPlayed) {
+    const minFront = Math.min(...frontScores.filter(s=>s>0));
+    const winners = frontScores.reduce((a,s,i) => s===minFront && s>0 ? [...a,i] : a, []);
+    if (winners.length === 1) {
+      frontWinner = winners[0];
+      stats[frontWinner].frontWins++;
+    }
+  }
+
+  if (backPlayed) {
+    const minBack = Math.min(...backScores.filter(s=>s>0));
+    const winners = backScores.reduce((a,s,i) => s===minBack && s>0 ? [...a,i] : a, []);
+    if (winners.length === 1) {
+      backWinner = winners[0];
+      stats[backWinner].backWins++;
+    }
+  }
+
+  if (frontPlayed && backPlayed) {
+    const minOverall = Math.min(...overallScores.filter(s=>s>0));
+    const winners = overallScores.reduce((a,s,i) => s===minOverall && s>0 ? [...a,i] : a, []);
+    if (winners.length === 1) {
+      overallWinner = winners[0];
+      stats[overallWinner].overallWins++;
+    }
+
+    // Sweep check
+    if (frontWinner !== null && frontWinner === backWinner && frontWinner === overallWinner) {
+      stats[frontWinner].sweeps++;
+    }
+  }
+
+  return stats;
+}
+
+// ═══ SEASON CUMULATIVE STATS ══════════════════════════════════════════
+function calcSeasonStats() {
+  const rounds = loadRounds();
+  if (rounds.length === 0) return {};
+
+  // Aggregate stats by player name
+  const playerStats = {};
+
+  rounds.forEach(r => {
+    r.players.forEach((p, pIdx) => {
+      if (!playerStats[p.name]) {
+        playerStats[p.name] = {
+          rounds: 0,
+          totalMoney: 0,
+          totalStrokes: 0,
+          // Wolf
+          wolfRounds: 0,
+          timesWolf: 0,
+          loneWolfAttempts: 0,
+          loneWolfWins: 0,
+          timesPicked: 0,
+          timesPickedWon: 0,
+          // Skins
+          skinsRounds: 0,
+          totalSkinsWon: 0,
+          biggestSkin: 0,
+          // Rabbit
+          rabbitRounds: 0,
+          timesHeldAtPayout: 0,
+          steals: 0,
+          // Nassau
+          nassauRounds: 0,
+          frontWins: 0,
+          backWins: 0,
+          overallWins: 0,
+          sweeps: 0
+        };
+      }
+
+      const ps = playerStats[p.name];
+      ps.rounds++;
+      ps.totalMoney += p.money || 0;
+      ps.totalStrokes += p.scores.reduce((a,s)=>a+(s||0),0);
+
+      // Reconstruct stats from saved round data
+      // For Wolf, we need wolfPicks
+      if (r.games?.includes('wolf') && r.wolfPicks) {
+        ps.wolfRounds++;
+        for (let h = 0; h < 18; h++) {
+          const scores = r.players.map(pl => pl.scores[h]);
+          if (scores.some(s => s === null)) continue;
+
+          const wolfIdx = h % 4;
+          const pick = r.wolfPicks[h];
+
+          if (wolfIdx === pIdx) {
+            ps.timesWolf++;
+            if (pick === null || pick === 'lone') {
+              ps.loneWolfAttempts++;
+              const wolfScore = scores[wolfIdx];
+              const others = [0,1,2,3].filter(i => i !== wolfIdx);
+              const bestOther = Math.min(...others.map(i => scores[i]));
+              if (wolfScore < bestOther) ps.loneWolfWins++;
+            }
+          }
+
+          if (typeof pick === 'number' && pick === pIdx) {
+            ps.timesPicked++;
+            const team1 = [wolfIdx, pIdx];
+            const team2 = [0,1,2,3].filter(i => !team1.includes(i));
+            const best1 = Math.min(...team1.map(i => scores[i]));
+            const best2 = Math.min(...team2.map(i => scores[i]));
+            if (best1 < best2) ps.timesPickedWon++;
+          }
+        }
+      }
+
+      // Skins stats from round
+      if (r.games?.includes('skins')) {
+        ps.skinsRounds++;
+        // Recalculate skins for this round
+        let carryover = 0;
+        for (let h = 0; h < 18; h++) {
+          const scores = r.players.map(pl => pl.scores[h]);
+          if (scores.some(s => s === null)) { carryover++; continue; }
+          const low = Math.min(...scores);
+          const winners = scores.reduce((a,s,i) => s===low ? [...a,i] : a, []);
+          if (winners.length === 1) {
+            if (winners[0] === pIdx) {
+              ps.totalSkinsWon++;
+              const skinVal = carryover + 1;
+              if (skinVal > ps.biggestSkin) ps.biggestSkin = skinVal;
+            }
+            carryover = 0;
+          } else {
+            carryover++;
+          }
+        }
+      }
+
+      // Rabbit stats from round
+      if (r.games?.includes('rabbit')) {
+        ps.rabbitRounds++;
+        let holder = null;
+        for (let h = 0; h < 18; h++) {
+          const scores = r.players.map(pl => pl.scores[h]);
+          if (scores.some(s => s === null)) continue;
+          const low = Math.min(...scores);
+          const winners = scores.reduce((a,s,i) => s===low ? [...a,i] : a, []);
+          if (winners.length === 1) {
+            if (holder !== winners[0] && holder !== null && winners[0] === pIdx) {
+              ps.steals++;
+            }
+            holder = winners[0];
+          }
+          if ((h === 5 || h === 11 || h === 17) && holder === pIdx) {
+            ps.timesHeldAtPayout++;
+          }
+        }
+      }
+
+      // Nassau stats from round
+      if (r.games?.includes('nassau')) {
+        ps.nassauRounds++;
+        const frontScores = r.players.map(pl => pl.scores.slice(0,9).reduce((a,s)=>a+(s||0),0));
+        const backScores = r.players.map(pl => pl.scores.slice(9,18).reduce((a,s)=>a+(s||0),0));
+        const overallScores = r.players.map(pl => pl.scores.reduce((a,s)=>a+(s||0),0));
+
+        const minFront = Math.min(...frontScores.filter(s=>s>0));
+        const minBack = Math.min(...backScores.filter(s=>s>0));
+        const minOverall = Math.min(...overallScores.filter(s=>s>0));
+
+        const fWinners = frontScores.reduce((a,s,i) => s===minFront && s>0 ? [...a,i] : a, []);
+        const bWinners = backScores.reduce((a,s,i) => s===minBack && s>0 ? [...a,i] : a, []);
+        const oWinners = overallScores.reduce((a,s,i) => s===minOverall && s>0 ? [...a,i] : a, []);
+
+        if (fWinners.length === 1 && fWinners[0] === pIdx) ps.frontWins++;
+        if (bWinners.length === 1 && bWinners[0] === pIdx) ps.backWins++;
+        if (oWinners.length === 1 && oWinners[0] === pIdx) ps.overallWins++;
+        if (fWinners.length === 1 && fWinners[0] === pIdx && 
+            bWinners.length === 1 && bWinners[0] === pIdx &&
+            oWinners.length === 1 && oWinners[0] === pIdx) {
+          ps.sweeps++;
+        }
+      }
+    });
+  });
+
+  return playerStats;
 }
 
 function calcTotalMoney() {
@@ -1222,7 +1772,9 @@ function saveEditModal() {
     // Recalculate money with updated scores
     editModal.tempScores.forEach((sc,i) => { r.players[i].scores[h] = sc; });
     // Recompute money for that round (simplified: rebuild state-like object and recalc)
-    const tempState = { players: r.players.map(p=>({name:p.name,scores:[...p.scores]})), games: r.games, bets: r.bets, pars: r.pars, currentHole:17, wolf:{picks:Array(18).fill(null)}, rabbit:{holder:null} };
+    // Use saved wolfPicks if available, otherwise default to all lone wolf (null)
+    const wolfPicks = r.wolfPicks || Array(18).fill(null);
+    const tempState = { players: r.players.map(p=>({name:p.name,scores:[...p.scores]})), games: r.games, bets: r.bets, pars: r.pars, currentHole:17, wolf:{picks:wolfPicks}, rabbit:{holder:null} };
     const savedState = JSON.parse(JSON.stringify(state));
     Object.assign(state, tempState);
     const newMoney = calcTotalMoney();
@@ -1590,6 +2142,9 @@ function renderResults() {
   // ── MONEY SUMMARY ──
   renderResultsMoney(content);
 
+  // ── ROUND STATS ──
+  renderRoundStats(content);
+
   // ── CONFIRM & SAVE BUTTON ──
   const saveWrap = el('div');
   saveWrap.style.cssText = 'padding:16px 0 40px;text-align:center;';
@@ -1597,6 +2152,150 @@ function renderResults() {
     <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;">Everyone happy with the scorecard?</div>
     <button onclick="saveAndNewRound()" style="background:var(--gold);color:var(--navy);font-family:var(--font-display);font-size:1rem;font-weight:800;letter-spacing:2px;border:none;border-radius:var(--r-md);padding:16px 40px;cursor:pointer;box-shadow:0 4px 12px rgba(240,192,64,0.3);">✓ Confirm &amp; Save</button>`;
   content.appendChild(saveWrap);
+}
+
+function renderRoundStats(content) {
+  const stats = calcRoundStats();
+  if (!stats) return;
+
+  const statsSection = el('div');
+  statsSection.style.cssText = 'margin-top:20px;width:100%;';
+
+  const sTitle = el('div');
+  sTitle.style.cssText = 'font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-family:var(--font-display);font-weight:700;';
+  sTitle.textContent = '📊 Round Stats';
+  statsSection.appendChild(sTitle);
+
+  // Wolf stats
+  if (stats.wolf) {
+    const wolfCard = el('div');
+    wolfCard.style.cssText = 'background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px;';
+    
+    const wolfTitle = el('div');
+    wolfTitle.style.cssText = 'font-family:var(--font-display);font-size:0.75rem;font-weight:700;letter-spacing:1px;color:var(--slate);margin-bottom:10px;';
+    wolfTitle.textContent = '🐺 WOLF STATS';
+    wolfCard.appendChild(wolfTitle);
+
+    const wolfGrid = el('div');
+    wolfGrid.style.cssText = 'display:grid;grid-template-columns:repeat(2,1fr);gap:8px;';
+
+    state.players.forEach((p, i) => {
+      const ws = stats.wolf[i];
+      const cell = el('div');
+      cell.style.cssText = 'background:var(--surface);border-radius:var(--r);padding:10px;';
+      
+      const loneRecord = ws.loneWolfAttempts > 0 
+        ? `${ws.loneWolfWins}-${ws.loneWolfLosses}-${ws.loneWolfAttempts - ws.loneWolfWins - ws.loneWolfLosses}`
+        : '0-0-0';
+      const pickedRecord = ws.timesPicked > 0
+        ? `${ws.timesPickedWon}-${ws.timesPickedLost}-${ws.timesPicked - ws.timesPickedWon - ws.timesPickedLost}`
+        : '0-0-0';
+
+      cell.innerHTML = `
+        <div style="font-weight:700;color:${COLORS[i]};margin-bottom:6px;">${p.name}</div>
+        <div style="font-size:0.72rem;color:var(--muted);line-height:1.6;">
+          <div>🐺 Lone: <span style="color:var(--text);">${loneRecord}</span> <span style="color:var(--muted);font-size:0.65rem;">(W-L-T)</span></div>
+          <div>👆 Picked: <span style="color:var(--text);">${ws.timesPicked}x</span> ${ws.timesPicked > 0 ? `(won ${ws.timesPickedWon})` : ''}</div>
+        </div>`;
+      wolfGrid.appendChild(cell);
+    });
+
+    wolfCard.appendChild(wolfGrid);
+    statsSection.appendChild(wolfCard);
+  }
+
+  // Skins stats
+  if (stats.skins) {
+    const skinsCard = el('div');
+    skinsCard.style.cssText = 'background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px;';
+    
+    const skinsTitle = el('div');
+    skinsTitle.style.cssText = 'font-family:var(--font-display);font-size:0.75rem;font-weight:700;letter-spacing:1px;color:var(--slate);margin-bottom:10px;';
+    skinsTitle.textContent = '🎰 SKINS STATS';
+    skinsCard.appendChild(skinsTitle);
+
+    const skinsGrid = el('div');
+    skinsGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center;';
+
+    state.players.forEach((p, i) => {
+      const ss = stats.skins[i];
+      const cell = el('div');
+      cell.style.cssText = 'background:var(--surface);border-radius:var(--r);padding:8px;';
+      cell.innerHTML = `
+        <div style="font-size:0.7rem;color:${COLORS[i]};font-weight:600;margin-bottom:4px;">${p.name}</div>
+        <div style="font-size:1.2rem;font-weight:800;color:var(--text);">${ss.skinsWon}</div>
+        <div style="font-size:0.6rem;color:var(--muted);">skins</div>
+        ${ss.biggestSkin > 1 ? `<div style="font-size:0.6rem;color:var(--amber);margin-top:2px;">🔥 ${ss.biggestSkin}-way</div>` : ''}`;
+      skinsGrid.appendChild(cell);
+    });
+
+    skinsCard.appendChild(skinsGrid);
+    statsSection.appendChild(skinsCard);
+  }
+
+  // Rabbit stats
+  if (stats.rabbit) {
+    const rabbitCard = el('div');
+    rabbitCard.style.cssText = 'background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px;';
+    
+    const rabbitTitle = el('div');
+    rabbitTitle.style.cssText = 'font-family:var(--font-display);font-size:0.75rem;font-weight:700;letter-spacing:1px;color:var(--slate);margin-bottom:10px;';
+    rabbitTitle.textContent = '🐇 RABBIT STATS';
+    rabbitCard.appendChild(rabbitTitle);
+
+    const rabbitGrid = el('div');
+    rabbitGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center;';
+
+    state.players.forEach((p, i) => {
+      const rs = stats.rabbit[i];
+      const cell = el('div');
+      cell.style.cssText = 'background:var(--surface);border-radius:var(--r);padding:8px;';
+      cell.innerHTML = `
+        <div style="font-size:0.7rem;color:${COLORS[i]};font-weight:600;margin-bottom:4px;">${p.name}</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--text);">${rs.timesHeldAtPayout}</div>
+        <div style="font-size:0.6rem;color:var(--muted);">payouts</div>
+        <div style="font-size:0.6rem;color:var(--muted);margin-top:2px;">
+          ${rs.steals > 0 ? `<span style="color:var(--green);">${rs.steals} steals</span>` : ''}
+          ${rs.chokes > 0 ? `<span style="color:var(--red);"> ${rs.chokes} chokes</span>` : ''}
+        </div>`;
+      rabbitGrid.appendChild(cell);
+    });
+
+    rabbitCard.appendChild(rabbitGrid);
+    statsSection.appendChild(rabbitCard);
+  }
+
+  // Nassau stats
+  if (stats.nassau) {
+    const nassauCard = el('div');
+    nassauCard.style.cssText = 'background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px;';
+    
+    const nassauTitle = el('div');
+    nassauTitle.style.cssText = 'font-family:var(--font-display);font-size:0.75rem;font-weight:700;letter-spacing:1px;color:var(--slate);margin-bottom:10px;';
+    nassauTitle.textContent = '🏆 NASSAU STATS';
+    nassauCard.appendChild(nassauTitle);
+
+    const nassauGrid = el('div');
+    nassauGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center;';
+
+    state.players.forEach((p, i) => {
+      const ns = stats.nassau[i];
+      const wins = ns.frontWins + ns.backWins + ns.overallWins;
+      const cell = el('div');
+      cell.style.cssText = 'background:var(--surface);border-radius:var(--r);padding:8px;';
+      cell.innerHTML = `
+        <div style="font-size:0.7rem;color:${COLORS[i]};font-weight:600;margin-bottom:4px;">${p.name}</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--text);">${wins}</div>
+        <div style="font-size:0.6rem;color:var(--muted);">wins</div>
+        ${ns.sweeps > 0 ? `<div style="font-size:0.6rem;color:var(--gold);margin-top:2px;">🧹 SWEEP</div>` : ''}`;
+      nassauGrid.appendChild(cell);
+    });
+
+    nassauCard.appendChild(nassauGrid);
+    statsSection.appendChild(nassauCard);
+  }
+
+  content.appendChild(statsSection);
 }
 
 function buildReviewScorecardTable() {
@@ -1793,6 +2492,99 @@ function renderResultsMoney(content) {
     });
     totalCard.appendChild(totalGrid); breakdown.appendChild(totalCard); content.appendChild(breakdown);
   }
+
+  // ── PAYOUT SECTION ──
+  renderPayoutSection(content, money);
+}
+
+function renderPayoutSection(content, money) {
+  const payoutSection = el('div');
+  payoutSection.style.cssText = 'margin-top:20px;width:100%;';
+
+  // Section title
+  const pTitle = el('div');
+  pTitle.style.cssText = 'font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-family:var(--font-display);font-weight:700;';
+  pTitle.textContent = '💸 Settlement';
+  payoutSection.appendChild(pTitle);
+
+  // ── SIMPLIFIED PAYOUTS (minimum transactions) ──
+  const payouts = calcPayouts(money);
+  if (payouts.length > 0) {
+    const simpleCard = el('div');
+    simpleCard.style.cssText = 'background:var(--navy-mid);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-md);padding:14px;margin-bottom:12px;';
+    
+    const simpleTitle = el('div');
+    simpleTitle.style.cssText = 'font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:var(--green);margin-bottom:10px;';
+    simpleTitle.textContent = '✓ QUICK SETTLE';
+    simpleCard.appendChild(simpleTitle);
+
+    payouts.forEach(({from, to, amt}) => {
+      const row = el('div');
+      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);';
+      row.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="color:${COLORS[from]};font-weight:700;">${state.players[from].name}</span>
+          <span style="color:var(--muted);font-size:0.8rem;">→</span>
+          <span style="color:${COLORS[to]};font-weight:700;">${state.players[to].name}</span>
+        </div>
+        <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:800;color:var(--gold);">$${amt.toFixed(2).replace(/\.00$/,'')}</div>`;
+      simpleCard.appendChild(row);
+    });
+    payoutSection.appendChild(simpleCard);
+  } else {
+    const noPayouts = el('div');
+    noPayouts.style.cssText = 'background:var(--navy-mid);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-md);padding:14px;margin-bottom:12px;text-align:center;color:var(--muted);font-size:0.85rem;';
+    noPayouts.textContent = 'All square — no payments needed!';
+    payoutSection.appendChild(noPayouts);
+  }
+
+  // ── FULL PAIRWISE BREAKDOWN (collapsible) ──
+  if (state.games.includes('wolf')) {
+    const points = calcWolfPoints();
+    const bet = state.bets.wolf;
+    const pairwise = buildPairwiseBreakdown(points, bet, state.players);
+    
+    if (pairwise.length > 0) {
+      const detailWrap = el('div');
+      detailWrap.style.cssText = 'background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;';
+      
+      const detailHeader = el('div');
+      detailHeader.style.cssText = 'padding:12px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;';
+      detailHeader.innerHTML = `
+        <div style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:var(--slate);">🐺 WOLF PAIRWISE BREAKDOWN</div>
+        <span style="color:var(--muted);font-size:0.7rem;">▼</span>`;
+      
+      const detailBody = el('div');
+      detailBody.style.cssText = 'display:none;padding:0 14px 14px;';
+      
+      pairwise.forEach(({fromName, toName, amount, pointDiff, from, to}) => {
+        const row = el('div');
+        row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);';
+        row.innerHTML = `
+          <div>
+            <span style="color:${COLORS[from]};font-weight:600;font-size:0.85rem;">${fromName}</span>
+            <span style="color:var(--muted);font-size:0.75rem;"> owes </span>
+            <span style="color:${COLORS[to]};font-weight:600;font-size:0.85rem;">${toName}</span>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:700;color:var(--text);">$${amount.toFixed(2).replace(/\.00$/,'')}</div>
+            <div style="font-size:0.65rem;color:var(--muted);">${pointDiff}pt diff</div>
+          </div>`;
+        detailBody.appendChild(row);
+      });
+
+      detailHeader.onclick = () => {
+        const isOpen = detailBody.style.display !== 'none';
+        detailBody.style.display = isOpen ? 'none' : 'block';
+        detailHeader.querySelector('span:last-child').textContent = isOpen ? '▼' : '▲';
+      };
+
+      detailWrap.append(detailHeader, detailBody);
+      payoutSection.appendChild(detailWrap);
+    }
+  }
+
+  content.appendChild(payoutSection);
 }
 // ── UTILS ────────────────────────────────────────────────────────────
 function el(tag, cls) {
