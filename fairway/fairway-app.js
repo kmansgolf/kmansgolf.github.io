@@ -123,13 +123,15 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
       const h2s = tbl.indexOf('<h2'); const h2e = tbl.indexOf('</h2>', h2s);
       if (h2s === -1) continue;
       const name = tbl.substring(h2s, h2e).replace(/<[^>]+>/g,'').trim();
+      // Check if this is a Super Skins section
+      const isSuperSection = name.toLowerCase().includes('super');
       // Type from <h3>
       const h3s = tbl.indexOf('<h3'); const h3e = tbl.indexOf('</h3>', h3s);
       const type = h3s > -1 ? tbl.substring(h3s, h3e).replace(/<[^>]+>/g,'').replace(/[()]/g,'').trim() : '';
       // CTP — no holes
       if (name.toLowerCase().startsWith('ctp')) {
         const pot = extractVal(tbl, 'Total CTP Pot');
-        sections.push({ name, type:'CTP', pot, holes:[], winners:[] }); continue;
+        sections.push({ name, type:'CTP', pot, holes:[], winners:[], isSuperSection: false }); continue;
       }
       // Summary values
       const pot      = extractVal(tbl, 'Total Skins Pot');
@@ -151,13 +153,14 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
           cells.push(val); ci = te+5;
         }
         if (cells.length < 4) continue;
-        const holeNum = parseInt(cells[0]);
+        // Keep hole as string to preserve "1a", "1b" etc
+        const holeStr = cells[0].trim();
+        const holeNum = parseInt(holeStr);
         if (!holeNum || holeNum < 1 || holeNum > 18) continue;
         const player = cells[1].trim();
         if (!player) continue;
         const skinType = cells[3] || '';
-        const isSuper = skinType.toLowerCase().includes('super');
-        holes.push({ hole: holeNum, player, score: cells[2], type: skinType, isSuper });
+        holes.push({ hole: holeStr, player, score: cells[2], type: skinType, isSuper: isSuperSection });
       }
       // Per-player winnings
       const sv = parseFloat((skinVal||'').replace(/[$,]/g,'')) || 0;
@@ -171,7 +174,7 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
       const winners = Object.entries(pt)
         .map(([name,v])=>({name,skins:v.skins,winnings:v.winnings,holes:v.holes}))
         .sort((a,b)=>b.skins-a.skins);
-      sections.push({ name, type, pot, skinValue:skinVal, totalSkins:totSkins, buyIn, numPlayers:numPl, holes, winners });
+      sections.push({ name, type, pot, skinValue:skinVal, totalSkins:totSkins, buyIn, numPlayers:numPl, holes, winners, isSuperSection });
     }
     // Overall winnings — track holes across all sections
     const aw = {};
@@ -232,11 +235,15 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
             h("tbody",null,data.overallWinners.map((w,i)=>{
               const me = (playerId && w.id===String(playerId)) ||
                          (myLast && w.name.toLowerCase().includes(myLast));
-              // Format holes: "3, 7ˢ, 12" where ˢ = super
+              // Format holes: "4s 4 8 18s 18" with spaces, s = super
               const holesStr = (w.holes||[])
-                .sort((a,b)=>a.hole-b.hole)
-                .map(h=>h.hole+(h.isSuper?'ˢ':''))
-                .join(', ');
+                .sort((a,b)=>{
+                  const aNum = parseInt(a.hole) || 0;
+                  const bNum = parseInt(b.hole) || 0;
+                  return aNum - bNum;
+                })
+                .map(h=>h.hole+(h.isSuper?'s':''))
+                .join('  ');
               return h("tr",{key:i,className:me?"fw-row--me":i%2===0?"fw-row--alt":""},
                 h("td",{style:{fontWeight:me?700:400}},w.name+(me?" ⭐":"")),
                 h("td",{style:{textAlign:"center",fontSize:12,color:"var(--muted)",fontFamily:"var(--font-mono)"}},holesStr||"—"),
@@ -246,7 +253,7 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
             }))
           )
         ),
-        h("div",{style:{fontSize:10,color:"var(--muted)",marginTop:6,fontStyle:"italic"}},"ˢ = super skin")
+        h("div",{style:{fontSize:10,color:"var(--muted)",marginTop:6,fontStyle:"italic"}},"s = super skin")
       ),
 
       // ── Per-flight sections ──
@@ -960,7 +967,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(h(App,null));
 // Build timestamp
 const _tsEl = document.createElement("div");
 _tsEl.className = "fw-build-ts";
-_tsEl.textContent = "Built: Apr 12, 2026 Watch fix";
+_tsEl.textContent = "Built: Apr 12, 2026 Skins+Pairings fix";
 document.getElementById("root").appendChild(_tsEl);
 
 // ── PULL TO REFRESH ──
