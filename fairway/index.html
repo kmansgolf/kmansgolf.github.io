@@ -81,7 +81,7 @@ body{font-family:var(--font-body);background:var(--navy);color:var(--text);
   font-size:11px;letter-spacing:2px;font-weight:700;
   color:var(--green);opacity:0.8;
 }
-.fw-shell-scroll{position:relative;}
+.fw-shell-scroll{position:relative;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
 
 /* ── PC MAX WIDTH ── */
 @media(min-width:600px){
@@ -1020,9 +1020,13 @@ function LeaderboardTab({playerId, playerName, tourType, todayEvent, activeEvent
     data && !data.posted && h("div",{className:"fw-status fw-status--muted",style:{padding:"16px 0"}},"Scores not yet posted for this tournament."),
     data && data.posted && h("div",null,
       h("div",{style:{fontWeight:700,fontSize:15,marginBottom:12}},data.course+" · "+data.date),
-      data.flights.map((flight,fi)=>{
+      [...(data.flights||[])].sort((a,b)=>{
+        const aMe = a.players.some(r=>myLast&&r.player.toLowerCase().includes(myLast));
+        const bMe = b.players.some(r=>myLast&&r.player.toLowerCase().includes(myLast));
+        return aMe?-1:bMe?1:0;
+      }).map((flight,fi)=>{
         if (!flight.players.length) return null;
-        const isMine = flight.players.some(r=>inMyGroup(r.player));
+        const isMine = flight.players.some(r=>myLast&&r.player.toLowerCase().includes(myLast));
         return h("div",{key:fi,style:{marginBottom:20}},
           h("div",{className:"fw-section-label"},(isMine?"⭐ ":"")+flight.flight),
           h("div",{style:{overflowX:"auto"}},
@@ -1030,7 +1034,7 @@ function LeaderboardTab({playerId, playerName, tourType, todayEvent, activeEvent
               h("thead",null,h("tr",null,["POS","PLAYER","TOTAL","THRU","NOW"].map(col=>
                 h("th",{key:col,style:{textAlign:col==="PLAYER"?"left":"center"}},col)))),
               h("tbody",null,flight.players.map((r,i)=>{
-                const me = myLast && r.player.toLowerCase().includes(myLast);
+                const me = (myLast && r.player.toLowerCase().includes(myLast)) || false;
                 const gm = !me && inMyGroup(r.player);
                 return h("tr",{key:i,className:me?"fw-row--me":gm?"fw-row--group":i%2===0?"fw-row--alt":""},
                   h("td",{style:{textAlign:"center",fontWeight:700}},r.pos),
@@ -1164,7 +1168,7 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
                 h("th",{style:{textAlign:"center"}},"TYPE")
               )),
               h("tbody",null,sec.holes.map((r,i)=>{
-                const me = myLast && r.player.toLowerCase().includes(myLast);
+                const me = (myLast && r.player.toLowerCase().includes(myLast)) || false;
                 return h("tr",{key:i,className:me?"fw-row--me":i%2===0?"fw-row--alt":""},
                   h("td",{style:{textAlign:"center",fontWeight:700}},r.hole),
                   h("td",{style:{fontWeight:me?700:400}},r.player+(me?" ⭐":"")),
@@ -1249,7 +1253,7 @@ function PairingsTab({playerId, playerName, tourType, todayEvent, activeEvent: a
 
   // Auto-refresh scores every 5 min on tournament day
   useEffect(() => {
-    if (!todayEvent || !pairings?.posted) return;
+    if (!activeEvent || !pairings?.posted) return;
     const myGroup = pairings.groups?.find(g => g.players?.some(p =>
       (playerId && p.id === String(playerId)) ||
       (myLast && (p.name||p).toLowerCase().includes(myLast))
