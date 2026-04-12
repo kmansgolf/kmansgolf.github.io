@@ -724,7 +724,7 @@ function SpectatorTab({tourType,todayEvent,activeEvent:watchActiveEvent,nextEven
         : data.error
         ? h("div",{style:{color:"#dc2626",fontSize:13}},"Fetch failed — tap ↻ to retry")
         : !data.found
-        ? h("div",{className:"fw-status fw-status--muted"},todayEvent?"Not in today\'s results yet":"No tournament today")
+        ? h("div",{className:"fw-status fw-status--muted"},watchActiveEvent?"Not in results yet":"No tournament selected")
         : h("div",{className:"fw-stat-chips"},
             h(StatChip,{label:"POS",value:"#"+lb?.pos,color:"#1e3a5f",bg:"#dbeafe"}),
             h(StatChip,{label:"FLIGHT",value:(lb?.flight||"—").replace(" Flight",""),color:"#1e3a5f",bg:"#e0f2fe"}),
