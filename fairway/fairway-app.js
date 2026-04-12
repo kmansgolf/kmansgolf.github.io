@@ -566,6 +566,21 @@ function PairingsTab({playerId, playerName, tourType, todayEvent, activeEvent: a
 
 
 // ── SPECTATOR ─────────────────────────────────────────────────────────────────
+// Extract just Champ/A/B/C/D from flight name
+function cleanFlight(flightStr) {
+  if (!flightStr) return "—";
+  const f = flightStr.toLowerCase();
+  if (f.includes('champ')) return 'Champ';
+  if (f.includes('d flight') || f.startsWith('d ') || f === 'd') return 'D';
+  if (f.includes('c flight') || f.startsWith('c ') || f === 'c') return 'C';
+  if (f.includes('b flight') || f.startsWith('b ') || f === 'b') return 'B';
+  if (f.includes('a flight') || f.startsWith('a ') || f === 'a') return 'A';
+  // Fallback: first letter if it's A-D
+  const first = flightStr.trim().charAt(0).toUpperCase();
+  if (['A','B','C','D'].includes(first)) return first;
+  return flightStr.replace(/\s*flight.*/i,'').trim() || "—";
+}
+
 function StatChip({label,value,color,bg}){
   return h("div",{className:"fw-stat-chip",style:{background:bg}},
     h("div",{className:"fw-stat-label"},label),
@@ -694,7 +709,7 @@ function SpectatorTab({tourType,todayEvent,activeEvent:watchActiveEvent,nextEven
         ? h("div",{className:"fw-status fw-status--muted"},watchActiveEvent?"Not in results yet":"No tournament selected")
         : h("div",{className:"fw-stat-chips"},
             h(StatChip,{label:"POS",value:"#"+lb?.pos,color:"#1e3a5f",bg:"#dbeafe"}),
-            h(StatChip,{label:"FLIGHT",value:(lb?.flight||"—").replace(" Flight",""),color:"#1e3a5f",bg:"#e0f2fe"}),
+            h(StatChip,{label:"FLIGHT",value:cleanFlight(lb?.flight),color:"#1e3a5f",bg:"#e0f2fe"}),
             h(StatChip,{label:"SCORE",value:lb?.score||"—",color:"#0f172a",bg:"#f1f5f9"}),
             h(StatChip,{label:"PTS",value:lb?.points||"—",color:"#166534",bg:"#dcfce7"}),
             lb?.earnings>0&&h(StatChip,{label:"$",value:"$"+lb.earnings,color:"#166534",bg:"#dcfce7"}),
