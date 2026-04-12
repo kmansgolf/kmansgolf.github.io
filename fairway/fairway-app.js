@@ -619,7 +619,7 @@ function SpectatorTab({tourType,todayEvent,activeEvent:watchActiveEvent,nextEven
   const domain = TOUR_DOMAINS[tourType];
 
   useEffect(()=>{lsSet("gw_watchList",watchList);},[watchList]);
-  useEffect(()=>{ watchList.forEach(n=>fetchPlayer(n)); },[tourType]);
+  useEffect(()=>{ if(watchActiveEvent?.tid) watchList.forEach(n=>fetchPlayer(n)); },[tourType, watchActiveEvent?.tid]);
 
   function handleWatchInput(val) {
     setNameInput(val);
@@ -660,10 +660,10 @@ function SpectatorTab({tourType,todayEvent,activeEvent:watchActiveEvent,nextEven
   }
 
   async function fetchPlayer(name){
+    if (!watchActiveEvent?.tid) return;
     setLoading(p=>({...p,[name]:true}));
     try{
-      const watchEvent = watchActiveEvent || todayEvent || nextEvent;
-      const res=await fetch(`${WORKER_URL}/leaderboard?tid=${watchEvent?.tid||""}&tour=${tourType}`);
+      const res=await fetch(`${WORKER_URL}/leaderboard?tid=${watchActiveEvent.tid}&tour=${tourType}`);
       if(!res.ok) throw new Error();
       const payload=await res.json();
       // Parse raw HTML from leaderboard worker response
@@ -1000,7 +1000,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(h(App,null));
 // Build timestamp
 const _tsEl = document.createElement("div");
 _tsEl.className = "fw-build-ts";
-_tsEl.textContent = "Built: Apr 09, 2026 6:52 PM UTC";
+_tsEl.textContent = "Built: Apr 12, 2026 Watch fix";
 document.getElementById("root").appendChild(_tsEl);
 
 // ── PULL TO REFRESH ──
