@@ -1070,11 +1070,88 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
     try {
       const res = await fetch(`${WORKER_URL}/skins?tid=${activeEvent.tid}&tour=${tourType}`);
       if (!res.ok) throw new Error("Worker " + res.status);
-      const json = await res.json();
-      setData(json);
+      const payload = await res.json();
+      if (payload.error) throw new Error(payload.error);
+      const parsed = parseSkinsHtml(payload.raw || '');
+      setData(parsed);
       setLastFetch(new Date());
     } catch(e) { setError(e.message); }
     setLoading(false);
+  }
+
+  function parseSkinsHtml(html) {
+    if (!html || html.length < 20) return { posted: false, sections: [], overallWinners: [] };
+    const sections = [];
+    // Split on <table — each table is a flight section
+    const parts = html.split('<table');
+    for (let i = 1; i < parts.length; i++) {
+      const tbl = '<table' + parts[i];
+      // Section name from <h2>
+      const h2s = tbl.indexOf('<h2'); const h2e = tbl.indexOf('</h2>', h2s);
+      if (h2s === -1) continue;
+      const name = tbl.substring(h2s, h2e).replace(/<[^>]+>/g,'').trim();
+      // Type from <h3>
+      const h3s = tbl.indexOf('<h3'); const h3e = tbl.indexOf('</h3>', h3s);
+      const type = h3s > -1 ? tbl.substring(h3s, h3e).replace(/<[^>]+>/g,'').replace(/[()]/g,'').trim() : '';
+      // CTP — no holes
+      if (name.toLowerCase().startsWith('ctp')) {
+        const pot = extractVal(tbl, 'Total CTP Pot');
+        sections.push({ name, type:'CTP', pot, holes:[], winners:[] }); continue;
+      }
+      // Summary values
+      const pot      = extractVal(tbl, 'Total Skins Pot');
+      const skinVal  = extractVal(tbl, 'Each Skin Value');
+      const totSkins = extractVal(tbl, 'Total Skins');
+      const buyIn    = extractVal(tbl, 'Game Buy In');
+      const numPl    = extractVal(tbl, 'Total Players');
+      // Hole rows
+      const holes = [];
+      const rows  = tbl.split('<tr');
+      for (const row of rows) {
+        const cells = [];
+        let ci = 0;
+        while (true) {
+          const ts = row.indexOf('<td', ci); if (ts===-1) break;
+          const te = row.indexOf('</td>', ts); if (te===-1) break;
+          const val = row.substring(ts,te).replace(/<[^>]+>/g,'')
+            .replace(/&nbsp;/g,'').replace(/&amp;/g,'&').trim();
+          cells.push(val); ci = te+5;
+        }
+        if (cells.length < 4) continue;
+        const holeNum = parseInt(cells[0]);
+        if (!holeNum || holeNum < 1 || holeNum > 18) continue;
+        const player = cells[1].trim();
+        if (!player) continue;
+        holes.push({ hole: holeNum, player, score: cells[2], type: cells[3] });
+      }
+      // Per-player winnings
+      const sv = parseFloat((skinVal||'').replace(/[$,]/g,'')) || 0;
+      const pt = {};
+      holes.forEach(h => { if (!pt[h.player]) pt[h.player]={skins:0,winnings:0};
+        pt[h.player].skins++; pt[h.player].winnings += sv; });
+      const winners = Object.entries(pt)
+        .map(([name,v])=>({name,skins:v.skins,winnings:v.winnings}))
+        .sort((a,b)=>b.skins-a.skins);
+      sections.push({ name, type, pot, skinValue:skinVal, totalSkins:totSkins, buyIn, numPlayers:numPl, holes, winners });
+    }
+    // Overall winnings
+    const aw = {};
+    sections.filter(s=>s.type!=='CTP').forEach(s=>(s.winners||[]).forEach(w=>{
+      if(!aw[w.name]) aw[w.name]=0; aw[w.name]+=w.winnings; }));
+    const overallWinners = Object.entries(aw)
+      .map(([name,winnings])=>({name,winnings})).sort((a,b)=>b.winnings-a.winnings);
+    return { posted: sections.some(s=>s.holes?.length>0), sections, overallWinners };
+  }
+
+  function extractVal(html, label) {
+    const idx = html.indexOf(label);
+    if (idx===-1) return '';
+    const ts = html.indexOf('<td', idx+label.length);
+    if (ts===-1) return '';
+    const to = html.indexOf('>', ts)+1;
+    const tc = html.indexOf('</td>', to);
+    if (tc===-1) return '';
+    return html.substring(to,tc).replace(/<[^>]+>/g,'').replace(/&nbsp;/g,'').trim();
   }
 
   useEffect(() => { loadSkins(); }, [tourType, activeEvent?.tid]);
@@ -1437,7 +1514,7 @@ function StatChip({label,value,color,bg}){
   );
 }
 
-function SpectatorTab({tourType,todayEvent}){
+function SpectatorTab({tourType,todayEvent,activeEvent:watchActiveEvent,nextEvent}){
   const [watchList,      setWatchList]      = useState(()=>ls("gw_watchList",[]));
   const [nameInput,      setNameInput]      = useState("");
   const [watchSuggestions, setWatchSuggestions] = useState([]);
@@ -1493,15 +1570,16 @@ function SpectatorTab({tourType,todayEvent}){
   async function fetchPlayer(name){
     setLoading(p=>({...p,[name]:true}));
     try{
-      const watchEvent = todayEvent || nextEvent;
-    const res=await fetch(`${WORKER_URL}/leaderboard?tid=${watchEvent?.tid||""}&tour=${tourType}`);
+      const watchEvent = watchActiveEvent || todayEvent || nextEvent;
+      const res=await fetch(`${WORKER_URL}/leaderboard?tid=${watchEvent?.tid||""}&tour=${tourType}`);
       if(!res.ok) throw new Error();
-      const data=await res.json();
-      // Search for this player in the leaderboard results
+      const payload=await res.json();
+      // Parse raw HTML from leaderboard worker response
+      const lb = typeof parseLeaderboardHtml === 'function' ? parseLeaderboardHtml(payload.raw||'') : {players:[]};
       const nameLower=name.toLowerCase().split(",")[0];
-      const found=(data.players||[]).find(p=>
+      const found=(lb.players||[]).find(p=>
         p.player.toLowerCase().includes(nameLower)||
-        nameLower.includes(p.player.toLowerCase().split(",")[0])
+        nameLower.includes((p.player||'').toLowerCase().split(",")[0])
       );
       if(found){
         setPlayerData(p=>({...p,[name]:{
@@ -1798,7 +1876,7 @@ function App(){
       tab==="pairings"    &&h(PairingsTab,{playerId,playerName,tourType,todayEvent,activeEvent,nextEvent:getNextTournament(tourType)}),
       tab==="leaderboard" &&h(LeaderboardTab,{playerId,playerName,tourType,todayEvent,activeEvent,nextEvent:getNextTournament(tourType)}),
       tab==="skins"       &&h(SkinsTab,{playerId,playerName,tourType,todayEvent,activeEvent,nextEvent:getNextTournament(tourType)}),
-      tab==="spectator"   &&h(SpectatorTab,{tourType,todayEvent}),
+      tab==="spectator"   &&h(SpectatorTab,{tourType,todayEvent,activeEvent,nextEvent:getNextTournament(tourType)}),
     )
   );
 }
