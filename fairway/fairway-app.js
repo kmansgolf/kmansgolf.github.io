@@ -155,24 +155,35 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
         if (!holeNum || holeNum < 1 || holeNum > 18) continue;
         const player = cells[1].trim();
         if (!player) continue;
-        holes.push({ hole: holeNum, player, score: cells[2], type: cells[3] });
+        const skinType = cells[3] || '';
+        const isSuper = skinType.toLowerCase().includes('super');
+        holes.push({ hole: holeNum, player, score: cells[2], type: skinType, isSuper });
       }
       // Per-player winnings
       const sv = parseFloat((skinVal||'').replace(/[$,]/g,'')) || 0;
       const pt = {};
-      holes.forEach(h => { if (!pt[h.player]) pt[h.player]={skins:0,winnings:0};
-        pt[h.player].skins++; pt[h.player].winnings += sv; });
+      holes.forEach(h => { 
+        if (!pt[h.player]) pt[h.player]={skins:0,winnings:0,holes:[]};
+        pt[h.player].skins++; 
+        pt[h.player].winnings += sv;
+        pt[h.player].holes.push({ hole: h.hole, isSuper: h.isSuper });
+      });
       const winners = Object.entries(pt)
-        .map(([name,v])=>({name,skins:v.skins,winnings:v.winnings}))
+        .map(([name,v])=>({name,skins:v.skins,winnings:v.winnings,holes:v.holes}))
         .sort((a,b)=>b.skins-a.skins);
       sections.push({ name, type, pot, skinValue:skinVal, totalSkins:totSkins, buyIn, numPlayers:numPl, holes, winners });
     }
-    // Overall winnings
+    // Overall winnings — track holes across all sections
     const aw = {};
-    sections.filter(s=>s.type!=='CTP').forEach(s=>(s.winners||[]).forEach(w=>{
-      if(!aw[w.name]) aw[w.name]=0; aw[w.name]+=w.winnings; }));
+    sections.filter(s=>s.type!=='CTP').forEach(s=>(s.holes||[]).forEach(h=>{
+      if(!aw[h.player]) aw[h.player]={winnings:0,holes:[]};
+      const sv = parseFloat((s.skinValue||'').replace(/[$,]/g,'')) || 0;
+      aw[h.player].winnings += sv;
+      aw[h.player].holes.push({ hole: h.hole, isSuper: h.isSuper });
+    }));
     const overallWinners = Object.entries(aw)
-      .map(([name,winnings])=>({name,winnings})).sort((a,b)=>b.winnings-a.winnings);
+      .map(([name,v])=>({name,winnings:v.winnings,holes:v.holes}))
+      .sort((a,b)=>b.winnings-a.winnings);
     return { posted: sections.some(s=>s.holes?.length>0), sections, overallWinners };
   }
 
@@ -215,19 +226,27 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
           h("table",{className:"fw-table"},
             h("thead",null,h("tr",null,
               h("th",{style:{textAlign:"left"}},"PLAYER"),
+              h("th",{style:{textAlign:"center"}},"HOLES"),
               h("th",{style:{textAlign:"right"}},"WINNINGS")
             )),
             h("tbody",null,data.overallWinners.map((w,i)=>{
               const me = (playerId && w.id===String(playerId)) ||
                          (myLast && w.name.toLowerCase().includes(myLast));
+              // Format holes: "3, 7ˢ, 12" where ˢ = super
+              const holesStr = (w.holes||[])
+                .sort((a,b)=>a.hole-b.hole)
+                .map(h=>h.hole+(h.isSuper?'ˢ':''))
+                .join(', ');
               return h("tr",{key:i,className:me?"fw-row--me":i%2===0?"fw-row--alt":""},
                 h("td",{style:{fontWeight:me?700:400}},w.name+(me?" ⭐":"")),
+                h("td",{style:{textAlign:"center",fontSize:12,color:"var(--muted)",fontFamily:"var(--font-mono)"}},holesStr||"—"),
                 h("td",{style:{textAlign:"right",color:"var(--green)",fontWeight:700,fontFamily:"var(--font-mono)"}},
                   "$"+w.winnings.toFixed(0))
               );
             }))
           )
-        )
+        ),
+        h("div",{style:{fontSize:10,color:"var(--muted)",marginTop:6,fontStyle:"italic"}},"ˢ = super skin")
       ),
 
       // ── Per-flight sections ──
