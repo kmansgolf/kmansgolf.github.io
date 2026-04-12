@@ -8,6 +8,53 @@ let state = {
   money: []
 };
 
+// Global flag for active round (used by beforeunload guard)
+let inRound = false;
+
+// ═══ ACTIVE ROUND PERSISTENCE ════════════════════════
+function saveActiveRound() {
+  if (!state.players?.length) {
+    localStorage.removeItem('bunker_active_round');
+    inRound = false;
+    return;
+  }
+  inRound = true;
+  const data = {
+    state: JSON.parse(JSON.stringify(state)),
+    savedAt: new Date().toISOString()
+  };
+  try {
+    localStorage.setItem('bunker_active_round', JSON.stringify(data));
+  } catch(e) { console.error('Failed to save active round', e); }
+}
+
+function loadActiveRound() {
+  try {
+    const saved = localStorage.getItem('bunker_active_round');
+    if (!saved) return false;
+    const data = JSON.parse(saved);
+    if (!data.state?.players?.length) return false;
+    
+    // Restore state
+    Object.assign(state, data.state);
+    inRound = true;
+    
+    // Show play view and render current hole
+    showView('play');
+    renderHole();
+    updateHomeButtons();
+    return true;
+  } catch(e) { 
+    console.error('Failed to load active round', e);
+    return false;
+  }
+}
+
+function clearActiveRound() {
+  localStorage.removeItem('bunker_active_round');
+  inRound = false;
+}
+
 // ═══ WIZARD ══════════════════════════════════════════
 let wizardStep = 0;
 
@@ -167,6 +214,7 @@ function startRound() {
   showView('play');
   renderHole();
   updateHeader('play');
+  saveActiveRound();
 }
 
 // ── VIEW SWITCHING ───────────────────────────────────────────────────
@@ -262,6 +310,7 @@ function newRound() {
     wolf: { picks: Array(18).fill(null) },
     money: []
   };
+  clearActiveRound();
   // Clear course search input
   const cSearch = document.getElementById('course-search');
   if (cSearch) cSearch.value = '';
@@ -745,12 +794,12 @@ function renderHole() {
   // Hole nav
   const nav = el('div','hole-nav');
   const prevBtn = el('button','nav-btn'); prevBtn.textContent = '‹'; prevBtn.disabled = h === 0;
-  prevBtn.onclick = () => { state.currentHole--; renderHole(); };
+  prevBtn.onclick = () => { state.currentHole--; renderHole(); saveActiveRound(); };
   const center = el('div','hole-nav-center');
   const yds = state.yardages && state.yardages[h] ? `<div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">${state.yardages[h]} yds</div>` : '';
   center.innerHTML = `<div class="hole-num">Hole ${h+1}</div><div class="hole-par">Par ${state.pars[h]}</div>${yds}`;
   const nextBtn = el('button','nav-btn'); nextBtn.textContent = '›'; nextBtn.disabled = h === 17;
-  nextBtn.onclick = () => { autoSaveRound(); state.currentHole++; renderHole(); };
+  nextBtn.onclick = () => { autoSaveRound(); state.currentHole++; renderHole(); saveActiveRound(); };
   nav.append(prevBtn, center, nextBtn);
   content.appendChild(nav);
 
@@ -759,7 +808,7 @@ function renderHole() {
   [3,4,5].forEach(p => {
     const btn = el('button','par-btn'); btn.textContent = `Par ${p}`;
     if (state.pars[h] === p) btn.classList.add('active');
-    btn.onclick = () => { state.pars[h] = p; renderHole(); };
+    btn.onclick = () => { state.pars[h] = p; renderHole(); saveActiveRound(); };
     parSel.appendChild(btn);
   });
   content.appendChild(parSel);
@@ -814,12 +863,12 @@ function buildScoreEntry(h) {
     minus.onclick = () => {
       if (p.scores[h] === null) p.scores[h] = state.pars[h];
       else if (p.scores[h] > 1) p.scores[h]--;
-      recalc(); renderHole();
+      recalc(); renderHole(); saveActiveRound();
     };
     plus.onclick = () => {
       if (p.scores[h] === null) p.scores[h] = state.pars[h];
       else p.scores[h]++;
-      recalc(); renderHole();
+      recalc(); renderHole(); saveActiveRound();
     };
     stepper.append(minus, val, plus);
 
@@ -882,7 +931,7 @@ function buildWolfUI(h) {
     btn.onclick = () => {
       // Toggle: if already picked, go back to lone wolf (null)
       state.wolf.picks[h] = (state.wolf.picks[h] === i) ? null : i;
-      recalc(); renderHole();
+      recalc(); renderHole(); saveActiveRound();
     };
     picker.appendChild(btn);
   });
@@ -1806,6 +1855,7 @@ function saveEditModal() {
     closeEditModal();
     autoSaveRound();
     renderHole();
+    saveActiveRound();
   }
 }
 
@@ -2446,6 +2496,7 @@ function openReviewEditModal(pi, h) {
     state.players[pi].scores[h] = tempScore;
     overlay.remove();
     renderResults(); // re-render everything live
+    saveActiveRound();
   };
   overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
 }
