@@ -21,71 +21,12 @@ function LeaderboardTab({playerId, playerName, tourType, todayEvent, activeEvent
       if (!res.ok) throw new Error("Worker " + res.status);
       const payload = await res.json();
       if (payload.error) throw new Error(payload.error);
-      // Parse the raw HTML client-side (no CPU limit in browser)
+      // Parse the raw HTML client-side (uses global parseLeaderboardHtml from engine.js)
       const parsed = parseLeaderboardHtml(payload.raw || '');
       setData(parsed);
       setLastFetch(new Date());
     } catch(e) { setError(e.message); }
     setLoading(false);
-  }
-
-  function parseLeaderboardHtml(lbHtml) {
-    if (!lbHtml || lbHtml.length < 20) return { posted: false, flights: [], players: [] };
-
-    // Course/date from lbTournamentName
-    let course = '', date = '';
-    const nameIdx = lbHtml.indexOf("class=\'lbTournamentName\'");
-    const nameIdx2 = lbHtml.indexOf("class='lbTournamentName'");
-    const ni = nameIdx > -1 ? nameIdx : nameIdx2;
-    if (ni > -1) {
-      const tdEnd = lbHtml.indexOf('</td>', ni);
-      const raw = lbHtml.substring(ni, tdEnd).replace(/<br\s*\/?>/gi,'|').replace(/<[^>]+>/g,'');
-      const parts = raw.split('|');
-      course = (parts[0]||'').replace(/^[^>]*>/,'').trim();
-      date   = (parts[1]||'').trim();
-    }
-
-    // Split on flight headers
-    const sections = lbHtml.split(/Class='lbHoleHeader'/i);
-    const flights = [];
-
-    for (let i = 1; i < sections.length; i++) {
-      const sec = sections[i];
-      // Flight name — first td content
-      const td1s = sec.indexOf('<td');
-      const td1e = sec.indexOf('</td>', td1s);
-      const flightName = td1s > -1
-        ? sec.substring(td1s, td1e).replace(/<[^>]+>/g,'').trim()
-        : '';
-
-      // Player rows — split on <tr
-      const players = [];
-      const rows = sec.split('<tr');
-      for (const row of rows) {
-        const cells = [];
-        let ci = 0;
-        while (true) {
-          const ts = row.indexOf('<td', ci);
-          if (ts === -1) break;
-          const te = row.indexOf('</td>', ts);
-          if (te === -1) break;
-          cells.push(row.substring(ts, te).replace(/<[^>]+>/g,'').trim());
-          ci = te + 5;
-        }
-        if (cells.length < 5) continue;
-        if (cells[0].toLowerCase() === 'position') continue;
-        const pos = cells[0];
-        if (!pos || pos === '&nbsp;') continue;
-        players.push({
-          pos, player: cells[1], total: cells[3], thru: cells[4],
-          currently: cells[5] || '', flight: flightName,
-        });
-      }
-      flights.push({ flight: flightName, players });
-    }
-
-    const allPlayers = flights.flatMap(f => f.players);
-    return { posted: allPlayers.length > 0, course, date, flights, players: allPlayers };
   }
 
   useEffect(() => { loadLeaderboard(); }, [tourType, activeEvent?.tid]);
@@ -666,8 +607,8 @@ function SpectatorTab({tourType,todayEvent,activeEvent:watchActiveEvent,nextEven
       const res=await fetch(`${WORKER_URL}/leaderboard?tid=${watchActiveEvent.tid}&tour=${tourType}`);
       if(!res.ok) throw new Error();
       const payload=await res.json();
-      // Parse raw HTML from leaderboard worker response
-      const lb = typeof parseLeaderboardHtml === 'function' ? parseLeaderboardHtml(payload.raw||'') : {players:[]};
+      // Parse raw HTML using global parseLeaderboardHtml from engine.js
+      const lb = parseLeaderboardHtml(payload.raw||'');
       const nameLower=name.toLowerCase().split(",")[0];
       const found=(lb.players||[]).find(p=>
         p.player.toLowerCase().includes(nameLower)||
