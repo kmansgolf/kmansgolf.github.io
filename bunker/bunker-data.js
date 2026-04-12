@@ -253,7 +253,14 @@ function skipCourse() {
   document.getElementById('tee-picker-wrap').style.display = 'none';
 }
 
-document.addEventListener('DOMContentLoaded', () => { initCourseList(); initPlayerSlots(); updateWizard(); });
+document.addEventListener('DOMContentLoaded', () => { 
+  initCourseList(); 
+  initPlayerSlots(); 
+  // Try to resume active round, otherwise show wizard
+  if (!loadActiveRound()) {
+    updateWizard(); 
+  }
+});
 
 // ── UNSAVED DATA GUARD ────────────────────────────────────────────────────────
 window.addEventListener('beforeunload', function(e) {
