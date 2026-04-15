@@ -112,95 +112,6 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
     setLoading(false);
   }
 
-  function parseSkinsHtml(html) {
-    if (!html || html.length < 20) return { posted: false, sections: [], overallWinners: [] };
-    const sections = [];
-    // Split on <table — each table is a flight section
-    const parts = html.split('<table');
-    for (let i = 1; i < parts.length; i++) {
-      const tbl = '<table' + parts[i];
-      // Section name from <h2>
-      const h2s = tbl.indexOf('<h2'); const h2e = tbl.indexOf('</h2>', h2s);
-      if (h2s === -1) continue;
-      const name = tbl.substring(h2s, h2e).replace(/<[^>]+>/g,'').trim();
-      // Check if this is a Super Skins section
-      const isSuperSection = name.toLowerCase().includes('super');
-      // Type from <h3>
-      const h3s = tbl.indexOf('<h3'); const h3e = tbl.indexOf('</h3>', h3s);
-      const type = h3s > -1 ? tbl.substring(h3s, h3e).replace(/<[^>]+>/g,'').replace(/[()]/g,'').trim() : '';
-      // CTP — no holes
-      if (name.toLowerCase().startsWith('ctp')) {
-        const pot = extractVal(tbl, 'Total CTP Pot');
-        sections.push({ name, type:'CTP', pot, holes:[], winners:[], isSuperSection: false }); continue;
-      }
-      // Summary values
-      const pot      = extractVal(tbl, 'Total Skins Pot');
-      const skinVal  = extractVal(tbl, 'Each Skin Value');
-      const totSkins = extractVal(tbl, 'Total Skins');
-      const buyIn    = extractVal(tbl, 'Game Buy In');
-      const numPl    = extractVal(tbl, 'Total Players');
-      // Hole rows
-      const holes = [];
-      const rows  = tbl.split('<tr');
-      for (const row of rows) {
-        const cells = [];
-        let ci = 0;
-        while (true) {
-          const ts = row.indexOf('<td', ci); if (ts===-1) break;
-          const te = row.indexOf('</td>', ts); if (te===-1) break;
-          const val = row.substring(ts,te).replace(/<[^>]+>/g,'')
-            .replace(/&nbsp;/g,'').replace(/&amp;/g,'&').trim();
-          cells.push(val); ci = te+5;
-        }
-        if (cells.length < 4) continue;
-        // Keep hole as string to preserve "1a", "1b" etc
-        const holeStr = cells[0].trim();
-        const holeNum = parseInt(holeStr);
-        if (!holeNum || holeNum < 1 || holeNum > 18) continue;
-        const player = cells[1].trim();
-        if (!player) continue;
-        const skinType = cells[3] || '';
-        holes.push({ hole: holeStr, player, score: cells[2], type: skinType, isSuper: isSuperSection });
-      }
-      // Per-player winnings
-      const sv = parseFloat((skinVal||'').replace(/[$,]/g,'')) || 0;
-      const pt = {};
-      holes.forEach(h => { 
-        if (!pt[h.player]) pt[h.player]={skins:0,winnings:0,holes:[]};
-        pt[h.player].skins++; 
-        pt[h.player].winnings += sv;
-        pt[h.player].holes.push({ hole: h.hole, isSuper: h.isSuper });
-      });
-      const winners = Object.entries(pt)
-        .map(([name,v])=>({name,skins:v.skins,winnings:v.winnings,holes:v.holes}))
-        .sort((a,b)=>b.skins-a.skins);
-      sections.push({ name, type, pot, skinValue:skinVal, totalSkins:totSkins, buyIn, numPlayers:numPl, holes, winners, isSuperSection });
-    }
-    // Overall winnings — track holes across all sections
-    const aw = {};
-    sections.filter(s=>s.type!=='CTP').forEach(s=>(s.holes||[]).forEach(h=>{
-      if(!aw[h.player]) aw[h.player]={winnings:0,holes:[]};
-      const sv = parseFloat((s.skinValue||'').replace(/[$,]/g,'')) || 0;
-      aw[h.player].winnings += sv;
-      aw[h.player].holes.push({ hole: h.hole, isSuper: h.isSuper });
-    }));
-    const overallWinners = Object.entries(aw)
-      .map(([name,v])=>({name,winnings:v.winnings,holes:v.holes}))
-      .sort((a,b)=>b.winnings-a.winnings);
-    return { posted: sections.some(s=>s.holes?.length>0), sections, overallWinners };
-  }
-
-  function extractVal(html, label) {
-    const idx = html.indexOf(label);
-    if (idx===-1) return '';
-    const ts = html.indexOf('<td', idx+label.length);
-    if (ts===-1) return '';
-    const to = html.indexOf('>', ts)+1;
-    const tc = html.indexOf('</td>', to);
-    if (tc===-1) return '';
-    return html.substring(to,tc).replace(/<[^>]+>/g,'').replace(/&nbsp;/g,'').trim();
-  }
-
   useEffect(() => { loadSkins(); }, [tourType, activeEvent?.tid]);
 
   if (!activeEvent) return h("div",{className:"fw-tab-content"},
@@ -566,21 +477,6 @@ function PairingsTab({playerId, playerName, tourType, todayEvent, activeEvent: a
 
 
 // ── SPECTATOR ─────────────────────────────────────────────────────────────────
-// Extract just Champ/A/B/C/D from flight name
-function cleanFlight(flightStr) {
-  if (!flightStr) return "—";
-  const f = flightStr.toLowerCase();
-  if (f.includes('champ')) return 'Champ';
-  if (f.includes('d flight') || f.startsWith('d ') || f === 'd') return 'D';
-  if (f.includes('c flight') || f.startsWith('c ') || f === 'c') return 'C';
-  if (f.includes('b flight') || f.startsWith('b ') || f === 'b') return 'B';
-  if (f.includes('a flight') || f.startsWith('a ') || f === 'a') return 'A';
-  // Fallback: first letter if it's A-D
-  const first = flightStr.trim().charAt(0).toUpperCase();
-  if (['A','B','C','D'].includes(first)) return first;
-  return flightStr.replace(/\s*flight.*/i,'').trim() || "—";
-}
-
 function StatChip({label,value,color,bg}){
   return h("div",{className:"fw-stat-chip",style:{background:bg}},
     h("div",{className:"fw-stat-label"},label),
