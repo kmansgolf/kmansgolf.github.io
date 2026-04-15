@@ -1,4 +1,3 @@
-
 // Only make API calls when hosted (not local file)
 const IS_HOSTED = location.protocol === 'https:' || location.hostname === 'localhost';
 const WORKER_URL = 'https://kmansgolf.kemiman74.workers.dev';
@@ -205,57 +204,4 @@ const COURSE_COORDS = {
   "Lancaster Country Club":    {lat:39.7198,lng:-82.5993},
   "Lancaster Golf Club":       {lat:39.7154,lng:-82.5887},
   "The Lakes Golf & CC":       {lat:40.0751,lng:-82.8459},
-};
-
-const DEMO_LEADERBOARD = {
-  course:"Delaware Golf Club",date:"6/7/2025",tour:"Regular Tour — Columbus, OH",
-  flights:[
-    {name:"C Flight (14.0–18.9 Handicap)",rows:[
-      {pos:1,name:"Mansfield, Kevin",score:89,points:450,earnings:190,birdies:2},
-      {pos:2,name:"Fodor, Frank",score:89,points:220,earnings:110,birdies:1},
-      {pos:3,name:"Phares, Shaun",score:91,points:225,earnings:60,birdies:1},
-      {pos:4,name:"Jenkins, Tim",score:92,points:175,earnings:0,birdies:1},
-      {pos:5,name:"VanHoose, Mitch",score:94,points:165,earnings:0,birdies:1},
-      {pos:6,name:"Klase, Patrick",score:95,points:150,earnings:0,birdies:1},
-      {pos:6,name:"Sherman, Johnny",score:95,points:120,earnings:0,birdies:0},
-      {pos:8,name:"Elmore, Jordan",score:96,points:130,earnings:0,birdies:1},
-      {pos:10,name:"Berry, Chris",score:97,points:115,earnings:0,birdies:1},
-      {pos:11,name:"Canlas, Andrew",score:99,points:95,earnings:0,birdies:1},
-      {pos:13,name:"Archer, Michael",score:100,points:85,earnings:0,birdies:0},
-      {pos:15,name:"Wolfe, Chad",score:102,points:75,earnings:0,birdies:1},
-    ]},
-    {name:"A Flight (0–7.9 Handicap)",rows:[
-      {pos:1,name:"Smith, Brad",score:74,points:450,earnings:190,birdies:4},
-      {pos:2,name:"Jones, Mike",score:75,points:220,earnings:110,birdies:3},
-      {pos:3,name:"Davis, Chris",score:77,points:225,earnings:60,birdies:2},
-    ]},
-    {name:"B Flight (8.0–13.9 Handicap)",rows:[
-      {pos:1,name:"Taylor, Jim",score:82,points:450,earnings:190,birdies:3},
-      {pos:2,name:"Brown, Steve",score:84,points:220,earnings:110,birdies:2},
-      {pos:3,name:"Garcia, Luis",score:85,points:225,earnings:60,birdies:2},
-    ]},
-    {name:"D Flight (19.0+ Handicap)",rows:[
-      {pos:1,name:"White, Larry",score:96,points:450,earnings:190,birdies:1},
-      {pos:2,name:"Harris, Ron",score:98,points:220,earnings:110,birdies:1},
-      {pos:3,name:"Clark, Doug",score:100,points:225,earnings:60,birdies:0},
-    ]},
-  ],
-};
-const DEMO_SKINS = {
-  course:"Delaware Golf Club",date:"6/7/2025",pot:380,
-  holes:[
-    {hole:2,winner:"Mansfield, Kevin",score:3,amount:60},
-    {hole:5,winner:"Fodor, Frank",score:2,amount:60},
-    {hole:9,winner:"Phares, Shaun",score:3,amount:60},
-    {hole:12,winner:"Mansfield, Kevin",score:3,amount:80},
-    {hole:14,winner:"Jenkins, Tim",score:2,amount:60},
-    {hole:18,winner:"Berry, Chris",score:2,amount:60},
-  ],
-  totals:[
-    {name:"Mansfield, Kevin",skins:2,amount:140},
-    {name:"Fodor, Frank",skins:1,amount:60},
-    {name:"Phares, Shaun",skins:1,amount:60},
-    {name:"Jenkins, Tim",skins:1,amount:60},
-    {name:"Berry, Chris",skins:1,amount:60},
-  ],
 };
