@@ -8,29 +8,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap&font-display=swap" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#0d2340" id="theme-meta">
+  <meta name="theme-color" content="#000000" id="theme-meta">
   <style>
     /* ── TOKENS ─────────────────────────────────────────────────────────── */
     :root {
-      --n:   #0d2340;
-      --nm:  #152e50;
-      --nc:  #1a3558;
+      --n:   #000000;
+      --nm:  #1c1c1e;
+      --nc:  #2c2c2e;
       --g:   #e8b84b;
-      --gr:  #2ecc71;
-      --w:   #f5f0e8;
-      --d:   #8ba4c0;
-      --err: #e05c5c;
+      --gr:  #3ddc84;
+      --w:   #f5f5f7;
+      --d:   #6e6e73;
+      --err: #e74c3c;
       --header-bg: #1c1c1e;
       --radius: 14px;
     }
     [data-theme="light"] {
       --n:  #f2f2f4;
       --nm: #ffffff;
-      --nc: #ffffff;
+      --nc: #e8e8ed;
       --w:  #1a1a2e;
       --g:  #d4a030;
       --gr: #27a85e;
-      --d:  #5a6a80;
+      --d:  #5a5a60;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -186,21 +186,24 @@
 
     /* ── PRESET SLIDER ──────────────────────────────────────────────────── */
     .preset-names {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
+      position: relative;
+      height: 28px;
+      margin-bottom: 8px;
     }
     .preset-name {
+      position: absolute;
+      transform: translateX(-50%);
       font-family: 'DM Mono', monospace;
       font-size: 9px;
       letter-spacing: 0.06em;
       color: var(--d);
       text-transform: uppercase;
       text-align: center;
-      width: 20%;
+      white-space: nowrap;
       transition: color 0.18s ease;
       cursor: pointer;
       padding: 4px 0;
+      top: 0;
     }
     .preset-name.active {
       color: var(--g);
@@ -779,11 +782,27 @@
       const container = document.getElementById('preset-names');
       container.innerHTML = '';
       PRESETS.forEach((p, i) => {
+        const pct = (p.bpm - BPM_MIN) / (BPM_MAX - BPM_MIN) * 100;
         const div = document.createElement('div');
         div.className = 'preset-name';
-        div.textContent = p.name.replace(' ', '\n');
+        div.textContent = p.name;
+        div.dataset.pct = pct;
         div.onclick = () => snapToPreset(i);
         container.appendChild(div);
+      });
+      positionPresetLabels();
+    }
+
+    function positionPresetLabels() {
+      const slider = document.getElementById('tempo-slider');
+      const thumbW = 22; // matches CSS thumb width in px
+      const trackW = slider.offsetWidth;
+      if (!trackW) return;
+      const usable = trackW - thumbW;
+      document.querySelectorAll('.preset-name').forEach(el => {
+        const pct = parseFloat(el.dataset.pct) / 100;
+        const xCenter = thumbW / 2 + pct * usable;
+        el.style.left = xCenter + 'px';
       });
     }
 
@@ -801,7 +820,7 @@
       const btn = document.getElementById('theme-toggle');
       if (btn) btn.textContent = isLight ? '🌙' : '☀️';
       const meta = document.getElementById('theme-meta');
-      if (meta) meta.setAttribute('content', isLight ? '#f2f2f4' : '#0d2340');
+      if (meta) meta.setAttribute('content', isLight ? '#f2f2f4' : '#000000');
       localStorage.setItem('range_theme', t);
     }
     function toggleTheme() {
@@ -814,7 +833,9 @@
     syncSliderFromBpm();
     updateDisplay();
     applyTheme(localStorage.getItem('range_theme') || 'dark');
+    // Position labels after layout is ready
+    requestAnimationFrame(() => requestAnimationFrame(positionPresetLabels));
+    window.addEventListener('resize', positionPresetLabels);
   </script>
 </body>
 </html>
-
