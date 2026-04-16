@@ -50,9 +50,28 @@
   </div>
 </div>
 
+<!-- ══ SHARED APP HEADER (hidden until logged in) ══ -->
+<div id="app-header" style="display:none">
+  <div class="header-top">
+    <a href="/" class="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0">
+      <span style="font-family:var(--fc);font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:#3ddc84">golf</span>
+      <span style="font-family:var(--fc);font-size:0.8rem;color:rgba(255,255,255,0.3);margin:0 5px">·</span>
+      <span style="font-family:var(--fc);font-size:0.8rem;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">THE RANGE</span>
+    </a>
+    <div class="header-date" id="hdate"></div>
+    <button onclick="toggleTheme()" id="theme-btn" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;">☀️ Light</button>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-home"     onclick="navTo('s-home','tab-home')">🏠 Home</button>
+    <button class="tab-btn"        id="tab-practice" onclick="navTo('s-practice','tab-practice')">⛳ Practice</button>
+    <button class="tab-btn"        id="tab-games"    onclick="openGames()">🎮 Games</button>
+    <button class="tab-btn"        id="tab-history"  onclick="navTo('s-history','tab-history')">📈 History</button>
+    <button class="tab-btn"        id="tab-profile"  onclick="navTo('s-profile','tab-profile')">👤 Profile</button>
+  </div>
+</div>
+
 <!-- ══ HOME ══ -->
 <div id="s-home" class="scr">
-  <div class="hd"><a href="/" class="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm" id="hdate"></div><button onclick="toggleTheme()" id="theme-btn" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;flex-shrink:0;">☀️ Light</button></div>
   <div class="sb">
     <div class="hhero">
       <div class="hgreet">Welcome, <em id="hname">—</em></div>
@@ -75,7 +94,6 @@
 
 <!-- ══ SESSION SETUP ══ -->
 <div id="s-practice" class="scr">
-  <div class="hd"><a href="/" class="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">SESSION SETUP</div><button onclick="toggleTheme()" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;flex-shrink:0;" id="theme-btn-setup">☀️ Light</button></div>
   <div class="sb" style="padding-top:14px">
     <div id="rx-section"></div>
 
@@ -217,13 +235,11 @@
 
 <!-- ══ HISTORY ══ -->
 <div id="s-history" class="scr">
-  <div class="hd"><a href="/" class="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">HISTORY</div><button onclick="toggleTheme()" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;flex-shrink:0;" id="theme-btn-history">☀️ Light</button></div>
   <div class="sb" style="padding-top:8px"><div id="hist-list"></div></div>
 </div>
 
 <!-- ══ PROFILE ══ -->
 <div id="s-profile" class="scr">
-  <div class="hd"><a href="/" class="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">PROFILE</div><button onclick="toggleTheme()" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;flex-shrink:0;" id="theme-btn-profile">☀️ Light</button></div>
   <div class="sb">
     <div class="profav" id="prof-av"></div>
     <div class="profnam" id="prof-nm"></div>
@@ -234,7 +250,6 @@
         <div class="tinfo"><div class="tlbl">AimPoint Mode</div><div class="tsub">Log slope % per putting station for green reading calibration</div></div>
         <div class="tsw" id="ap-tog" onclick="togAimpoint()"><div class="tknob"></div></div>
       </div>
-
     </div>
     <div class="card" id="ap-stats-card" style="display:none">
       <div class="ct">📐 AimPoint Calibration Stats</div>
@@ -261,29 +276,6 @@
   </div>
 </div>
 
-<!-- ══ BOTTOM NAV ══ -->
-<nav id="bnav">
-  <button class="nb on" data-s="s-home" onclick="navTo('s-home',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span class="nl">Home</span>
-  </button>
-  <button class="nb" data-s="s-practice" onclick="navTo('s-practice',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-    <span class="nl">Practice</span>
-  </button>
-  <button class="nb" onclick="openGames()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/></svg>
-    <span class="nl">Games</span>
-  </button>
-  <button class="nb" data-s="s-history" onclick="navTo('s-history',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    <span class="nl">History</span>
-  </button>
-  <button class="nb" data-s="s-profile" onclick="navTo('s-profile',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    <span class="nl">Profile</span>
-  </button>
-</nav>
 </div>
 
 <script src="range-data.js"></script>
