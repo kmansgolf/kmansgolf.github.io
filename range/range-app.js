@@ -215,7 +215,7 @@ function doLogout() {
   clearActiveSession();
   sessionStorage.removeItem('range_session_user');
   CU = null;
-  document.getElementById('bnav').classList.remove('show');
+  document.getElementById('app-header').style.display = 'none';
   goTo('s-login');
 }
 
@@ -223,14 +223,13 @@ function doLogout() {
 //  APP ENTRY
 // ═══════════════════════════════════════════
 function enterApp() {
-  document.getElementById('bnav').classList.add('show');
+  document.getElementById('app-header').style.display = 'block';
   buildWarmup();
   refreshHome();
   if (loadActiveSession()) {
+    setActiveTab('tab-practice');
     renderRunner();
     goTo('s-runner');
-    document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
-    document.querySelector('[data-s="s-practice"]')?.classList.add('on');
   } else if (CU?.firstRun) {
     showFirstRun();
   } else {
@@ -255,9 +254,14 @@ function goTo(id) {
   if (el) el.classList.add('on');
 }
 
-function navTo(id, btn) {
-  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
-  if (btn) btn.classList.add('on');
+function setActiveTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const tab = document.getElementById(tabId);
+  if (tab) tab.classList.add('active');
+}
+
+function navTo(id, tabId) {
+  if (tabId) setActiveTab(tabId);
   if (id === 's-practice') {
     if (sessionInProgress) {
       renderRunner();
@@ -340,7 +344,7 @@ function refreshHome() {
     if (r.cid === 'putting'  && (bestPutt === null || r.score > bestPutt)) bestPutt = r.score;
     if (r.cid === 'chipping' && (bestChip === null || r.score > bestChip)) bestChip = r.score;
   }));
-  cc.innerHTML = `<div class="crow" onclick="navTo('s-practice',document.querySelector('[data-s=s-practice]'))">
+  cc.innerHTML = `<div class="crow" onclick="navTo('s-practice','tab-practice')">
     <div style="flex:1">
       <div class="cnam">Combines</div>
       <div style="display:flex;gap:16px;margin-top:6px">
@@ -382,8 +386,7 @@ function goToPractice() {
     buildPrescriptionCard();
     updateStartBtn();
   }
-  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
-  document.querySelector('[data-s="s-practice"]').classList.add('on');
+  setActiveTab('tab-practice');
   goTo('s-practice');
 }
 
@@ -1162,9 +1165,9 @@ function applyTheme(theme) {
     if (meta) meta.setAttribute('content', '#0d2340');
   }
 
-  // Sync all theme button labels across every header
+  // Sync all theme button labels
   const label = isLight ? '🌙 Dark' : '☀️ Light';
-  ['theme-btn','theme-btn-login','theme-btn-setup','theme-btn-history','theme-btn-profile'].forEach(id => {
+  ['theme-btn', 'theme-btn-login'].forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.textContent = label;
   });
@@ -1196,8 +1199,7 @@ function savePin() {
 }
 
 function resumeSession() {
-  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
-  document.querySelector('[data-s="s-practice"]').classList.add('on');
+  setActiveTab('tab-practice');
   renderRunner();
   goTo('s-runner');
 }
@@ -1205,8 +1207,7 @@ function resumeSession() {
 function goHome() {
   sessionInProgress = false;
   clearActiveSession();
-  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
-  document.querySelector('[data-s="s-home"]').classList.add('on');
+  setActiveTab('tab-home');
   refreshHome();
   goTo('s-home');
 }
