@@ -16,7 +16,10 @@
 
 <!-- ══ LOGIN ══ -->
 <div id="s-login" class="scr on" style="padding-bottom:0;overflow-y:auto">
-  <div style="position:absolute;top:12px;right:16px;z-index:10">
+  <div class="login-header">
+    <a href="/" style="text-decoration:none;display:flex;align-items:baseline;gap:0">
+      <span style="font-family:var(--fc);font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:#3ddc84">golf</span>
+    </a>
     <button onclick="toggleTheme()" id="theme-btn-login" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;">☀️ Light</button>
   </div>
   <div class="lbrand"><div class="llogo">THE RANGE</div><div class="lsub">Golf Practice Tracker</div></div>
@@ -30,6 +33,18 @@
       <div class="fld"><label>PIN</label><input class="inp" id="li-p" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off"></div>
       <div class="lerr" id="li-e"></div>
       <button class="btn" onclick="doLogin()">Sign In</button>
+      <div style="text-align:center;margin-top:12px"><button onclick="showForgotPin()" style="background:none;border:none;font-family:var(--fb);font-size:13px;color:var(--d);cursor:pointer;text-decoration:underline">Forgot PIN?</button></div>
+    </div>
+    <!-- Forgot PIN panel -->
+    <div id="forgot-pin-panel" style="display:none">
+      <div style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--d);margin-bottom:12px">Reset PIN with recovery code</div>
+      <div class="fld"><label>Username</label><input class="inp" id="fp-user" type="text" placeholder="username" autocapitalize="none" autocomplete="off"></div>
+      <div class="fld"><label>6-Character Recovery Code</label><input class="inp" id="fp-code" type="text" placeholder="e.g. AB3X9Z" maxlength="6" autocapitalize="characters" autocomplete="off"></div>
+      <div class="fld"><label>New PIN</label><input class="inp" id="fp-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off"></div>
+      <div class="fld"><label>Confirm New PIN</label><input class="inp" id="fp-pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off"></div>
+      <div class="lerr" id="fp-e"></div>
+      <button class="btn" onclick="doResetPin()">Reset PIN</button>
+      <div style="text-align:center;margin-top:10px"><button onclick="hideForgotPin()" style="background:none;border:none;font-family:var(--fb);font-size:13px;color:var(--d);cursor:pointer;text-decoration:underline">← Back to Sign In</button></div>
     </div>
     <div id="lf-new" style="display:none">
       <div class="fld"><label>Your Name</label><input class="inp" id="ca-n" type="text" placeholder="First name" autocomplete="off"></div>
@@ -96,8 +111,6 @@
 <div id="s-practice" class="scr">
   <div class="sb" style="padding-top:14px">
     <div id="rx-section"></div>
-
-    <!-- COMBINES accordion -->
     <div class="accord" id="acc-combines">
       <div class="accord-hdr" onclick="toggleAccord('acc-combines')">
         <div class="accord-hdr-left">
@@ -110,7 +123,6 @@
         <div class="accord-arr">▼</div>
       </div>
       <div class="accord-body">
-        <!-- Session type toggle (shown after threshold) -->
         <div id="stype-section" style="display:none">
           <div class="stype-wrap">
             <div class="stype-lbl">Session Type</div>
@@ -121,7 +133,6 @@
             <div class="stype-desc" id="stype-desc">8 stations · 3 shots each · weakness-weighted</div>
           </div>
         </div>
-        <!-- Combine type toggle -->
         <div style="margin-bottom:14px;padding-top:10px;border-top:1px solid rgba(232,184,75,.1)" id="ctype-section">
           <div style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--d);margin-bottom:8px">Putting Format</div>
           <div class="ctype-tog">
@@ -130,7 +141,6 @@
           </div>
           <div style="font-family:var(--fb);font-size:12px;color:var(--d);margin-top:6px;line-height:1.4" id="ctype-desc">Gate drill — 2 tees + back tee. Scores line and pace independently. Best for diagnosis.</div>
         </div>
-        <!-- Putting row -->
         <div class="accord-check-row" onclick="togCombine('putting')">
           <div class="chkbox" id="chk-putting"><span class="chkmark" style="display:none">✓</span></div>
           <div class="accord-check-ico">⛳</div>
@@ -140,7 +150,6 @@
           </div>
           <div style="font-family:var(--fm);font-size:12px;color:var(--d)" id="dur-putting">—</div>
         </div>
-        <!-- Chipping row -->
         <div class="accord-check-row" onclick="togCombine('chipping')">
           <div class="chkbox" id="chk-chipping"><span class="chkmark" style="display:none">✓</span></div>
           <div class="accord-check-ico">🏌️</div>
@@ -150,7 +159,6 @@
           </div>
           <div style="font-family:var(--fm);font-size:12px;color:var(--d)" id="dur-chipping">—</div>
         </div>
-        <!-- Session length at bottom -->
         <div id="ver-section" style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(232,184,75,.1)">
           <div style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--d);margin-bottom:8px">Session Length</div>
           <div class="vertog">
@@ -161,8 +169,6 @@
         </div>
       </div>
     </div>
-
-    <!-- PRACTICE accordion -->
     <div class="accord" id="acc-practice">
       <div class="accord-hdr" onclick="toggleAccord('acc-practice')">
         <div class="accord-hdr-left">
@@ -179,13 +185,10 @@
         <button class="btn ol" onclick="goTo('s-warmup')" style="font-size:14px;padding:11px">View TPI Warmup →</button>
       </div>
     </div>
-
-    <!-- Start button + time estimate -->
     <div style="padding:4px 16px 8px">
       <div class="sestim" id="sestim">Select a combine above to begin</div>
       <button class="btn" id="start-btn" onclick="startSession()" style="opacity:.4;pointer-events:none">Start Session</button>
     </div>
-
   </div>
 </div>
 
@@ -272,7 +275,49 @@
       <div class="fld"><label>Confirm PIN</label><input class="inp" id="pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div>
       <button class="btn sm" onclick="savePin()">Update PIN</button>
     </div>
+    <div class="card">
+      <div class="ct">Data</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn ol sm" onclick="exportData()">📤 Export</button>
+        <button class="btn ol sm" onclick="importData()">📥 Import</button>
+        <button class="btn gh sm" onclick="loadTestData()">🧪 Load Test Data</button>
+      </div>
+      <div id="import-status" style="font-family:var(--fc);font-size:13px;margin-top:10px;min-height:18px"></div>
+    </div>
     <div class="brow"><button class="btn dn" onclick="doLogout()">Sign Out</button></div>
+  </div>
+</div>
+
+<!-- ══ RECOVERY CODE OVERLAY ══ -->
+<div id="recovery-overlay" class="overlay-full" style="display:none">
+  <div class="overlay-card">
+    <div class="overlay-ico">🔑</div>
+    <div class="overlay-title">Save Your Recovery Code</div>
+    <div class="overlay-sub">If you forget your PIN, this code lets you reset it. Write it down — it won't be shown again.</div>
+    <div class="recovery-code" id="recovery-code-display">——————</div>
+    <div style="font-size:12px;color:var(--d);margin-bottom:20px">Write this down before continuing.</div>
+    <button class="btn" onclick="dismissRecoveryCode()">I've Written It Down →</button>
+  </div>
+</div>
+
+<!-- ══ FIRST-RUN WALKTHROUGH OVERLAY ══ -->
+<div id="firstrun-overlay" class="overlay-full" style="display:none">
+  <div class="overlay-card">
+    <div class="overlay-title">Welcome to The Range 👋</div>
+    <div class="overlay-sub">Three things to know before you start:</div>
+    <div class="firstrun-step">
+      <div class="firstrun-ico">🎯</div>
+      <div class="firstrun-txt"><strong>Combines are structured practice tests</strong>12 putting stations + 12 chipping stations. Each session takes 20–60 min depending on length.</div>
+    </div>
+    <div class="firstrun-step">
+      <div class="firstrun-ico">⛳</div>
+      <div class="firstrun-txt"><strong>Two putting formats</strong>Skill Combine uses a gate drill — no hole needed, just tees. Performance tracks makes vs misses with the hole in play.</div>
+    </div>
+    <div class="firstrun-step">
+      <div class="firstrun-ico">📊</div>
+      <div class="firstrun-txt"><strong>Skill Profile unlocks after 6 session points</strong>Short sessions = 1pt, full sessions = 2pts. Once unlocked, the app diagnoses your weaknesses automatically.</div>
+    </div>
+    <button class="btn" onclick="dismissFirstRun()" style="margin-top:20px">Let's Go →</button>
   </div>
 </div>
 
