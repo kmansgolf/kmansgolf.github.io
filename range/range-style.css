@@ -82,7 +82,7 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 .hd{background:#1c1c1e;padding:13px 18px 11px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0}
 .logo{font-family:var(--fc);font-size:21px;font-weight:800;letter-spacing:1.5px;color:var(--g)}
 .logo span{color:var(--w);font-weight:400}
-.hm{font-family:var(--fc);font-size:12px;color:var(--d);letter-spacing:.5px}
+.hm{font-family:var(--fc);font-size:12px;color:var(--d);letter-spacing:.5px;flex:1;text-align:center}
 .bk{background:none;border:none;color:var(--d);font-size:22px;cursor:pointer;padding:4px 8px 4px 0;line-height:1}
 
 /* BOTTOM NAV */
@@ -408,5 +408,5 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 [data-theme="light"] .profav { background: #f5f3ef; }
 [data-theme="light"] .resumebanner { background: rgba(200,150,12,.07); border-color: rgba(200,150,12,.2); }
 [data-theme="light"] .thcard { background: rgba(200,150,12,.05); border-color: rgba(200,150,12,.15); }
-[data-theme="light"] .rx-card { background: rgba(30,158,94,.05); border-color: rgba(30,158,94,.2); }
-[data-theme="light"] .rx-game { background: rgba(30,158,94,.08); }
+[data-theme="light"] .nb { color: #6e6e73; }
+[data-theme="light"] .nb.on { color: var(--gr); }
