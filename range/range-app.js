@@ -222,7 +222,7 @@ function doLogout() {
 // ═══════════════════════════════════════════
 //  APP ENTRY
 // ═══════════════════════════════════════════
-function enterApp() {
+function enterApp(tab) {
   document.getElementById('app-header').style.display = 'block';
   buildWarmup();
   refreshHome();
@@ -230,6 +230,12 @@ function enterApp() {
     setActiveTab('tab-practice');
     renderRunner();
     goTo('s-runner');
+  } else if (tab === 'practice') {
+    navTo('s-practice', 'tab-practice');
+  } else if (tab === 'history') {
+    navTo('s-history', 'tab-history');
+  } else if (tab === 'profile') {
+    navTo('s-profile', 'tab-profile');
   } else if (CU?.firstRun) {
     showFirstRun();
   } else {
@@ -1222,7 +1228,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const d = loadU(savedUser);
     if (d) {
       CU = d;
-      enterApp();
+      // Handle ?tab= param (e.g. returning from Games page)
+      const tab = new URLSearchParams(location.search).get('tab');
+      enterApp(tab);
       return;
     } else {
       sessionStorage.removeItem('range_session_user');
