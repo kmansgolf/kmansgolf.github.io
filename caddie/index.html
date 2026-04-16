@@ -96,6 +96,42 @@
       color: var(--gr);
     }
 
+    /* ── TAB STRIP ───────────────────────────────────────────────────────── */
+    .tab-strip {
+      background: var(--header-bg);
+      display: flex;
+      border-bottom: 0.5px solid rgba(255,255,255,0.08);
+      position: sticky;
+      top: 56px; /* below header */
+      z-index: 49;
+    }
+    .tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 13px 8px 11px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.18s ease;
+    }
+    .tab-btn.active {
+      color: var(--gr);
+      border-bottom-color: var(--gr);
+    }
+    .tab-btn:hover:not(.active) {
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* ── SCREENS ─────────────────────────────────────────────────────────── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
     /* ── MAIN CONTAINER ─────────────────────────────────────────────────── */
     main {
       max-width: 480px;
@@ -302,6 +338,12 @@
     .phase-dot.phase-top      { color: var(--g); }
     .phase-dot.phase-impact   { color: #e05c5c; }
 
+    /* count-in state */
+    .phase-dot.phase-countin { color: var(--d); }
+    .phase-dot.phase-countin.active-phase {
+      border-color: var(--d);
+    }
+
     .phase-dot.active-phase .phase-icon { transform: scale(1.15); }
 
     .phase-dot::before {
@@ -335,6 +377,35 @@
     }
     .phase-dot.active-phase .phase-name { opacity: 1; }
 
+    /* ── COUNT-IN BADGE ──────────────────────────────────────────────────── */
+    #countin-badge {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--nc);
+      border: 1.5px solid var(--d);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--d);
+      letter-spacing: 0.06em;
+    }
+    #countin-badge.visible { display: flex; }
+    #countin-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--d);
+      animation: countin-pulse 0.5s ease infinite alternate;
+    }
+    @keyframes countin-pulse {
+      from { opacity: 0.3; transform: scale(0.8); }
+      to   { opacity: 1;   transform: scale(1.1); }
+    }
+
     /* ── START/STOP BUTTON ──────────────────────────────────────────────── */
     .play-btn {
       width: 100%;
@@ -356,14 +427,14 @@
     }
     .play-btn.playing {
       background: var(--err);
+      animation: pulse-ring 1.2s ease infinite;
+    }
+    .play-btn.counting {
+      background: #555;
+      animation: none;
     }
     .play-btn:active {
       transform: scale(0.97);
-    }
-
-    /* pulse ring when playing */
-    .play-btn.playing {
-      animation: pulse-ring 1.2s ease infinite;
     }
     @keyframes pulse-ring {
       0%   { box-shadow: 0 0 0 0 rgba(224,92,92,0.5); }
@@ -408,6 +479,297 @@
       color: var(--d);
     }
 
+    /* ── WELD SCREEN ─────────────────────────────────────────────────────── */
+    .weld-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .weld-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--d);
+    }
+    .weld-field {
+      background: var(--nc);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 16px;
+      color: var(--w);
+      width: 100%;
+      outline: none;
+      transition: border-color 0.18s ease;
+    }
+    [data-theme="light"] .weld-field {
+      background: #f0eee9;
+      border-color: rgba(0,0,0,0.1);
+      color: var(--w);
+    }
+    .weld-field:focus {
+      border-color: var(--gr);
+    }
+
+    .seg-row {
+      display: flex;
+      gap: 6px;
+    }
+    .seg-btn {
+      flex: 1;
+      background: var(--nc);
+      border: 1.5px solid transparent;
+      border-radius: 8px;
+      padding: 10px 6px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--d);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    [data-theme="light"] .seg-btn { background: #f0eee9; }
+    .seg-btn.active {
+      border-color: var(--gr);
+      color: var(--gr);
+      background: rgba(61,220,132,0.08);
+    }
+
+    .weld-result-box {
+      background: var(--nc);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    [data-theme="light"] .weld-result-box { background: #f0eee9; }
+    .weld-plays-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--d);
+      margin-bottom: 8px;
+    }
+    .weld-plays-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 56px;
+      font-weight: 500;
+      color: var(--g);
+      line-height: 1;
+    }
+    .weld-plays-unit {
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: var(--d);
+      margin-left: 4px;
+    }
+    .weld-breakdown {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .weld-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--d);
+      padding: 6px 0;
+      border-bottom: 0.5px solid rgba(255,255,255,0.05);
+    }
+    [data-theme="light"] .weld-row { border-bottom-color: rgba(0,0,0,0.06); }
+    .weld-row:last-child { border-bottom: none; }
+    .weld-row-key { letter-spacing: 0.06em; }
+    .weld-row-val {
+      font-weight: 500;
+      color: var(--w);
+    }
+    .weld-row-val.pos { color: var(--err); }   /* adds yards = harder shot */
+    .weld-row-val.neg { color: var(--gr); }    /* removes yards = easier */
+    .weld-aim-note {
+      margin-top: 10px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--g);
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+
+    /* ── MENTAL SCREEN ───────────────────────────────────────────────────── */
+    .mental-tally {
+      display: flex;
+      gap: 10px;
+    }
+    .tally-cell {
+      flex: 1;
+      background: var(--nc);
+      border-radius: 10px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+    [data-theme="light"] .tally-cell { background: #f0eee9; }
+    .tally-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--g);
+      display: block;
+      line-height: 1;
+    }
+    .tally-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--d);
+      display: block;
+      margin-top: 4px;
+    }
+
+    .shot-logger {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .shot-logger-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--d);
+    }
+    .toggle-row {
+      display: flex;
+      gap: 8px;
+    }
+    .toggle-btn {
+      flex: 1;
+      background: var(--nc);
+      border: 1.5px solid transparent;
+      border-radius: 10px;
+      padding: 14px 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--d);
+      letter-spacing: 0.04em;
+    }
+    [data-theme="light"] .toggle-btn { background: #f0eee9; }
+    .toggle-btn.yes {
+      border-color: var(--gr);
+      color: var(--gr);
+      background: rgba(61,220,132,0.08);
+    }
+    .toggle-btn.no {
+      border-color: var(--err);
+      color: var(--err);
+      background: rgba(231,76,60,0.08);
+    }
+    .toggle-btn-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      color: var(--d);
+      display: block;
+      margin-top: 2px;
+      letter-spacing: 0.06em;
+    }
+    .toggle-btn.yes .toggle-btn-sub,
+    .toggle-btn.no .toggle-btn-sub { color: inherit; opacity: 0.7; }
+
+    .log-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: var(--gr);
+      color: #fff;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .log-btn:active { transform: scale(0.97); }
+
+    .shot-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    .shot-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--nm);
+      border: 0.5px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+    [data-theme="light"] .shot-item { border-color: rgba(0,0,0,0.07); }
+    .shot-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--d);
+      min-width: 24px;
+    }
+    .shot-badges {
+      display: flex;
+      gap: 5px;
+      flex: 1;
+    }
+    .shot-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      padding: 3px 7px;
+      border-radius: 5px;
+    }
+    .shot-badge.y {
+      background: rgba(61,220,132,0.12);
+      color: var(--gr);
+    }
+    .shot-badge.n {
+      background: rgba(231,76,60,0.12);
+      color: var(--err);
+    }
+    .shot-score {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--g);
+      font-weight: 500;
+    }
+
+    .clear-btn {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--err);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    [data-theme="light"] .clear-btn { border-color: rgba(0,0,0,0.1); }
+    .clear-btn:hover {
+      background: rgba(231,76,60,0.08);
+      border-color: var(--err);
+    }
+
     /* ── FOOTER ─────────────────────────────────────────────────────────── */
     footer {
       text-align: center;
@@ -433,149 +795,320 @@
     </div>
   </header>
 
-  <main>
+  <!-- Tab strip -->
+  <div class="tab-strip">
+    <button class="tab-btn active" id="tab-tempo" onclick="switchTab('tempo')">Tempo</button>
+    <button class="tab-btn" id="tab-weld"  onclick="switchTab('weld')">WELD</button>
+    <button class="tab-btn" id="tab-mental" onclick="switchTab('mental')">Mental</button>
+  </div>
 
-    <!-- Page title -->
-    <div>
-      <div class="page-title">Tempo <span>Trainer</span></div>
-      <div class="page-sub">3-TONE SWING METRONOME</div>
-    </div>
+  <!-- ═══ TEMPO SCREEN ═══════════════════════════════════════════════════ -->
+  <div class="screen active" id="screen-tempo">
+    <main>
 
-    <!-- Mode toggle -->
-    <div class="card">
-      <div class="card-label">Swing Mode</div>
-      <div class="mode-row">
-        <button class="mode-btn active" id="mode-full" onclick="setMode('full')">
-          <span class="mode-btn-label">Full Swing</span>
-          <span class="mode-btn-ratio">3 : 1 ratio</span>
-        </button>
-        <button class="mode-btn" id="mode-short" onclick="setMode('short')">
-          <span class="mode-btn-label">Short Game</span>
-          <span class="mode-btn-ratio">2 : 1 ratio</span>
-        </button>
-        <button class="mode-btn" id="mode-putt" onclick="setMode('putt')">
-          <span class="mode-btn-label">Putting</span>
-          <span class="mode-btn-ratio">2 : 1 · 76 bpm</span>
-        </button>
+      <div>
+        <div class="page-title">Tempo <span>Trainer</span></div>
+        <div class="page-sub">3-TONE SWING METRONOME</div>
       </div>
-    </div>
 
-    <!-- Preset + BPM -->
-    <div class="card">
-      <div class="card-label">Tempo Preset</div>
-      <div class="preset-names" id="preset-names">
-        <!-- filled by JS -->
-      </div>
-      <input type="range" id="tempo-slider" min="0" max="100" value="50" oninput="onSlider(this.value)">
-      <div class="bpm-row">
-        <span class="bpm-value" id="bpm-display">--</span>
-        <span class="bpm-unit">BPM</span>
-        <span class="preset-tag" id="preset-tag"></span>
-      </div>
-    </div>
-
-    <!-- Phase visualizer -->
-    <div class="card">
-      <div class="card-label">Current Phase</div>
-      <div class="phase-display">
-        <div class="phase-dot phase-takeaway" id="phase-takeaway">
-          <span class="phase-icon">↓</span>
-          <span class="phase-name">Takeaway</span>
-        </div>
-        <div class="phase-dot phase-top" id="phase-top">
-          <span class="phase-icon">↑</span>
-          <span class="phase-name">Top</span>
-        </div>
-        <div class="phase-dot phase-impact" id="phase-impact">
-          <span class="phase-icon">⚡</span>
-          <span class="phase-name">Impact</span>
+      <!-- Mode toggle -->
+      <div class="card">
+        <div class="card-label">Swing Mode</div>
+        <div class="mode-row">
+          <button class="mode-btn active" id="mode-full" onclick="setMode('full')">
+            <span class="mode-btn-label">Full Swing</span>
+            <span class="mode-btn-ratio">3 : 1 ratio</span>
+          </button>
+          <button class="mode-btn" id="mode-short" onclick="setMode('short')">
+            <span class="mode-btn-label">Short Game</span>
+            <span class="mode-btn-ratio">2 : 1 ratio</span>
+          </button>
+          <button class="mode-btn" id="mode-putt" onclick="setMode('putt')">
+            <span class="mode-btn-label">Putting</span>
+            <span class="mode-btn-ratio">2 : 1 · 76 bpm</span>
+          </button>
         </div>
       </div>
-    </div>
 
-    <!-- Start/Stop -->
-    <button class="play-btn" id="play-btn" onclick="togglePlay()">
-      <svg class="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="play-icon-svg">
-        <polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/>
-      </svg>
-      <span id="play-label">Start</span>
-    </button>
-
-    <!-- Detail row: beat timing breakdown -->
-    <div class="detail-row">
-      <div class="detail-cell">
-        <span class="detail-value" id="detail-back">--</span>
-        <span class="detail-label">Backswing (ms)</span>
+      <!-- Preset + BPM -->
+      <div class="card">
+        <div class="card-label">Tempo Preset</div>
+        <div class="preset-names" id="preset-names"></div>
+        <input type="range" id="tempo-slider" min="0" max="100" value="50" oninput="onSlider(this.value)">
+        <div class="bpm-row">
+          <span class="bpm-value" id="bpm-display">--</span>
+          <span class="bpm-unit">BPM</span>
+          <span class="preset-tag" id="preset-tag"></span>
+        </div>
       </div>
-      <div class="detail-cell">
-        <span class="detail-value" id="detail-down">--</span>
-        <span class="detail-label">Downswing (ms)</span>
-      </div>
-      <div class="detail-cell">
-        <span class="detail-value" id="detail-cycle">--</span>
-        <span class="detail-label">Full Cycle (ms)</span>
-      </div>
-    </div>
 
-    <footer>kmansgolf · The Caddie — prototype</footer>
+      <!-- Phase visualizer -->
+      <div class="card">
+        <div class="card-label">Current Phase</div>
 
-  </main>
+        <!-- Count-in badge: shows during count-in only -->
+        <div id="countin-badge">
+          <div id="countin-dot"></div>
+          <span id="countin-text">Ready…</span>
+        </div>
+
+        <div class="phase-display" id="phase-display">
+          <div class="phase-dot phase-takeaway" id="phase-takeaway">
+            <span class="phase-icon">↓</span>
+            <span class="phase-name">Takeaway</span>
+          </div>
+          <div class="phase-dot phase-top" id="phase-top">
+            <span class="phase-icon">↑</span>
+            <span class="phase-name">Top</span>
+          </div>
+          <div class="phase-dot phase-impact" id="phase-impact">
+            <span class="phase-icon">⚡</span>
+            <span class="phase-name">Impact</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Start/Stop -->
+      <button class="play-btn" id="play-btn" onclick="togglePlay()">
+        <svg class="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="play-icon-svg">
+          <polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/>
+        </svg>
+        <span id="play-label">Start</span>
+      </button>
+
+      <!-- Detail row -->
+      <div class="detail-row">
+        <div class="detail-cell">
+          <span class="detail-value" id="detail-back">--</span>
+          <span class="detail-label">Backswing (ms)</span>
+        </div>
+        <div class="detail-cell">
+          <span class="detail-value" id="detail-down">--</span>
+          <span class="detail-label">Downswing (ms)</span>
+        </div>
+        <div class="detail-cell">
+          <span class="detail-value" id="detail-cycle">--</span>
+          <span class="detail-label">Full Cycle (ms)</span>
+        </div>
+      </div>
+
+      <footer>kmansgolf · The Caddie — prototype</footer>
+    </main>
+  </div>
+
+  <!-- ═══ WELD SCREEN ════════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-weld">
+    <main>
+
+      <div>
+        <div class="page-title">WELD <span>Calculator</span></div>
+        <div class="page-sub">WIND · ELEVATION · LIE · DISTANCE</div>
+      </div>
+
+      <!-- D: Raw Distance -->
+      <div class="card">
+        <div class="card-label">D — Distance (yards)</div>
+        <div class="weld-input-group">
+          <input type="number" class="weld-field" id="w-distance" placeholder="150" min="1" max="350" inputmode="numeric" oninput="calcWeld()">
+        </div>
+      </div>
+
+      <!-- W: Wind -->
+      <div class="card">
+        <div class="card-label">W — Wind</div>
+        <div class="weld-input-group">
+          <div class="weld-label">Direction</div>
+          <div class="seg-row">
+            <button class="seg-btn active" id="wind-head" onclick="setWindDir('head')">Into</button>
+            <button class="seg-btn" id="wind-tail" onclick="setWindDir('tail')">With</button>
+            <button class="seg-btn" id="wind-cross" onclick="setWindDir('cross')">Cross</button>
+            <button class="seg-btn" id="wind-none" onclick="setWindDir('none')">None</button>
+          </div>
+          <div class="weld-label" style="margin-top:10px;">Speed (mph)</div>
+          <input type="number" class="weld-field" id="w-wind" placeholder="0" min="0" max="40" inputmode="numeric" oninput="calcWeld()">
+        </div>
+      </div>
+
+      <!-- E: Elevation -->
+      <div class="card">
+        <div class="card-label">E — Elevation Change</div>
+        <div class="weld-input-group">
+          <div class="seg-row">
+            <button class="seg-btn active" id="elev-up" onclick="setElevDir('up')">Uphill ↑</button>
+            <button class="seg-btn" id="elev-down" onclick="setElevDir('down')">Downhill ↓</button>
+            <button class="seg-btn" id="elev-flat" onclick="setElevDir('flat')">Flat</button>
+          </div>
+          <div class="weld-label" style="margin-top:10px;">Height change (feet)</div>
+          <input type="number" class="weld-field" id="w-elev" placeholder="0" min="0" max="200" inputmode="numeric" oninput="calcWeld()">
+        </div>
+      </div>
+
+      <!-- L: Lie -->
+      <div class="card">
+        <div class="card-label">L — Lie</div>
+        <div class="seg-row" style="flex-wrap:wrap;">
+          <button class="seg-btn active" id="lie-fairway" onclick="setLie('fairway')" style="flex-basis:calc(50% - 3px)">Fairway</button>
+          <button class="seg-btn" id="lie-light" onclick="setLie('light')" style="flex-basis:calc(50% - 3px)">Light Rough</button>
+          <button class="seg-btn" id="lie-thick" onclick="setLie('thick')" style="flex-basis:calc(50% - 3px)">Thick Rough</button>
+          <button class="seg-btn" id="lie-flyer" onclick="setLie('flyer')" style="flex-basis:calc(50% - 3px)">Flyer</button>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="card">
+        <div class="card-label">Plays Like</div>
+        <div class="weld-result-box">
+          <div class="weld-plays-value" id="weld-result">—</div>
+          <div style="margin-top:4px;font-family:'DM Mono',monospace;font-size:12px;color:var(--d)">yards</div>
+        </div>
+        <div class="weld-breakdown" id="weld-breakdown"></div>
+        <div class="weld-aim-note" id="weld-aim-note"></div>
+      </div>
+
+      <footer>kmansgolf · The Caddie — prototype</footer>
+    </main>
+  </div>
+
+  <!-- ═══ MENTAL SCREEN ══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-mental">
+    <main>
+
+      <div>
+        <div class="page-title">Mental <span>Scorecard</span></div>
+        <div class="page-sub">CALCULATE · CREATE · EXECUTE</div>
+      </div>
+
+      <!-- Running tally -->
+      <div class="card">
+        <div class="card-label">Round Tally</div>
+        <div class="mental-tally">
+          <div class="tally-cell">
+            <span class="tally-value" id="tally-pct">—</span>
+            <span class="tally-label">Mental %</span>
+          </div>
+          <div class="tally-cell">
+            <span class="tally-value" id="tally-yes" style="color:var(--gr)">0</span>
+            <span class="tally-label">Yes</span>
+          </div>
+          <div class="tally-cell">
+            <span class="tally-value" id="tally-no" style="color:var(--err)">0</span>
+            <span class="tally-label">No</span>
+          </div>
+          <div class="tally-cell">
+            <span class="tally-value" id="tally-shots">0</span>
+            <span class="tally-label">Shots</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shot logger -->
+      <div class="card">
+        <div class="card-label">Log Shot</div>
+        <div class="shot-logger">
+
+          <div>
+            <div class="toggle-row">
+              <button class="toggle-btn" id="calc-btn" onclick="cycleToggle('calc')">
+                Calculate
+                <span class="toggle-btn-sub">C — pre-shot plan</span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div class="toggle-row">
+              <button class="toggle-btn" id="create-btn" onclick="cycleToggle('create')">
+                Create
+                <span class="toggle-btn-sub">C — visualize</span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div class="toggle-row">
+              <button class="toggle-btn" id="execute-btn" onclick="cycleToggle('execute')">
+                Execute
+                <span class="toggle-btn-sub">E — commit & swing</span>
+              </button>
+            </div>
+          </div>
+
+          <button class="log-btn" onclick="logShot()">+ Log Shot</button>
+        </div>
+      </div>
+
+      <!-- Shot list -->
+      <div class="card" id="shot-list-card" style="display:none">
+        <div class="card-label">Shot Log</div>
+        <div class="shot-list" id="shot-list"></div>
+      </div>
+
+      <!-- Clear -->
+      <button class="clear-btn" onclick="clearMental()">Clear Round</button>
+
+      <footer>kmansgolf · The Caddie — prototype</footer>
+    </main>
+  </div>
 
   <script>
-    // ── PRESETS ───────────────────────────────────────────────────────────────
-    // BPM values are the *beat* BPM (takeaway beat).
-    // Full swing: 3 backswing beats : 1 downswing beat
-    // Short/Putt: 2 back : 1 down
-    // Each preset: { name, bpm }
+    // ═══════════════════════════════════════════════════════════════════════
+    // TAB NAVIGATION
+    // ═══════════════════════════════════════════════════════════════════════
+    function switchTab(tab) {
+      ['tempo','weld','mental'].forEach(t => {
+        document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+        document.getElementById('screen-' + t).classList.toggle('active', t === tab);
+      });
+      if (tab !== 'tempo' && playing) togglePlay(); // stop metronome on tab switch
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TEMPO — PRESETS
+    // ═══════════════════════════════════════════════════════════════════════
     const PRESETS = [
-      { name: 'Athletic',     bpm: 88  },
-      { name: 'Tour Fast',    bpm: 80  },
-      { name: 'Tour Std',     bpm: 72  },
-      { name: 'Smooth',       bpm: 64  },
-      { name: 'Flowing',      bpm: 56  },
+      { name: 'Athletic',  bpm: 88 },
+      { name: 'Tour Fast', bpm: 80 },
+      { name: 'Tour Std',  bpm: 72 },
+      { name: 'Smooth',    bpm: 64 },
+      { name: 'Flowing',   bpm: 56 },
     ];
     const PUTT_BPM = 76;
+    const BPM_MIN  = PRESETS[PRESETS.length - 1].bpm;
+    const BPM_MAX  = PRESETS[0].bpm;
 
-    // Slider maps 0–100 to bpm range (min of last preset to max of first)
-    const BPM_MIN = PRESETS[PRESETS.length - 1].bpm;
-    const BPM_MAX = PRESETS[0].bpm;
-
-    // ── STATE ─────────────────────────────────────────────────────────────────
-    let mode    = 'full';   // 'full' | 'short' | 'putt'
+    // ═══════════════════════════════════════════════════════════════════════
+    // TEMPO — STATE
+    // ═══════════════════════════════════════════════════════════════════════
+    let mode    = 'full';
     let bpm     = 72;
     let playing = false;
+    let countingIn = false;
 
-    // Web Audio
-    let audioCtx = null;
+    let audioCtx       = null;
     let schedulerTimer = null;
-    let nextBeatTime  = 0;
-    let beatPhase     = 0;   // 0=takeaway, 1=top (for 3:1: 0,1,2=backswing; 3=impact / for 2:1: 0,1=back; 2=impact)
+    let countinTimer   = null;
+    let nextBeatTime   = 0;
+    let beatPhase      = 0;
 
-    // ── AUDIO ─────────────────────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════════════════
+    // TEMPO — AUDIO
+    // ═══════════════════════════════════════════════════════════════════════
     function getAudioCtx() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       return audioCtx;
     }
 
-    // tone: 0 = takeaway (low), 1 = mid beat (top/transition), 2 = impact (high accent)
     function playTone(type, when) {
       const ctx = getAudioCtx();
-
-      // Frequencies and shapes chosen to feel like a click/wood block
-      // type 0: takeaway — low, soft thud
-      // type 1: top      — mid, short click
-      // type 2: impact   — high accent, sharp
       const configs = {
-        0: { freq: 180, freq2: 90,  gain: 0.55, attack: 0.002, decay: 0.12, type: 'sine'    }, // takeaway
-        1: { freq: 320, freq2: 160, gain: 0.35, attack: 0.001, decay: 0.08, type: 'triangle' }, // mid beat
+        0: { freq: 180, freq2: 90,  gain: 0.55, attack: 0.002, decay: 0.12, type: 'sine'     }, // takeaway
+        1: { freq: 320, freq2: 160, gain: 0.35, attack: 0.001, decay: 0.08, type: 'triangle' }, // mid
         2: { freq: 900, freq2: 450, gain: 0.70, attack: 0.001, decay: 0.06, type: 'square'   }, // impact
       };
       const c = configs[type];
-
-      // Main oscillator
       const osc  = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type      = c.type;
+      osc.type = c.type;
       osc.frequency.setValueAtTime(c.freq, when);
       osc.frequency.exponentialRampToValueAtTime(c.freq2, when + c.decay);
       gain.gain.setValueAtTime(0, when);
@@ -586,7 +1119,6 @@
       osc.start(when);
       osc.stop(when + c.decay + 0.01);
 
-      // Sub click for body
       if (type === 2) {
         const noise = ctx.createOscillator();
         const ng    = ctx.createGain();
@@ -601,68 +1133,56 @@
       }
     }
 
-    // ── SCHEDULER ─────────────────────────────────────────────────────────────
-    // Classic Web Audio look-ahead scheduler (C. Wilson pattern)
-    const LOOKAHEAD   = 0.1;  // seconds to schedule ahead
-    const INTERVAL_MS = 25;   // how often scheduler runs
-
-    function getRatio() {
-      return (mode === 'full') ? 3 : 2;
+    // Silent count-in tone: very soft mid-frequency tick
+    function playCountinTone(when) {
+      const ctx  = getAudioCtx();
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, when);
+      gain.gain.setValueAtTime(0, when);
+      gain.gain.linearRampToValueAtTime(0.12, when + 0.003);
+      gain.gain.exponentialRampToValueAtTime(0.001, when + 0.06);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(when);
+      osc.stop(when + 0.07);
     }
 
-    function getTotalBeats() {
-      // full swing: back(3) + impact(1) = 4 beats per cycle (3 sub-beats back + 1 impact)
-      // short/putt: back(2) + impact(1) = 3 beats per cycle
-      return getRatio() + 1;
-    }
+    // ═══════════════════════════════════════════════════════════════════════
+    // TEMPO — SCHEDULER
+    // ═══════════════════════════════════════════════════════════════════════
+    const LOOKAHEAD   = 0.1;
+    const INTERVAL_MS = 25;
 
-    function getBeatDuration() {
-      // bpm is in beats-per-minute where one cycle = getTotalBeats() beats
-      // Actually: bpm here means the *metronome* click rate.
-      // We define bpm as full-cycle BPM, so beat duration = 60/(bpm*totalBeats/cycle)
-      // Simpler: treat bpm as the backswing subdivision beat rate.
-      return 60 / bpm;
-    }
+    function getRatio()      { return mode === 'full' ? 3 : 2; }
+    function getTotalBeats() { return getRatio() + 1; }
+    function getBeatDuration() { return 60 / bpm; }
 
     function scheduleAhead() {
       const ctx = getAudioCtx();
       while (nextBeatTime < ctx.currentTime + LOOKAHEAD) {
         scheduleBeat(beatPhase, nextBeatTime);
-        const total = getTotalBeats();
-        beatPhase = (beatPhase + 1) % total;
+        beatPhase    = (beatPhase + 1) % getTotalBeats();
         nextBeatTime += getBeatDuration();
       }
     }
 
     function scheduleBeat(phase, when) {
-      const total = getTotalBeats();
-      const isImpact = (phase === total - 1);
-      const isFirst  = (phase === 0);
-
-      let toneType;
-      if (isFirst)  toneType = 0;       // takeaway — low
-      else if (isImpact) toneType = 2;  // impact — high
-      else toneType = 1;                // mid beats
-
+      const total    = getTotalBeats();
+      const isImpact = phase === total - 1;
+      const isFirst  = phase === 0;
+      const toneType = isFirst ? 0 : isImpact ? 2 : 1;
       playTone(toneType, when);
-
-      // Visual feedback: schedule via setTimeout (approximate, visual only)
       const delay = Math.max(0, (when - getAudioCtx().currentTime) * 1000);
       setTimeout(() => updatePhaseUI(phase), delay);
     }
 
     function updatePhaseUI(phase) {
       if (!playing) return;
-      const total = getTotalBeats();
       const ratio = getRatio();
-
-      // Map phase index to display state
-      // 0 → takeaway
-      // 1..(ratio-1) → top (backswing continuation)
-      // ratio → impact
-      const ids = ['phase-takeaway', 'phase-top', 'phase-impact'];
-      ids.forEach(id => document.getElementById(id).classList.remove('active-phase'));
-
+      ['phase-takeaway','phase-top','phase-impact'].forEach(id =>
+        document.getElementById(id).classList.remove('active-phase'));
       if (phase === 0) {
         document.getElementById('phase-takeaway').classList.add('active-phase');
       } else if (phase < ratio) {
@@ -677,64 +1197,115 @@
         document.getElementById(id).classList.remove('active-phase'));
     }
 
-    // ── PLAY / STOP ───────────────────────────────────────────────────────────
-    function togglePlay() {
-      playing = !playing;
+    // ═══════════════════════════════════════════════════════════════════════
+    // TEMPO — COUNT-IN
+    // ═══════════════════════════════════════════════════════════════════════
+    function startCountin(onComplete) {
+      countingIn = true;
       const btn   = document.getElementById('play-btn');
       const label = document.getElementById('play-label');
-      const svg   = document.getElementById('play-icon-svg');
+      const badge = document.getElementById('countin-badge');
+      const text  = document.getElementById('countin-text');
+      const phaseDisplay = document.getElementById('phase-display');
+
+      btn.classList.add('counting');
+      btn.classList.remove('playing');
+      label.textContent = 'Stop';
+      badge.classList.add('visible');
+      phaseDisplay.style.opacity = '0.3';
+
+      // Set stop icon while counting
+      document.getElementById('play-icon-svg').innerHTML =
+        '<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
+
+      const ctx = getAudioCtx();
+      const beatDur = getBeatDuration(); // one beat at current bpm
+
+      // Schedule one silent count-in beat at current tempo
+      const countTime = ctx.currentTime + 0.05;
+      playCountinTone(countTime);
+
+      // Visual count-in text
+      text.textContent = 'Ready…';
+
+      countinTimer = setTimeout(() => {
+        if (!countingIn) return; // was cancelled
+        // Count-in done — hand off to main scheduler
+        countingIn = false;
+        badge.classList.remove('visible');
+        phaseDisplay.style.opacity = '1';
+        btn.classList.remove('counting');
+        btn.classList.add('playing');
+        onComplete(countTime + beatDur);
+      }, (beatDur + 0.05) * 1000);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TEMPO — PLAY / STOP
+    // ═══════════════════════════════════════════════════════════════════════
+    function togglePlay() {
+      if (countingIn) {
+        // Cancel count-in
+        clearTimeout(countinTimer);
+        countingIn = false;
+        document.getElementById('countin-badge').classList.remove('visible');
+        document.getElementById('phase-display').style.opacity = '1';
+        setPlayStopped();
+        return;
+      }
+
+      playing = !playing;
 
       if (playing) {
-        // Resume context if suspended (mobile autoplay policy)
         const ctx = getAudioCtx();
         ctx.resume().then(() => {
-          nextBeatTime = ctx.currentTime + 0.05;
-          beatPhase    = 0;
-          schedulerTimer = setInterval(scheduleAhead, INTERVAL_MS);
+          beatPhase = 0;
+          startCountin((startTime) => {
+            nextBeatTime   = startTime;
+            schedulerTimer = setInterval(scheduleAhead, INTERVAL_MS);
+          });
         });
-        btn.classList.add('playing');
-        label.textContent = 'Stop';
-        svg.innerHTML = '<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
       } else {
         clearInterval(schedulerTimer);
         clearPhaseUI();
-        btn.classList.remove('playing');
-        label.textContent = 'Start';
-        svg.innerHTML = '<polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/>';
+        setPlayStopped();
       }
     }
 
-    // ── MODE ──────────────────────────────────────────────────────────────────
-    function setMode(m) {
-      const wasPlaying = playing;
-      if (wasPlaying) togglePlay(); // stop
+    function setPlayStopped() {
+      playing = false;
+      const btn   = document.getElementById('play-btn');
+      const label = document.getElementById('play-label');
+      btn.classList.remove('playing', 'counting');
+      label.textContent = 'Start';
+      document.getElementById('play-icon-svg').innerHTML =
+        '<polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/>';
+    }
 
+    // ═══════════════════════════════════════════════════════════════════════
+    // TEMPO — MODE / SLIDER
+    // ═══════════════════════════════════════════════════════════════════════
+    function setMode(m) {
+      const wasPlaying = playing || countingIn;
+      if (wasPlaying) { playing = true; togglePlay(); }
       mode = m;
       ['full','short','putt'].forEach(id =>
         document.getElementById('mode-' + id).classList.toggle('active', id === m));
-
       if (m === 'putt') {
         bpm = PUTT_BPM;
         syncSliderFromBpm();
-        // disable slider for putting (locked BPM)
         document.getElementById('tempo-slider').disabled = true;
         document.getElementById('tempo-slider').style.opacity = '0.4';
       } else {
         document.getElementById('tempo-slider').disabled = false;
         document.getElementById('tempo-slider').style.opacity = '1';
       }
-
       updateDisplay();
-      if (wasPlaying) setTimeout(() => togglePlay(), 100); // restart
+      if (wasPlaying) setTimeout(() => togglePlay(), 100);
     }
 
-    // ── SLIDER + BPM ─────────────────────────────────────────────────────────
     function onSlider(val) {
       if (mode === 'putt') return;
-      // Map 0-100 → BPM_MAX..BPM_MIN (left=fast, right=slow... actually left=slow preset index 4, right=fast)
-      // Presets left-to-right: Athletic(fast) → Flowing(slow)
-      // So slider left = high BPM, right = low BPM? 
-      // Let's do: slider left = Flowing (slow), right = Athletic (fast) — feels more natural (push harder = faster)
       const t = val / 100;
       bpm = Math.round(BPM_MIN + t * (BPM_MAX - BPM_MIN));
       updateDisplay();
@@ -746,8 +1317,7 @@
     }
 
     function getNearestPreset() {
-      let nearest = PRESETS[0];
-      let minDist = Infinity;
+      let nearest = PRESETS[0], minDist = Infinity;
       PRESETS.forEach(p => {
         const d = Math.abs(p.bpm - bpm);
         if (d < minDist) { minDist = d; nearest = p; }
@@ -757,37 +1327,27 @@
 
     function updateDisplay() {
       document.getElementById('bpm-display').textContent = bpm;
-
       const nearest = getNearestPreset();
       document.getElementById('preset-tag').textContent = nearest.name;
-
-      // Highlight preset labels
-      document.querySelectorAll('.preset-name').forEach((el, i) => {
-        el.classList.toggle('active', PRESETS[i].name === nearest.name);
-      });
-
-      // Detail breakdown
-      const ratio = getRatio();
-      const beatMs = Math.round(getBeatDuration() * 1000);
-      const backMs = beatMs * ratio;
-      const downMs = beatMs * 1;
-      const cycleMs = backMs + downMs;
-      document.getElementById('detail-back').textContent  = backMs;
-      document.getElementById('detail-down').textContent  = downMs;
-      document.getElementById('detail-cycle').textContent = cycleMs;
+      document.querySelectorAll('.preset-name').forEach((el, i) =>
+        el.classList.toggle('active', PRESETS[i].name === nearest.name));
+      const ratio   = getRatio();
+      const beatMs  = Math.round(getBeatDuration() * 1000);
+      document.getElementById('detail-back').textContent  = beatMs * ratio;
+      document.getElementById('detail-down').textContent  = beatMs;
+      document.getElementById('detail-cycle').textContent = beatMs * (ratio + 1);
     }
 
-    // ── PRESET LABELS ─────────────────────────────────────────────────────────
     function buildPresetNames() {
       const container = document.getElementById('preset-names');
       container.innerHTML = '';
       PRESETS.forEach((p, i) => {
         const pct = (p.bpm - BPM_MIN) / (BPM_MAX - BPM_MIN) * 100;
         const div = document.createElement('div');
-        div.className = 'preset-name';
-        div.textContent = p.name;
-        div.dataset.pct = pct;
-        div.onclick = () => snapToPreset(i);
+        div.className       = 'preset-name';
+        div.textContent     = p.name;
+        div.dataset.pct     = pct;
+        div.onclick         = () => snapToPreset(i);
         container.appendChild(div);
       });
       positionPresetLabels();
@@ -795,12 +1355,12 @@
 
     function positionPresetLabels() {
       const slider = document.getElementById('tempo-slider');
-      const thumbW = 22; // matches CSS thumb width in px
+      const thumbW = 22;
       const trackW = slider.offsetWidth;
       if (!trackW) return;
       const usable = trackW - thumbW;
       document.querySelectorAll('.preset-name').forEach(el => {
-        const pct = parseFloat(el.dataset.pct) / 100;
+        const pct    = parseFloat(el.dataset.pct) / 100;
         const xCenter = thumbW / 2 + pct * usable;
         el.style.left = xCenter + 'px';
       });
@@ -813,7 +1373,179 @@
       updateDisplay();
     }
 
-    // ── THEME ─────────────────────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════════════════
+    // WELD — STATE
+    // ═══════════════════════════════════════════════════════════════════════
+    let windDir = 'head';
+    let elevDir = 'up';
+    let lieType = 'fairway';
+
+    const LIE_ADJ = { fairway: 0, light: -5, thick: -15, flyer: +10 };
+
+    function setWindDir(d) {
+      windDir = d;
+      ['head','tail','cross','none'].forEach(id =>
+        document.getElementById('wind-' + id).classList.toggle('active', id === d));
+      calcWeld();
+    }
+
+    function setElevDir(d) {
+      elevDir = d;
+      ['up','down','flat'].forEach(id =>
+        document.getElementById('elev-' + id).classList.toggle('active', id === d));
+      calcWeld();
+    }
+
+    function setLie(l) {
+      lieType = l;
+      ['fairway','light','thick','flyer'].forEach(id =>
+        document.getElementById('lie-' + id).classList.toggle('active', id === l));
+      calcWeld();
+    }
+
+    function calcWeld() {
+      const rawDist = parseFloat(document.getElementById('w-distance').value) || 0;
+      const windSpd = parseFloat(document.getElementById('w-wind').value)     || 0;
+      const elevFt  = parseFloat(document.getElementById('w-elev').value)      || 0;
+
+      if (!rawDist) {
+        document.getElementById('weld-result').textContent    = '—';
+        document.getElementById('weld-breakdown').innerHTML   = '';
+        document.getElementById('weld-aim-note').textContent  = '';
+        return;
+      }
+
+      // W: Wind adjustment
+      let windAdj = 0, aimNote = '';
+      if (windDir === 'head')  windAdj = +windSpd;
+      if (windDir === 'tail')  windAdj = -(windSpd / 2);
+      if (windDir === 'cross') {
+        windAdj = 0;
+        if (windSpd > 0) aimNote = `Aim ${Math.round(windSpd * 0.4)} yds into wind`;
+      }
+
+      // E: Elevation adjustment (1 yd per 3 ft)
+      let elevAdj = 0;
+      if (elevDir === 'up')   elevAdj = +(elevFt / 3);
+      if (elevDir === 'down') elevAdj = -(elevFt / 3);
+
+      // L: Lie adjustment
+      const lieAdj = LIE_ADJ[lieType];
+
+      const total     = Math.round(rawDist + windAdj + elevAdj + lieAdj);
+      const windRound = Math.round(windAdj);
+      const elevRound = Math.round(elevAdj);
+
+      document.getElementById('weld-result').textContent = total > 0 ? total : '—';
+
+      // Breakdown
+      const rows = [
+        { key: 'Raw distance', val: rawDist, adj: 0 },
+        { key: 'Wind (' + windDir + (windSpd ? ' ' + windSpd + 'mph' : '') + ')', val: windRound, adj: windRound },
+        { key: 'Elevation (' + elevDir + (elevFt ? ' ' + elevFt + 'ft' : '') + ')', val: elevRound, adj: elevRound },
+        { key: 'Lie (' + lieType + ')', val: lieAdj, adj: lieAdj },
+      ];
+
+      document.getElementById('weld-breakdown').innerHTML = rows.map(r => {
+        const sign  = r.adj > 0 ? '+' : '';
+        const cls   = r.adj > 0 ? 'pos' : r.adj < 0 ? 'neg' : '';
+        const valStr = r.key === 'Raw distance' ? r.val + ' yds' : (r.adj === 0 ? '±0' : sign + r.val + ' yds');
+        return `<div class="weld-row">
+          <span class="weld-row-key">${r.key}</span>
+          <span class="weld-row-val ${cls}">${valStr}</span>
+        </div>`;
+      }).join('');
+
+      document.getElementById('weld-aim-note').textContent = aimNote;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // MENTAL — STATE
+    // ═══════════════════════════════════════════════════════════════════════
+    let mentalToggles = { calc: null, create: null, execute: null };
+    let shots = [];
+
+    function cycleToggle(key) {
+      const btn = document.getElementById(key + '-btn');
+      const cur = mentalToggles[key];
+      // null → yes → no → null
+      if (cur === null)  { mentalToggles[key] = true;  btn.classList.remove('no');  btn.classList.add('yes'); }
+      else if (cur === true)  { mentalToggles[key] = false; btn.classList.remove('yes'); btn.classList.add('no');  }
+      else               { mentalToggles[key] = null;  btn.classList.remove('yes','no'); }
+    }
+
+    function logShot() {
+      const { calc, create, execute } = mentalToggles;
+      if (calc === null && create === null && execute === null) return; // nothing set
+
+      shots.push({ calc, create, execute });
+      updateMentalTally();
+      renderShotList();
+
+      // Reset toggles
+      mentalToggles = { calc: null, create: null, execute: null };
+      ['calc','create','execute'].forEach(k => {
+        const btn = document.getElementById(k + '-btn');
+        btn.classList.remove('yes','no');
+      });
+    }
+
+    function updateMentalTally() {
+      let yes = 0, no = 0, total = 0;
+      shots.forEach(s => {
+        ['calc','create','execute'].forEach(k => {
+          if (s[k] !== null) {
+            total++;
+            if (s[k]) yes++; else no++;
+          }
+        });
+      });
+
+      document.getElementById('tally-shots').textContent = shots.length;
+      document.getElementById('tally-yes').textContent   = yes;
+      document.getElementById('tally-no').textContent    = no;
+      document.getElementById('tally-pct').textContent   =
+        total > 0 ? Math.round((yes / total) * 100) + '%' : '—';
+    }
+
+    function renderShotList() {
+      const list = document.getElementById('shot-list');
+      const card = document.getElementById('shot-list-card');
+      card.style.display = shots.length ? '' : 'none';
+
+      list.innerHTML = shots.slice().reverse().map((s, ri) => {
+        const i = shots.length - ri;
+        const keys = ['calc','create','execute'];
+        const labels = { calc: 'C', create: 'Cr', execute: 'E' };
+        const badges = keys
+          .filter(k => s[k] !== null)
+          .map(k => `<span class="shot-badge ${s[k] ? 'y' : 'n'}">${labels[k]} ${s[k] ? 'Y' : 'N'}</span>`)
+          .join('');
+        const yes = keys.filter(k => s[k] === true).length;
+        const tot = keys.filter(k => s[k] !== null).length;
+        return `<div class="shot-item">
+          <span class="shot-num">#${i}</span>
+          <div class="shot-badges">${badges}</div>
+          <span class="shot-score">${yes}/${tot}</span>
+        </div>`;
+      }).join('');
+    }
+
+    function clearMental() {
+      if (!shots.length) return;
+      if (!confirm('Clear all shots for this round?')) return;
+      shots = [];
+      mentalToggles = { calc: null, create: null, execute: null };
+      ['calc','create','execute'].forEach(k => {
+        document.getElementById(k + '-btn').classList.remove('yes','no');
+      });
+      updateMentalTally();
+      renderShotList();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // THEME
+    // ═══════════════════════════════════════════════════════════════════════
     function applyTheme(t) {
       const isLight = t === 'light';
       document.body.setAttribute('data-theme', isLight ? 'light' : '');
@@ -827,13 +1559,14 @@
       applyTheme((localStorage.getItem('range_theme') || 'dark') === 'light' ? 'dark' : 'light');
     }
 
-    // ── INIT ──────────────────────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════════════════════
     buildPresetNames();
-    bpm = 72; // Tour Standard default
+    bpm = 72;
     syncSliderFromBpm();
     updateDisplay();
     applyTheme(localStorage.getItem('range_theme') || 'dark');
-    // Position labels after layout is ready
     requestAnimationFrame(() => requestAnimationFrame(positionPresetLabels));
     window.addEventListener('resize', positionPresetLabels);
   </script>
