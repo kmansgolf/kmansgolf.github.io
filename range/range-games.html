@@ -43,6 +43,13 @@ body {
 .screen { display: none; flex-direction: column; min-height: 100vh; }
 .screen.active { display: flex; }
 
+/* ── SHARED APP HEADER ── */
+#app-header { background: #1c1c1e; width: 100%; box-sizing: border-box; flex-shrink: 0; border-bottom: 2px solid #3ddc84; }
+.header-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.tab-bar { display: flex; align-items: flex-end; padding: 0 6px; gap: 3px; background: #1c1c1e; }
+.tab-btn { flex: 1; padding: 7px 2px 6px; font-family: var(--font-cond); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; text-align: center; color: rgba(255,255,255,0.45); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-bottom: none; border-radius: 5px 5px 0 0; cursor: pointer; transition: all .15s; white-space: nowrap; position: relative; bottom: -2px; }
+.tab-btn.active { background: var(--green); color: #000; border-color: var(--green); font-weight: 800; bottom: 0; padding-bottom: 8px; }
+
 /* ── HEADER ── */
 .rng-header {
   background: var(--navy-mid);
@@ -462,9 +469,22 @@ body[data-theme="light"] #winner-overlay { background: rgba(0,0,0,.55); }
 
 <!-- ══ GAMES BROWSE ══ -->
 <div id="screen-games" class="screen active">
-  <div class="rng-header">
-    <a href="/" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#f5f5f7">kmans</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#3ddc84">golf</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span></a><div class="rng-logo" style="font-size:14px;letter-spacing:0.5px">THE <span>RANGE</span></div>
-    <div style="font-family:var(--font-cond);font-size:13px;color:var(--text-dim)">PRESSURE GAMES</div>
+  <div id="app-header">
+    <div class="header-top">
+      <a href="/" style="text-decoration:none;display:flex;align-items:baseline;gap:0">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:#3ddc84">golf</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.3);margin:0 5px">·</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">THE RANGE</span>
+      </a>
+      <button onclick="toggleTheme()" id="theme-btn" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:'Barlow Condensed',sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;">☀️ Light</button>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn" onclick="window.location.href='../range/?tab=home'">🏠 Home</button>
+      <button class="tab-btn" onclick="window.location.href='../range/?tab=practice'">⛳ Practice</button>
+      <button class="tab-btn active" id="tab-games">🎮 Games</button>
+      <button class="tab-btn" onclick="window.location.href='../range/?tab=history'">📈 History</button>
+      <button class="tab-btn" onclick="window.location.href='../range/?tab=profile'">👤 Profile</button>
+    </div>
   </div>
   <div class="scroll-content">
     <div style="padding:12px 16px 4px;font-family:var(--font-body);font-size:14px;color:var(--text-dim);line-height:1.5">
@@ -479,28 +499,6 @@ body[data-theme="light"] #winner-overlay { background: rgba(0,0,0,.55); }
     </div>
     <div id="games-list" style="padding-top:8px"></div>
   </div>
-  <nav class="rng-nav">
-    <button class="rng-nav-btn" onclick="window.location.href='../range/?tab=home'">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span class="rng-nav-label">Home</span>
-    </button>
-    <button class="rng-nav-btn" onclick="window.location.href='../range/?tab=practice'">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-      <span class="rng-nav-label">Practice</span>
-    </button>
-    <button class="rng-nav-btn active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/></svg>
-      <span class="rng-nav-label">Games</span>
-    </button>
-    <button class="rng-nav-btn" onclick="window.location.href='../range/?tab=history'">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      <span class="rng-nav-label">History</span>
-    </button>
-    <button class="rng-nav-btn" onclick="window.location.href='../range/?tab=profile'">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span class="rng-nav-label">Profile</span>
-    </button>
-  </nav>
 </div>
 
 <!-- ══ GAME DETAIL ══ -->
@@ -1681,11 +1679,24 @@ function shareGame(type) {
 
 renderGamesList();
 
-// ── THEME — syncs with range.html via localStorage ───────────────────────────
-(function() {
-  const saved = localStorage.getItem('range_theme') || 'dark';
-  if (saved === 'light') document.body.setAttribute('data-theme', 'light');
-})();
+// ── THEME — syncs with Range app via localStorage ─────────────────────────────
+function applyTheme(theme) {
+  const isLight = theme === 'light';
+  if (isLight) {
+    document.body.setAttribute('data-theme', 'light');
+  } else {
+    document.body.removeAttribute('data-theme');
+  }
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = isLight ? '🌙 Dark' : '☀️ Light';
+  localStorage.setItem('range_theme', theme);
+}
+function toggleTheme() {
+  const current = localStorage.getItem('range_theme') || 'dark';
+  applyTheme(current === 'light' ? 'dark' : 'light');
+}
+// Apply on load
+applyTheme(localStorage.getItem('range_theme') || 'dark');
 </script>
 </body>
 </html>
