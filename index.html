@@ -142,6 +142,7 @@
     .card:nth-child(1) { animation-delay: 0.35s; }
     .card:nth-child(2) { animation-delay: 0.42s; }
     .card:nth-child(3) { animation-delay: 0.49s; }
+    .card:nth-child(4) { animation-delay: 0.56s; }
 
     .card::before {
       content: '';
@@ -173,6 +174,7 @@
     .icon-fairway { background: linear-gradient(135deg, #1a5c35, #2a8a50); }
     .icon-bunker  { background: linear-gradient(135deg, #7a5518, #b8892e); }
     .icon-range   { background: linear-gradient(135deg, #163370, #2550b0); }
+    .icon-caddie  { background: linear-gradient(135deg, #1a4a2e, #2e7d4f); }
 
     .card-label {
       font-family: 'DM Mono', monospace;
@@ -221,26 +223,6 @@
     }
     .card:hover .card-arrow svg { stroke: var(--green); }
 
-    /* Wide card (Range) */
-    .card-wide {
-      grid-column: 1 / -1;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      padding: 22px 20px;
-    }
-    .card-wide .card-icon { margin-bottom: 0; flex-shrink: 0; }
-    .card-wide .card-text { flex: 1; min-width: 0; }
-    .card-wide .card-arrow { position: static; flex-shrink: 0; }
-    .card-wide .card-name { font-size: 26px; }
-
-    /* Range — featured green border */
-    .card-featured {
-      border-color: rgba(61,220,132,0.2);
-    }
-    .card-featured:hover {
-      border-color: rgba(61,220,132,0.4);
-    }
 
     /* ── DIVIDER + FOOTER ── */
     .divider {
@@ -344,13 +326,21 @@
       </div>
     </a>
 
-    <a href="/range/" class="card card-wide card-featured">
+    <a href="/range/" class="card">
       <div class="card-icon icon-range">🎯</div>
-      <div class="card-text">
-        <div class="card-label">The</div>
-        <div class="card-name">Range</div>
-        <div class="card-desc">Practice tracker, combines &amp; pressure games</div>
+      <div class="card-label">The</div>
+      <div class="card-name">Range</div>
+      <div class="card-desc">Practice tracker &amp; combines</div>
+      <div class="card-arrow">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
+    </a>
+
+    <a href="/caddie/" class="card">
+      <div class="card-icon icon-caddie">🎙️</div>
+      <div class="card-label">The</div>
+      <div class="card-name">Caddie</div>
+      <div class="card-desc">Tempo metronome &amp; mental game</div>
       <div class="card-arrow">
         <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
@@ -359,7 +349,7 @@
   </div>
 
   <div class="divider"></div>
-  <footer>kmansgolf · Built for the average golfer<br><span style="font-size:10px;opacity:0.5">Last updated: Apr 09, 2026 6:46 PM UTC</span></footer>
+  <footer>kmansgolf · Built for the average golfer<br><span style="font-size:10px;opacity:0.5">Last updated: Apr 16, 2026</span></footer>
 
 
   <script>
