@@ -1,1 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>The Caddie · kmansgolf</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap&font-display=swap" rel="stylesheet">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0d2340" id="theme-meta">
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────────────────── */
+    :root {
+      --n:   #0d2340;
+      --nm:  #152e50;
+      --nc:  #1a3558;
+      --g:   #e8b84b;
+      --gr:  #2ecc71;
+      --w:   #f5f0e8;
+      --d:   #8ba4c0;
+      --err: #e05c5c;
+      --header-bg: #1c1c1e;
+      --radius: 14px;
+    }
+    [data-theme="light"] {
+      --n:  #f2f2f4;
+      --nm: #ffffff;
+      --nc: #ffffff;
+      --w:  #1a1a2e;
+      --g:  #d4a030;
+      --gr: #27a85e;
+      --d:  #5a6a80;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100svh;
+      background: var(--n);
+      color: var(--w);
+      font-family: 'Barlow', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────────────────── */
+    header {
+      background: var(--header-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      padding-top: max(14px, env(safe-area-inset-top));
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 0.5px solid rgba(255,255,255,0.08);
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-link img { height: 26px; width: auto; }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .app-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.08em;
+    }
+
+    #theme-toggle {
+      background: none;
+      border: 0.5px solid rgba(255,255,255,0.18);
+      border-radius: 20px;
+      padding: 5px 11px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      letter-spacing: 0.04em;
+    }
+    #theme-toggle:hover {
+      border-color: var(--gr);
+      color: var(--gr);
+    }
+
+    /* ── MAIN CONTAINER ─────────────────────────────────────────────────── */
+    main {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── PAGE TITLE ─────────────────────────────────────────────────────── */
+    .page-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--w);
+    }
+    .page-title span {
+      color: var(--gr);
+    }
+    .page-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--d);
+      letter-spacing: 0.06em;
+      margin-top: 4px;
+    }
+
+    /* ── CARD ───────────────────────────────────────────────────────────── */
+    .card {
+      background: var(--nm);
+      border: 0.5px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    [data-theme="light"] .card {
+      border-color: rgba(0,0,0,0.08);
+    }
+
+    .card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--d);
+      margin-bottom: 14px;
+    }
+
+    /* ── MODE TOGGLE ────────────────────────────────────────────────────── */
+    .mode-row {
+      display: flex;
+      gap: 8px;
+    }
+    .mode-btn {
+      flex: 1;
+      background: var(--nc);
+      border: 1.5px solid transparent;
+      border-radius: 10px;
+      padding: 12px 8px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      text-align: center;
+    }
+    [data-theme="light"] .mode-btn {
+      background: #f0eee9;
+    }
+    .mode-btn.active {
+      border-color: var(--gr);
+      background: rgba(46, 204, 113, 0.08);
+    }
+    .mode-btn-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--w);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .mode-btn.active .mode-btn-label { color: var(--gr); }
+    .mode-btn-ratio {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--d);
+      display: block;
+    }
+
+    /* ── PRESET SLIDER ──────────────────────────────────────────────────── */
+    .preset-names {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .preset-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      color: var(--d);
+      text-transform: uppercase;
+      text-align: center;
+      width: 20%;
+      transition: color 0.18s ease;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .preset-name.active {
+      color: var(--g);
+      font-weight: 500;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: var(--nc);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+    [data-theme="light"] input[type="range"] { background: #ddd; }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--g);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      transition: transform 0.1s ease;
+    }
+    input[type="range"]:active::-webkit-slider-thumb {
+      transform: scale(1.15);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--g);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    /* ── BPM DISPLAY ────────────────────────────────────────────────────── */
+    .bpm-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 14px;
+    }
+    .bpm-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 42px;
+      font-weight: 500;
+      color: var(--g);
+      line-height: 1;
+    }
+    .bpm-unit {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--d);
+      letter-spacing: 0.08em;
+    }
+    .preset-tag {
+      margin-left: auto;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--w);
+      opacity: 0.6;
+      letter-spacing: 0.02em;
+      align-self: center;
+    }
+
+    /* ── PHASE DISPLAY ──────────────────────────────────────────────────── */
+    .phase-display {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+    .phase-dot {
+      flex: 1;
+      border-radius: 10px;
+      padding: 16px 10px;
+      text-align: center;
+      background: var(--nc);
+      border: 1.5px solid transparent;
+      transition: all 0.08s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    [data-theme="light"] .phase-dot { background: #f0eee9; }
+
+    .phase-dot.active-phase {
+      border-color: currentColor;
+    }
+    .phase-dot.phase-takeaway { color: var(--gr); }
+    .phase-dot.phase-top      { color: var(--g); }
+    .phase-dot.phase-impact   { color: #e05c5c; }
+
+    .phase-dot.active-phase .phase-icon { transform: scale(1.15); }
+
+    .phase-dot::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: currentColor;
+      opacity: 0;
+      transition: opacity 0.08s ease;
+    }
+    .phase-dot.active-phase::before { opacity: 0.07; }
+
+    .phase-icon {
+      font-size: 22px;
+      display: block;
+      margin-bottom: 6px;
+      transition: transform 0.08s ease;
+      position: relative;
+      z-index: 1;
+    }
+    .phase-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: block;
+      color: inherit;
+      opacity: 0.7;
+      position: relative;
+      z-index: 1;
+    }
+    .phase-dot.active-phase .phase-name { opacity: 1; }
+
+    /* ── START/STOP BUTTON ──────────────────────────────────────────────── */
+    .play-btn {
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--gr);
+      color: #fff;
+    }
+    .play-btn.playing {
+      background: var(--err);
+    }
+    .play-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* pulse ring when playing */
+    .play-btn.playing {
+      animation: pulse-ring 1.2s ease infinite;
+    }
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(224,92,92,0.5); }
+      70%  { box-shadow: 0 0 0 12px rgba(224,92,92,0); }
+      100% { box-shadow: 0 0 0 0 rgba(224,92,92,0); }
+    }
+
+    .play-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    /* ── TEMPO DETAIL ROW ───────────────────────────────────────────────── */
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .detail-cell {
+      flex: 1;
+      background: var(--nm);
+      border: 0.5px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 14px 14px 12px;
+      text-align: center;
+    }
+    [data-theme="light"] .detail-cell { border-color: rgba(0,0,0,0.08); }
+    .detail-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--w);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .detail-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--d);
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 20px 0 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--d);
+      opacity: 0.5;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="logo-link">
+      <img src="kmansgolf-logo.svg" alt="kmansgolf" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span style="display:none;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#f5f0e8">kmans<span style="color:#2ecc71">golf</span></span>
+    </a>
+    <div class="header-right">
+      <span class="app-label">The Caddie</span>
+      <button id="theme-toggle" onclick="toggleTheme()">☀️</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Page title -->
+    <div>
+      <div class="page-title">Tempo <span>Trainer</span></div>
+      <div class="page-sub">3-TONE SWING METRONOME</div>
+    </div>
+
+    <!-- Mode toggle -->
+    <div class="card">
+      <div class="card-label">Swing Mode</div>
+      <div class="mode-row">
+        <button class="mode-btn active" id="mode-full" onclick="setMode('full')">
+          <span class="mode-btn-label">Full Swing</span>
+          <span class="mode-btn-ratio">3 : 1 ratio</span>
+        </button>
+        <button class="mode-btn" id="mode-short" onclick="setMode('short')">
+          <span class="mode-btn-label">Short Game</span>
+          <span class="mode-btn-ratio">2 : 1 ratio</span>
+        </button>
+        <button class="mode-btn" id="mode-putt" onclick="setMode('putt')">
+          <span class="mode-btn-label">Putting</span>
+          <span class="mode-btn-ratio">2 : 1 · 76 bpm</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Preset + BPM -->
+    <div class="card">
+      <div class="card-label">Tempo Preset</div>
+      <div class="preset-names" id="preset-names">
+        <!-- filled by JS -->
+      </div>
+      <input type="range" id="tempo-slider" min="0" max="100" value="50" oninput="onSlider(this.value)">
+      <div class="bpm-row">
+        <span class="bpm-value" id="bpm-display">--</span>
+        <span class="bpm-unit">BPM</span>
+        <span class="preset-tag" id="preset-tag"></span>
+      </div>
+    </div>
+
+    <!-- Phase visualizer -->
+    <div class="card">
+      <div class="card-label">Current Phase</div>
+      <div class="phase-display">
+        <div class="phase-dot phase-takeaway" id="phase-takeaway">
+          <span class="phase-icon">↓</span>
+          <span class="phase-name">Takeaway</span>
+        </div>
+        <div class="phase-dot phase-top" id="phase-top">
+          <span class="phase-icon">↑</span>
+          <span class="phase-name">Top</span>
+        </div>
+        <div class="phase-dot phase-impact" id="phase-impact">
+          <span class="phase-icon">⚡</span>
+          <span class="phase-name">Impact</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Start/Stop -->
+    <button class="play-btn" id="play-btn" onclick="togglePlay()">
+      <svg class="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="play-icon-svg">
+        <polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/>
+      </svg>
+      <span id="play-label">Start</span>
+    </button>
+
+    <!-- Detail row: beat timing breakdown -->
+    <div class="detail-row">
+      <div class="detail-cell">
+        <span class="detail-value" id="detail-back">--</span>
+        <span class="detail-label">Backswing (ms)</span>
+      </div>
+      <div class="detail-cell">
+        <span class="detail-value" id="detail-down">--</span>
+        <span class="detail-label">Downswing (ms)</span>
+      </div>
+      <div class="detail-cell">
+        <span class="detail-value" id="detail-cycle">--</span>
+        <span class="detail-label">Full Cycle (ms)</span>
+      </div>
+    </div>
+
+    <footer>kmansgolf · The Caddie — prototype</footer>
+
+  </main>
+
+  <script>
+    // ── PRESETS ───────────────────────────────────────────────────────────────
+    // BPM values are the *beat* BPM (takeaway beat).
+    // Full swing: 3 backswing beats : 1 downswing beat
+    // Short/Putt: 2 back : 1 down
+    // Each preset: { name, bpm }
+    const PRESETS = [
+      { name: 'Athletic',     bpm: 88  },
+      { name: 'Tour Fast',    bpm: 80  },
+      { name: 'Tour Std',     bpm: 72  },
+      { name: 'Smooth',       bpm: 64  },
+      { name: 'Flowing',      bpm: 56  },
+    ];
+    const PUTT_BPM = 76;
+
+    // Slider maps 0–100 to bpm range (min of last preset to max of first)
+    const BPM_MIN = PRESETS[PRESETS.length - 1].bpm;
+    const BPM_MAX = PRESETS[0].bpm;
+
+    // ── STATE ─────────────────────────────────────────────────────────────────
+    let mode    = 'full';   // 'full' | 'short' | 'putt'
+    let bpm     = 72;
+    let playing = false;
+
+    // Web Audio
+    let audioCtx = null;
+    let schedulerTimer = null;
+    let nextBeatTime  = 0;
+    let beatPhase     = 0;   // 0=takeaway, 1=top (for 3:1: 0,1,2=backswing; 3=impact / for 2:1: 0,1=back; 2=impact)
+
+    // ── AUDIO ─────────────────────────────────────────────────────────────────
+    function getAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return audioCtx;
+    }
+
+    // tone: 0 = takeaway (low), 1 = mid beat (top/transition), 2 = impact (high accent)
+    function playTone(type, when) {
+      const ctx = getAudioCtx();
+
+      // Frequencies and shapes chosen to feel like a click/wood block
+      // type 0: takeaway — low, soft thud
+      // type 1: top      — mid, short click
+      // type 2: impact   — high accent, sharp
+      const configs = {
+        0: { freq: 180, freq2: 90,  gain: 0.55, attack: 0.002, decay: 0.12, type: 'sine'    }, // takeaway
+        1: { freq: 320, freq2: 160, gain: 0.35, attack: 0.001, decay: 0.08, type: 'triangle' }, // mid beat
+        2: { freq: 900, freq2: 450, gain: 0.70, attack: 0.001, decay: 0.06, type: 'square'   }, // impact
+      };
+      const c = configs[type];
+
+      // Main oscillator
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type      = c.type;
+      osc.frequency.setValueAtTime(c.freq, when);
+      osc.frequency.exponentialRampToValueAtTime(c.freq2, when + c.decay);
+      gain.gain.setValueAtTime(0, when);
+      gain.gain.linearRampToValueAtTime(c.gain, when + c.attack);
+      gain.gain.exponentialRampToValueAtTime(0.001, when + c.decay);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(when);
+      osc.stop(when + c.decay + 0.01);
+
+      // Sub click for body
+      if (type === 2) {
+        const noise = ctx.createOscillator();
+        const ng    = ctx.createGain();
+        noise.type  = 'sawtooth';
+        noise.frequency.setValueAtTime(200, when);
+        ng.gain.setValueAtTime(0.3, when);
+        ng.gain.exponentialRampToValueAtTime(0.001, when + 0.03);
+        noise.connect(ng);
+        ng.connect(ctx.destination);
+        noise.start(when);
+        noise.stop(when + 0.04);
+      }
+    }
+
+    // ── SCHEDULER ─────────────────────────────────────────────────────────────
+    // Classic Web Audio look-ahead scheduler (C. Wilson pattern)
+    const LOOKAHEAD   = 0.1;  // seconds to schedule ahead
+    const INTERVAL_MS = 25;   // how often scheduler runs
+
+    function getRatio() {
+      return (mode === 'full') ? 3 : 2;
+    }
+
+    function getTotalBeats() {
+      // full swing: back(3) + impact(1) = 4 beats per cycle (3 sub-beats back + 1 impact)
+      // short/putt: back(2) + impact(1) = 3 beats per cycle
+      return getRatio() + 1;
+    }
+
+    function getBeatDuration() {
+      // bpm is in beats-per-minute where one cycle = getTotalBeats() beats
+      // Actually: bpm here means the *metronome* click rate.
+      // We define bpm as full-cycle BPM, so beat duration = 60/(bpm*totalBeats/cycle)
+      // Simpler: treat bpm as the backswing subdivision beat rate.
+      return 60 / bpm;
+    }
+
+    function scheduleAhead() {
+      const ctx = getAudioCtx();
+      while (nextBeatTime < ctx.currentTime + LOOKAHEAD) {
+        scheduleBeat(beatPhase, nextBeatTime);
+        const total = getTotalBeats();
+        beatPhase = (beatPhase + 1) % total;
+        nextBeatTime += getBeatDuration();
+      }
+    }
+
+    function scheduleBeat(phase, when) {
+      const total = getTotalBeats();
+      const isImpact = (phase === total - 1);
+      const isFirst  = (phase === 0);
+
+      let toneType;
+      if (isFirst)  toneType = 0;       // takeaway — low
+      else if (isImpact) toneType = 2;  // impact — high
+      else toneType = 1;                // mid beats
+
+      playTone(toneType, when);
+
+      // Visual feedback: schedule via setTimeout (approximate, visual only)
+      const delay = Math.max(0, (when - getAudioCtx().currentTime) * 1000);
+      setTimeout(() => updatePhaseUI(phase), delay);
+    }
+
+    function updatePhaseUI(phase) {
+      if (!playing) return;
+      const total = getTotalBeats();
+      const ratio = getRatio();
+
+      // Map phase index to display state
+      // 0 → takeaway
+      // 1..(ratio-1) → top (backswing continuation)
+      // ratio → impact
+      const ids = ['phase-takeaway', 'phase-top', 'phase-impact'];
+      ids.forEach(id => document.getElementById(id).classList.remove('active-phase'));
+
+      if (phase === 0) {
+        document.getElementById('phase-takeaway').classList.add('active-phase');
+      } else if (phase < ratio) {
+        document.getElementById('phase-top').classList.add('active-phase');
+      } else {
+        document.getElementById('phase-impact').classList.add('active-phase');
+      }
+    }
+
+    function clearPhaseUI() {
+      ['phase-takeaway','phase-top','phase-impact'].forEach(id =>
+        document.getElementById(id).classList.remove('active-phase'));
+    }
+
+    // ── PLAY / STOP ───────────────────────────────────────────────────────────
+    function togglePlay() {
+      playing = !playing;
+      const btn   = document.getElementById('play-btn');
+      const label = document.getElementById('play-label');
+      const svg   = document.getElementById('play-icon-svg');
+
+      if (playing) {
+        // Resume context if suspended (mobile autoplay policy)
+        const ctx = getAudioCtx();
+        ctx.resume().then(() => {
+          nextBeatTime = ctx.currentTime + 0.05;
+          beatPhase    = 0;
+          schedulerTimer = setInterval(scheduleAhead, INTERVAL_MS);
+        });
+        btn.classList.add('playing');
+        label.textContent = 'Stop';
+        svg.innerHTML = '<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
+      } else {
+        clearInterval(schedulerTimer);
+        clearPhaseUI();
+        btn.classList.remove('playing');
+        label.textContent = 'Start';
+        svg.innerHTML = '<polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/>';
+      }
+    }
+
+    // ── MODE ──────────────────────────────────────────────────────────────────
+    function setMode(m) {
+      const wasPlaying = playing;
+      if (wasPlaying) togglePlay(); // stop
+
+      mode = m;
+      ['full','short','putt'].forEach(id =>
+        document.getElementById('mode-' + id).classList.toggle('active', id === m));
+
+      if (m === 'putt') {
+        bpm = PUTT_BPM;
+        syncSliderFromBpm();
+        // disable slider for putting (locked BPM)
+        document.getElementById('tempo-slider').disabled = true;
+        document.getElementById('tempo-slider').style.opacity = '0.4';
+      } else {
+        document.getElementById('tempo-slider').disabled = false;
+        document.getElementById('tempo-slider').style.opacity = '1';
+      }
+
+      updateDisplay();
+      if (wasPlaying) setTimeout(() => togglePlay(), 100); // restart
+    }
+
+    // ── SLIDER + BPM ─────────────────────────────────────────────────────────
+    function onSlider(val) {
+      if (mode === 'putt') return;
+      // Map 0-100 → BPM_MAX..BPM_MIN (left=fast, right=slow... actually left=slow preset index 4, right=fast)
+      // Presets left-to-right: Athletic(fast) → Flowing(slow)
+      // So slider left = high BPM, right = low BPM? 
+      // Let's do: slider left = Flowing (slow), right = Athletic (fast) — feels more natural (push harder = faster)
+      const t = val / 100;
+      bpm = Math.round(BPM_MIN + t * (BPM_MAX - BPM_MIN));
+      updateDisplay();
+    }
+
+    function syncSliderFromBpm() {
+      const t = (bpm - BPM_MIN) / (BPM_MAX - BPM_MIN);
+      document.getElementById('tempo-slider').value = Math.round(t * 100);
+    }
+
+    function getNearestPreset() {
+      let nearest = PRESETS[0];
+      let minDist = Infinity;
+      PRESETS.forEach(p => {
+        const d = Math.abs(p.bpm - bpm);
+        if (d < minDist) { minDist = d; nearest = p; }
+      });
+      return nearest;
+    }
+
+    function updateDisplay() {
+      document.getElementById('bpm-display').textContent = bpm;
+
+      const nearest = getNearestPreset();
+      document.getElementById('preset-tag').textContent = nearest.name;
+
+      // Highlight preset labels
+      document.querySelectorAll('.preset-name').forEach((el, i) => {
+        el.classList.toggle('active', PRESETS[i].name === nearest.name);
+      });
+
+      // Detail breakdown
+      const ratio = getRatio();
+      const beatMs = Math.round(getBeatDuration() * 1000);
+      const backMs = beatMs * ratio;
+      const downMs = beatMs * 1;
+      const cycleMs = backMs + downMs;
+      document.getElementById('detail-back').textContent  = backMs;
+      document.getElementById('detail-down').textContent  = downMs;
+      document.getElementById('detail-cycle').textContent = cycleMs;
+    }
+
+    // ── PRESET LABELS ─────────────────────────────────────────────────────────
+    function buildPresetNames() {
+      const container = document.getElementById('preset-names');
+      container.innerHTML = '';
+      PRESETS.forEach((p, i) => {
+        const div = document.createElement('div');
+        div.className = 'preset-name';
+        div.textContent = p.name.replace(' ', '\n');
+        div.onclick = () => snapToPreset(i);
+        container.appendChild(div);
+      });
+    }
+
+    function snapToPreset(i) {
+      if (mode === 'putt') return;
+      bpm = PRESETS[i].bpm;
+      syncSliderFromBpm();
+      updateDisplay();
+    }
+
+    // ── THEME ─────────────────────────────────────────────────────────────────
+    function applyTheme(t) {
+      const isLight = t === 'light';
+      document.body.setAttribute('data-theme', isLight ? 'light' : '');
+      const btn = document.getElementById('theme-toggle');
+      if (btn) btn.textContent = isLight ? '🌙' : '☀️';
+      const meta = document.getElementById('theme-meta');
+      if (meta) meta.setAttribute('content', isLight ? '#f2f2f4' : '#0d2340');
+      localStorage.setItem('range_theme', t);
+    }
+    function toggleTheme() {
+      applyTheme((localStorage.getItem('range_theme') || 'dark') === 'light' ? 'dark' : 'light');
+    }
+
+    // ── INIT ──────────────────────────────────────────────────────────────────
+    buildPresetNames();
+    bpm = 72; // Tour Standard default
+    syncSliderFromBpm();
+    updateDisplay();
+    applyTheme(localStorage.getItem('range_theme') || 'dark');
+  </script>
+</body>
+</html>
 
