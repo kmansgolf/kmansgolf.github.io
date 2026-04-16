@@ -123,7 +123,9 @@ function doLogin() {
   const d = loadU(u);
   if (!d) { e.textContent = 'Username not found.'; return; }
   if (d.pin !== hashPin(p)) { e.textContent = 'Incorrect PIN.'; return; }
-  e.textContent = ''; CU = d; enterApp();
+  e.textContent = ''; CU = d;
+  sessionStorage.setItem('range_session_user', d.username);
+  enterApp();
 }
 
 function showForgotPin() {
@@ -204,12 +206,14 @@ function showRecoveryCode(code) {
 
 function dismissRecoveryCode() {
   document.getElementById('recovery-overlay').style.display = 'none';
+  sessionStorage.setItem('range_session_user', CU.username);
   enterApp();
 }
 
 function doLogout() {
   if (!confirm('Sign out?')) return;
   clearActiveSession();
+  sessionStorage.removeItem('range_session_user');
   CU = null;
   document.getElementById('bnav').classList.remove('show');
   goTo('s-login');
@@ -1210,6 +1214,20 @@ function goHome() {
 document.addEventListener('DOMContentLoaded', () => {
   // Apply saved theme immediately — before login, so returning users see correct theme on login screen
   applyTheme(localStorage.getItem('range_theme') || 'dark');
+
+  // Rehydrate session after pull-to-refresh or page reload
+  const savedUser = sessionStorage.getItem('range_session_user');
+  if (savedUser) {
+    const d = loadU(savedUser);
+    if (d) {
+      CU = d;
+      enterApp();
+      return;
+    } else {
+      sessionStorage.removeItem('range_session_user');
+    }
+  }
+
   goTo('s-login');
 });
 
