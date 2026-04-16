@@ -6,8 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="The Range">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#000000" id="theme-meta">
+<meta name="theme-color" content="#0d2340" id="theme-meta">
 <title>kmansgolf · The Range</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap&font-display=swap" rel="stylesheet">
 <link rel="stylesheet" href="range-style.css">
@@ -17,6 +16,9 @@
 
 <!-- ══ LOGIN ══ -->
 <div id="s-login" class="scr on" style="padding-bottom:0;overflow-y:auto">
+  <div style="position:absolute;top:12px;right:16px;z-index:10">
+    <button onclick="toggleTheme()" id="theme-btn-login" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;">☀️ Light</button>
+  </div>
   <div class="lbrand"><div class="llogo">THE RANGE</div><div class="lsub">Golf Practice Tracker</div></div>
   <div class="lbox" style="margin:0 24px 40px">
     <div class="ltabs">
@@ -28,19 +30,6 @@
       <div class="fld"><label>PIN</label><input class="inp" id="li-p" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off"></div>
       <div class="lerr" id="li-e"></div>
       <button class="btn" onclick="doLogin()">Sign In</button>
-      <div style="text-align:center;margin-top:12px"><button onclick="showForgotPin()" style="background:none;border:none;font-family:var(--fb);font-size:13px;color:var(--d);cursor:pointer;text-decoration:underline">Forgot PIN?</button></div>
-    </div>
-
-    <!-- Forgot PIN panel -->
-    <div id="forgot-pin-panel" style="display:none">
-      <div style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--d);margin-bottom:12px">Reset PIN with recovery code</div>
-      <div class="fld"><label>Username</label><input class="inp" id="fp-user" type="text" placeholder="username" autocapitalize="none" autocomplete="off"></div>
-      <div class="fld"><label>6-Character Recovery Code</label><input class="inp" id="fp-code" type="text" placeholder="e.g. AB3X9Z" maxlength="6" autocapitalize="characters" autocomplete="off"></div>
-      <div class="fld"><label>New PIN</label><input class="inp" id="fp-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off"></div>
-      <div class="fld"><label>Confirm New PIN</label><input class="inp" id="fp-pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off"></div>
-      <div class="lerr" id="fp-e"></div>
-      <button class="btn" onclick="doResetPin()">Reset PIN</button>
-      <div style="text-align:center;margin-top:10px"><button onclick="hideForgotPin()" style="background:none;border:none;font-family:var(--fb);font-size:13px;color:var(--d);cursor:pointer;text-decoration:underline">← Back to Sign In</button></div>
     </div>
     <div id="lf-new" style="display:none">
       <div class="fld"><label>Your Name</label><input class="inp" id="ca-n" type="text" placeholder="First name" autocomplete="off"></div>
@@ -63,7 +52,7 @@
 
 <!-- ══ HOME ══ -->
 <div id="s-home" class="scr">
-  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.25);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.55)">RANGE</span></a><div class="hm" id="hdate"></div></div>
+  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm" id="hdate"></div><button onclick="toggleTheme()" id="theme-btn" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;flex-shrink:0;">☀️ Light</button></div>
   <div class="sb">
     <div class="hhero">
       <div class="hgreet">Welcome, <em id="hname">—</em></div>
@@ -86,7 +75,7 @@
 
 <!-- ══ SESSION SETUP ══ -->
 <div id="s-practice" class="scr">
-  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.25);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.55)">RANGE</span></a><div class="hm">SESSION SETUP</div></div>
+  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">SESSION SETUP</div><button onclick="toggleTheme()" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;flex-shrink:0;" id="theme-btn-setup">☀️ Light</button></div>
   <div class="sb" style="padding-top:14px">
     <div id="rx-section"></div>
 
@@ -228,13 +217,13 @@
 
 <!-- ══ HISTORY ══ -->
 <div id="s-history" class="scr">
-  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.25);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.55)">RANGE</span></a><div class="hm">HISTORY</div></div>
+  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">HISTORY</div><button onclick="toggleTheme()" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;flex-shrink:0;" id="theme-btn-history">☀️ Light</button></div>
   <div class="sb" style="padding-top:8px"><div id="hist-list"></div></div>
 </div>
 
 <!-- ══ PROFILE ══ -->
 <div id="s-profile" class="scr">
-  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.25);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.55)">RANGE</span></a><div class="hm">PROFILE</div></div>
+  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">PROFILE</div><button onclick="toggleTheme()" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;flex-shrink:0;" id="theme-btn-profile">☀️ Light</button></div>
   <div class="sb">
     <div class="profav" id="prof-av"></div>
     <div class="profnam" id="prof-nm"></div>
@@ -245,10 +234,7 @@
         <div class="tinfo"><div class="tlbl">AimPoint Mode</div><div class="tsub">Log slope % per putting station for green reading calibration</div></div>
         <div class="tsw" id="ap-tog" onclick="togAimpoint()"><div class="tknob"></div></div>
       </div>
-      <div class="trow" style="border-top:1px solid rgba(255,255,255,.07);margin-top:10px;padding-top:10px">
-        <div class="tinfo"><div class="tlbl" id="theme-lbl">🌙 Light Mode</div><div class="tsub" id="theme-sub">Off — tap to switch for outdoor use</div></div>
-        <div class="tsw" id="theme-tog" onclick="togTheme()"><div class="tknob"></div></div>
-      </div>
+
     </div>
     <div class="card" id="ap-stats-card" style="display:none">
       <div class="ct">📐 AimPoint Calibration Stats</div>
@@ -269,18 +255,7 @@
       <div class="ct">Change PIN</div>
       <div class="fld"><label>New PIN</label><input class="inp" id="pin1" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div>
       <div class="fld"><label>Confirm PIN</label><input class="inp" id="pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div>
-      <div id="pin-msg" style="font-size:12px;color:var(--d);margin-bottom:8px"></div>
       <button class="btn sm" onclick="savePin()">Update PIN</button>
-    </div>
-    <div class="card">
-      <div class="ct">Data</div>
-      <div style="font-family:var(--fb);font-size:13px;color:var(--d);margin-bottom:14px;line-height:1.5">Export your sessions as a backup file, or import a previous export. Load Test Data adds 8 demo sessions for testing.</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <button class="btn" onclick="exportData()">📥 Export My Data</button>
-        <button class="btn ol" onclick="importData()">📤 Import / Restore</button>
-        <button class="btn gh" onclick="loadTestData()">🧪 Load Test Data</button>
-      </div>
-      <div id="import-status" style="font-size:12px;margin-top:10px;text-align:center"></div>
     </div>
     <div class="brow"><button class="btn dn" onclick="doLogout()">Sign Out</button></div>
   </div>
@@ -309,51 +284,6 @@
     <span class="nl">Profile</span>
   </button>
 </nav>
-<style>
-.overlay-full{position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
-.overlay-card{background:var(--nm);border-radius:16px;padding:28px 24px;max-width:340px;width:100%;border:1px solid rgba(255,255,255,0.1)}
-.overlay-ico{font-size:36px;margin-bottom:16px}
-.overlay-title{font-family:var(--fc);font-size:22px;font-weight:800;letter-spacing:1px;color:var(--w);margin-bottom:8px}
-.overlay-sub{font-size:14px;color:var(--d);line-height:1.6;margin-bottom:20px}
-.recovery-code{font-family:var(--fm);font-size:34px;font-weight:700;color:var(--gr);letter-spacing:6px;padding:16px;background:rgba(61,220,132,0.08);border-radius:10px;border:1px solid rgba(61,220,132,0.2);margin-bottom:16px}
-.firstrun-step{display:flex;align-items:flex-start;gap:14px;text-align:left;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
-.firstrun-step:last-child{border-bottom:none}
-.firstrun-ico{font-size:22px;flex-shrink:0;width:32px;text-align:center}
-.firstrun-txt{font-size:13px;color:var(--d);line-height:1.5}
-.firstrun-txt strong{color:var(--w);display:block;margin-bottom:2px}
-</style>
-<!-- ══ RECOVERY CODE OVERLAY ══ -->
-<div id="recovery-overlay" class="overlay-full" style="display:none">
-  <div class="overlay-card">
-    <div class="overlay-ico">🔑</div>
-    <div class="overlay-title">Save Your Recovery Code</div>
-    <div class="overlay-sub">If you forget your PIN, this code lets you reset it. Write it down — it won't be shown again.</div>
-    <div class="recovery-code" id="recovery-code-display">——————</div>
-    <div style="font-size:12px;color:var(--d);margin-bottom:20px">Write this down before continuing.</div>
-    <button class="btn" onclick="dismissRecoveryCode()">I've Written It Down →</button>
-  </div>
-</div>
-
-<!-- ══ FIRST-RUN WALKTHROUGH OVERLAY ══ -->
-<div id="firstrun-overlay" class="overlay-full" style="display:none">
-  <div class="overlay-card">
-    <div class="overlay-title">Welcome to The Range 👋</div>
-    <div class="overlay-sub">Three things to know before you start:</div>
-    <div class="firstrun-step">
-      <div class="firstrun-ico">🎯</div>
-      <div class="firstrun-txt"><strong>Combines are structured practice tests</strong>12 putting stations + 12 chipping stations. Each session takes 20–60 min depending on length.</div>
-    </div>
-    <div class="firstrun-step">
-      <div class="firstrun-ico">⛳</div>
-      <div class="firstrun-txt"><strong>Two putting formats</strong>Skill Combine uses a gate drill — no hole needed, just tees. Performance tracks makes vs misses with the hole in play.</div>
-    </div>
-    <div class="firstrun-step">
-      <div class="firstrun-ico">📊</div>
-      <div class="firstrun-txt"><strong>Skill Profile unlocks after 6 session points</strong>Short sessions = 1pt, full sessions = 2pts. Once unlocked, the app diagnoses your weaknesses automatically.</div>
-    </div>
-    <button class="btn" onclick="dismissFirstRun()" style="margin-top:20px">Let's Go →</button>
-  </div>
-</div>
 </div>
 
 <script src="range-data.js"></script>
