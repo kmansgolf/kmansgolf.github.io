@@ -1,25 +1,5 @@
-
-// ── UNSAVED DATA GUARD ────────────────────────────────────────────────────────
-window.addEventListener('beforeunload', function(e) {
-  if (sessionInProgress) {
-    e.preventDefault();
-    e.returnValue = 'You have an active session. Leave and lose your data?';
-    return e.returnValue;
-  }
-});
-// Intercept kmansgolf logo tap mid-session
-document.addEventListener('click', function(e) {
-  const link = e.target.closest('a[href="/"]');
-  if (link && sessionInProgress) {
-    e.preventDefault();
-    if (confirm('You have an active session in progress. Leave and lose your data?')) {
-      sessionInProgress = false;
-      window.location.href = '/';
-    }
-  }
-});
-
 // range-app.js — App state, auth, navigation, session flow, UI
+
 // ═══════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════
@@ -33,6 +13,92 @@ let sessionQueue = [];
 let sessionResults = {};
 let runnerState = { qIdx: 0, sIdx: 0 };
 let sessionInProgress = false;
+
+// ═══════════════════════════════════════════
+//  ACTIVE SESSION PERSISTENCE
+// ═══════════════════════════════════════════
+function saveActiveSession() {
+  if (!sessionInProgress || !sessionQueue.length) {
+    localStorage.removeItem('range_active_session');
+    return;
+  }
+  const data = {
+    selCombines: [...selCombines],
+    combineVer, sessionType, combineType,
+    sessionQueue, sessionResults, runnerState,
+    sessionInProgress,
+    savedAt: new Date().toISOString()
+  };
+  try {
+    localStorage.setItem('range_active_session', JSON.stringify(data));
+  } catch(e) { console.error('Failed to save active session', e); }
+}
+
+function loadActiveSession() {
+  try {
+    const saved = localStorage.getItem('range_active_session');
+    if (!saved) return false;
+    const data = JSON.parse(saved);
+    if (!data.sessionInProgress || !data.sessionQueue?.length) return false;
+
+    selCombines = new Set(data.selCombines || []);
+    combineVer      = data.combineVer      ?? 'short';
+    sessionType     = data.sessionType     ?? 'standard';
+    combineType     = data.combineType     ?? 'skill';
+    sessionQueue    = data.sessionQueue    ?? [];
+    sessionResults  = data.sessionResults  ?? {};
+    runnerState     = data.runnerState     ?? { qIdx: 0, sIdx: 0 };
+    sessionInProgress = true;
+    return true;
+  } catch(e) {
+    console.error('Failed to load active session', e);
+    return false;
+  }
+}
+
+function clearActiveSession() {
+  localStorage.removeItem('range_active_session');
+}
+
+// ═══════════════════════════════════════════
+//  NAVIGATION GUARDS
+// ═══════════════════════════════════════════
+
+// Browser back button guard
+window.addEventListener('popstate', function() {
+  if (sessionInProgress) {
+    history.pushState(null, '', location.href);
+    if (confirm('You have an active session in progress. Leave and lose your data?')) {
+      sessionInProgress = false;
+      clearActiveSession();
+      history.back();
+    }
+  }
+});
+// Push a state on load so popstate fires on first back press
+history.pushState(null, '', location.href);
+
+// Page unload guard
+window.addEventListener('beforeunload', function(e) {
+  if (sessionInProgress) {
+    e.preventDefault();
+    e.returnValue = 'You have an active session. Leave and lose your data?';
+    return e.returnValue;
+  }
+});
+
+// Intercept kmansgolf logo tap mid-session
+document.addEventListener('click', function(e) {
+  const link = e.target.closest('a[href="/"]');
+  if (link && sessionInProgress) {
+    e.preventDefault();
+    if (confirm('You have an active session in progress. Leave and lose your data?')) {
+      sessionInProgress = false;
+      clearActiveSession();
+      window.location.href = '/';
+    }
+  }
+});
 
 // ═══════════════════════════════════════════
 //  STORAGE / AUTH
@@ -57,7 +123,7 @@ function doLogin() {
   const d = loadU(u);
   if (!d) { e.textContent = 'Username not found.'; return; }
   if (d.pin !== hashPin(p)) { e.textContent = 'Incorrect PIN.'; return; }
-  e.textContent = ''; CU = d; applyTheme(CU.theme || 'dark'); enterApp();
+  e.textContent = ''; CU = d; enterApp();
 }
 
 function showForgotPin() {
@@ -152,11 +218,15 @@ function doLogout() {
 //  APP ENTRY
 // ═══════════════════════════════════════════
 function enterApp() {
-  applyTheme(CU?.theme || 'dark');
   document.getElementById('bnav').classList.add('show');
   buildWarmup();
   refreshHome();
-  if (CU?.firstRun) {
+  if (loadActiveSession()) {
+    renderRunner();
+    goTo('s-runner');
+    document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+    document.querySelector('[data-s="s-practice"]')?.classList.add('on');
+  } else if (CU?.firstRun) {
     showFirstRun();
   } else {
     goTo('s-home');
@@ -695,11 +765,11 @@ let _gatePace = null;
 
 function selGateLine(v) {
   _gateLine = (_gateLine === v) ? null : v;
-  renderRunner();
+  renderRunner(); saveActiveSession();
 }
 function selGatePace(v) {
   _gatePace = (_gatePace === v) ? null : v;
-  renderRunner();
+  renderRunner(); saveActiveSession();
 }
 function submitGateShot() {
   if (!_gateLine || !_gatePace) return;
@@ -710,7 +780,7 @@ function submitGateShot() {
   sd.shotResults[next] = code;
   sd.score = sd.shotResults.reduce((a, r) => a + (r ? gateScore(r) : 0), 0);
   _gateLine = null; _gatePace = null;
-  renderRunner();
+  renderRunner(); saveActiveSession();
 }
 function undoGateShot() {
   const sd = getCurSD();
@@ -719,7 +789,7 @@ function undoGateShot() {
   sd.shotResults[last] = null;
   sd.score = sd.shotResults.reduce((a, r) => a + (r ? gateScore(r) : 0), 0);
   _gateLine = null; _gatePace = null;
-  renderRunner();
+  renderRunner(); saveActiveSession();
 }
 
 // Performance putting temp state
@@ -774,7 +844,7 @@ function submitMiss() {
   // Made stays 0 — miss adds nothing to score
   _missDist = null;
   _missDir  = null;
-  renderRunner();
+  renderRunner(); saveActiveSession();
 }
 
 function logPutt(result) {
@@ -786,7 +856,7 @@ function logPutt(result) {
   if (result === 'made') sd.score++;
   _missDist = null;
   _missDir  = null;
-  renderRunner();
+  renderRunner(); saveActiveSession();
 }
 
 function undoPutt() {
@@ -797,7 +867,7 @@ function undoPutt() {
   sd.shotResults[last] = null;
   _missDist = null;
   _missDir  = null;
-  renderRunner();
+  renderRunner(); saveActiveSession();
 }
 
 function logChip(zone) {
@@ -806,7 +876,7 @@ function logChip(zone) {
   if (next === -1) return;
   sd.shotResults[next] = zone;
   sd.score += { z1: 5, z2: 3, z3: 1, z4: 0 }[zone] || 0;
-  renderRunner();
+  renderRunner(); saveActiveSession();
 }
 
 function undoChip() {
@@ -815,7 +885,7 @@ function undoChip() {
   if (last === undefined) return;
   sd.score -= { z1: 5, z2: 3, z3: 1, z4: 0 }[sd.shotResults[last]] || 0;
   sd.shotResults[last] = null;
-  renderRunner();
+  renderRunner(); saveActiveSession();
 }
 
 function setClub(v) {
@@ -845,10 +915,11 @@ function nextStn() {
     runnerState.sIdx++;
     renderRunner();
   }
+  saveActiveSession();
 }
 
 function prevStn() {
-  if (runnerState.sIdx > 0) { runnerState.sIdx--; renderRunner(); }
+  if (runnerState.sIdx > 0) { runnerState.sIdx--; renderRunner(); saveActiveSession(); }
 }
 
 // ═══════════════════════════════════════════
@@ -856,6 +927,7 @@ function prevStn() {
 // ═══════════════════════════════════════════
 function finishSession() {
   sessionInProgress = false;
+  clearActiveSession();
   const results = Object.values(sessionResults);
   if (!results.length) { goHome(); return; }
   results.forEach(r => { if (!r.score) r.score = r.stationScores.reduce((a, s) => a + (s?.score || 0), 0); });
@@ -1021,7 +1093,6 @@ function buildProfile() {
   document.getElementById('prof-mt').textContent = `Handicap: ${hcpLbl(CU.hcp)} · @${CU.username}`;
   document.getElementById('prof-hcp').value = CU.hcp;
   document.getElementById('ap-tog').classList.toggle('on', !!CU.aimpointMode);
-  applyTheme(CU.theme || 'dark');
 
   // AimPoint stats card
   const apCard = document.getElementById('ap-stats-card');
@@ -1067,34 +1138,31 @@ function buildProfile() {
   }
 }
 
-function togTheme() {
-  const isLight = CU.theme === 'light';
-  CU.theme = isLight ? 'dark' : 'light';
-  saveU(CU);
-  applyTheme(CU.theme);
+function toggleTheme() {
+  const current = localStorage.getItem('range_theme') || 'dark';
+  applyTheme(current === 'light' ? 'dark' : 'light');
 }
 
 function applyTheme(theme) {
-  const app = document.getElementById('app');
-  const tog = document.getElementById('theme-tog');
-  const meta = document.getElementById('theme-meta');
-  const lbl = document.getElementById('theme-lbl');
-  const sub = document.getElementById('theme-sub');
   const isLight = theme === 'light';
+  const app = document.getElementById('app');
+  const meta = document.getElementById('theme-meta');
 
   if (isLight) {
     app.setAttribute('data-theme', 'light');
     if (meta) meta.setAttribute('content', '#f2f2f4');
-    if (lbl) lbl.textContent = '☀️ Light Mode';
-    if (sub) sub.textContent = 'On — easier to read in bright sunlight';
   } else {
     app.removeAttribute('data-theme');
     if (meta) meta.setAttribute('content', '#0d2340');
-    if (lbl) lbl.textContent = '🌙 Light Mode';
-    if (sub) sub.textContent = 'Off — tap to switch for outdoor use';
   }
 
-  if (tog) tog.classList.toggle('on', isLight);
+  // Sync all theme button labels across every header
+  const label = isLight ? '🌙 Dark' : '☀️ Light';
+  ['theme-btn','theme-btn-login','theme-btn-setup','theme-btn-history','theme-btn-profile'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.textContent = label;
+  });
+
   localStorage.setItem('range_theme', theme);
 }
 
@@ -1130,6 +1198,7 @@ function resumeSession() {
 
 function goHome() {
   sessionInProgress = false;
+  clearActiveSession();
   document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
   document.querySelector('[data-s="s-home"]').classList.add('on');
   refreshHome();
@@ -1137,6 +1206,8 @@ function goHome() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Apply saved theme immediately — before login, so returning users see correct theme on login screen
+  applyTheme(localStorage.getItem('range_theme') || 'dark');
   goTo('s-login');
 });
 
@@ -1172,7 +1243,6 @@ function importData() {
         if (!confirm('This will overwrite your current data. Continue?')) return;
         saveU(data);
         CU = data;
-        applyTheme(CU.theme || 'dark');
         refreshHome();
         buildProfile();
         document.getElementById('import-status').textContent = '✅ Data restored successfully.';
