@@ -28,7 +28,6 @@
    These overrides ensure they stay dark even as --nm changes in light mode. */
 [data-theme="light"] .hd,
 [data-theme="light"] .rhdr { background: #1c1c1e !important; border-bottom-color: rgba(255,255,255,0.08) !important; }
-[data-theme="light"] #bnav { background: #1c1c1e !important; border-top-color: rgba(255,255,255,0.08) !important; }
 
 /* Content area adjustments for warm cream bg */
 [data-theme="light"] .card,
@@ -76,22 +75,26 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 #app{width:100%;max-width:480px;height:100dvh;margin:0 auto;display:flex;flex-direction:column;overflow:hidden}
 .scr{display:none;flex-direction:column;flex:1;overflow:hidden}
 .scr.on{display:flex}
-.sb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:88px}
+.sb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px}
 
-/* HEADER */
+/* SHARED APP HEADER */
+#app-header{background:#1c1c1e;width:100%;box-sizing:border-box;flex-shrink:0;border-bottom:2px solid var(--gr);}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.header-date{font-family:var(--fc);font-size:12px;color:rgba(255,255,255,0.4);letter-spacing:.5px;flex:1;text-align:center;}
+.tab-bar{display:flex;align-items:flex-end;padding:0 6px;gap:3px;background:#1c1c1e;}
+.tab-btn{flex:1;padding:7px 2px 6px;font-family:var(--fc);font-size:0.72rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;text-align:center;color:rgba(255,255,255,0.45);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-bottom:none;border-radius:5px 5px 0 0;cursor:pointer;transition:all .15s;white-space:nowrap;position:relative;bottom:-2px;}
+.tab-btn.active{background:var(--gr);color:#000;border-color:var(--gr);font-weight:800;bottom:0;padding-bottom:8px;}
+[data-theme="light"] #app-header{background:#1c1c1e;border-bottom-color:var(--gr);}
+[data-theme="light"] .tab-bar{background:#1c1c1e;}
+[data-theme="light"] .tab-btn{color:rgba(255,255,255,0.45);background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);}
+[data-theme="light"] .tab-btn.active{background:var(--gr);color:#000;border-color:var(--gr);}
+
+/* HEADER (warmup/results — standalone screens) */
 .hd{background:#1c1c1e;padding:13px 18px 11px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0}
 .logo{font-family:var(--fc);font-size:21px;font-weight:800;letter-spacing:1.5px;color:var(--g)}
 .logo span{color:var(--w);font-weight:400}
 .hm{font-family:var(--fc);font-size:12px;color:var(--d);letter-spacing:.5px;flex:1;text-align:center}
 .bk{background:none;border:none;color:var(--d);font-size:22px;cursor:pointer;padding:4px 8px 4px 0;line-height:1}
-
-/* BOTTOM NAV */
-#bnav{display:none;background:#1c1c1e;border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0}
-#bnav.show{display:flex}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;background:none;border:none;color:var(--d);cursor:pointer;transition:color .2s;gap:3px}
-.nb.on{color:var(--gr)}
-.nb svg{width:20px;height:20px}
-.nl{font-family:var(--fc);font-size:11px;letter-spacing:.5px;text-transform:uppercase}
 
 /* CARD / COMMON */
 .card{background:var(--nc);border-radius:10px;padding:16px;margin:0 16px 12px;border:1px solid rgba(255,255,255,.08)}
@@ -408,5 +411,3 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 [data-theme="light"] .profav { background: #f5f3ef; }
 [data-theme="light"] .resumebanner { background: rgba(200,150,12,.07); border-color: rgba(200,150,12,.2); }
 [data-theme="light"] .thcard { background: rgba(200,150,12,.05); border-color: rgba(200,150,12,.15); }
-[data-theme="light"] .nb { color: #6e6e73; }
-[data-theme="light"] .nb.on { color: var(--gr); }
