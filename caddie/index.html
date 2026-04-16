@@ -34,7 +34,6 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     html, body {
       min-height: 100svh;
       background: var(--n);
@@ -57,28 +56,15 @@
       z-index: 50;
       border-bottom: 0.5px solid rgba(255,255,255,0.08);
     }
-
-    .logo-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
+    .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .logo-link img { height: 26px; width: auto; }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
+    .header-right { display: flex; align-items: center; gap: 10px; }
     .app-label {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
       color: rgba(255,255,255,0.35);
       letter-spacing: 0.08em;
     }
-
     #theme-toggle {
       background: none;
       border: 0.5px solid rgba(255,255,255,0.18);
@@ -91,10 +77,7 @@
       transition: all 0.18s ease;
       letter-spacing: 0.04em;
     }
-    #theme-toggle:hover {
-      border-color: var(--gr);
-      color: var(--gr);
-    }
+    #theme-toggle:hover { border-color: var(--gr); color: var(--gr); }
 
     /* ── TAB STRIP ───────────────────────────────────────────────────────── */
     .tab-strip {
@@ -102,7 +85,7 @@
       display: flex;
       border-bottom: 0.5px solid rgba(255,255,255,0.08);
       position: sticky;
-      top: 56px; /* below header */
+      top: 56px;
       z-index: 49;
     }
     .tab-btn {
@@ -120,13 +103,8 @@
       border-bottom: 2px solid transparent;
       transition: all 0.18s ease;
     }
-    .tab-btn.active {
-      color: var(--gr);
-      border-bottom-color: var(--gr);
-    }
-    .tab-btn:hover:not(.active) {
-      color: rgba(255,255,255,0.6);
-    }
+    .tab-btn.active { color: var(--gr); border-bottom-color: var(--gr); }
+    .tab-btn:hover:not(.active) { color: rgba(255,255,255,0.6); }
 
     /* ── SCREENS ─────────────────────────────────────────────────────────── */
     .screen { display: none; }
@@ -150,9 +128,7 @@
       letter-spacing: -0.5px;
       color: var(--w);
     }
-    .page-title span {
-      color: var(--gr);
-    }
+    .page-title span { color: var(--gr); }
     .page-sub {
       font-family: 'DM Mono', monospace;
       font-size: 11px;
@@ -168,10 +144,7 @@
       border-radius: var(--radius);
       padding: 20px;
     }
-    [data-theme="light"] .card {
-      border-color: rgba(0,0,0,0.08);
-    }
-
+    [data-theme="light"] .card { border-color: rgba(0,0,0,0.08); }
     .card-label {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -183,10 +156,7 @@
     }
 
     /* ── MODE TOGGLE ────────────────────────────────────────────────────── */
-    .mode-row {
-      display: flex;
-      gap: 8px;
-    }
+    .mode-row { display: flex; gap: 8px; }
     .mode-btn {
       flex: 1;
       background: var(--nc);
@@ -197,13 +167,8 @@
       transition: all 0.18s ease;
       text-align: center;
     }
-    [data-theme="light"] .mode-btn {
-      background: #f0eee9;
-    }
-    .mode-btn.active {
-      border-color: var(--gr);
-      background: rgba(46, 204, 113, 0.08);
-    }
+    [data-theme="light"] .mode-btn { background: #f0eee9; }
+    .mode-btn.active { border-color: var(--gr); background: rgba(46,204,113,0.08); }
     .mode-btn-label {
       font-family: 'Barlow Condensed', sans-serif;
       font-size: 16px;
@@ -220,34 +185,128 @@
       display: block;
     }
 
-    /* ── PRESET SLIDER ──────────────────────────────────────────────────── */
-    .preset-names {
-      position: relative;
-      height: 28px;
-      margin-bottom: 8px;
+    /* ── PRESET BUTTONS ─────────────────────────────────────────────────── */
+    .preset-grid {
+      display: flex;
+      gap: 6px;
     }
-    .preset-name {
-      position: absolute;
-      transform: translateX(-50%);
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.06em;
-      color: var(--d);
-      text-transform: uppercase;
-      text-align: center;
-      white-space: nowrap;
-      transition: color 0.18s ease;
+    .preset-btn {
+      flex: 1;
+      background: var(--nc);
+      border: 1.5px solid transparent;
+      border-radius: 9px;
+      padding: 10px 4px;
       cursor: pointer;
-      padding: 4px 0;
-      top: 0;
+      transition: all 0.15s ease;
+      text-align: center;
     }
-    .preset-name.active {
-      color: var(--g);
-      font-weight: 500;
+    [data-theme="light"] .preset-btn { background: #f0eee9; }
+    .preset-btn.active {
+      border-color: var(--g);
+      background: rgba(232,184,75,0.08);
+    }
+    .preset-btn-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--d);
+      display: block;
+      letter-spacing: 0.02em;
+    }
+    .preset-btn.active .preset-btn-name { color: var(--g); }
+    .preset-btn-time {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--d);
+      display: block;
+      margin-top: 2px;
     }
 
+    /* ── SWING TIME DISPLAY ──────────────────────────────────────────────── */
+    .swing-time-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 16px;
+      margin-bottom: 4px;
+    }
+    .swing-time-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 48px;
+      font-weight: 500;
+      color: var(--g);
+      line-height: 1;
+    }
+    .swing-time-unit {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--d);
+      letter-spacing: 0.06em;
+    }
+    .swing-time-label {
+      margin-left: auto;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--w);
+      opacity: 0.5;
+      align-self: center;
+    }
+
+    /* ── BREAKDOWN CELLS ─────────────────────────────────────────────────── */
+    .detail-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .detail-cell {
+      flex: 1;
+      background: var(--nc);
+      border-radius: 9px;
+      padding: 11px 10px;
+      text-align: center;
+    }
+    [data-theme="light"] .detail-cell { background: #f0eee9; }
+    .detail-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--w);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .detail-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--d);
+    }
+
+    /* ── REST GAP SLIDER ─────────────────────────────────────────────────── */
+    .gap-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .gap-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--d);
+      white-space: nowrap;
+    }
+    .gap-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--g);
+      min-width: 32px;
+      text-align: right;
+      white-space: nowrap;
+    }
     input[type="range"] {
-      width: 100%;
+      flex: 1;
       -webkit-appearance: none;
       appearance: none;
       height: 4px;
@@ -257,7 +316,6 @@
       cursor: pointer;
     }
     [data-theme="light"] input[type="range"] { background: #ddd; }
-
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 22px;
@@ -268,12 +326,9 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
       transition: transform 0.1s ease;
     }
-    input[type="range"]:active::-webkit-slider-thumb {
-      transform: scale(1.15);
-    }
+    input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
     input[type="range"]::-moz-range-thumb {
-      width: 22px;
-      height: 22px;
+      width: 22px; height: 22px;
       border-radius: 50%;
       background: var(--g);
       cursor: pointer;
@@ -281,43 +336,8 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
-    /* ── BPM DISPLAY ────────────────────────────────────────────────────── */
-    .bpm-row {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-      margin-top: 14px;
-    }
-    .bpm-value {
-      font-family: 'DM Mono', monospace;
-      font-size: 42px;
-      font-weight: 500;
-      color: var(--g);
-      line-height: 1;
-    }
-    .bpm-unit {
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-      color: var(--d);
-      letter-spacing: 0.08em;
-    }
-    .preset-tag {
-      margin-left: auto;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--w);
-      opacity: 0.6;
-      letter-spacing: 0.02em;
-      align-self: center;
-    }
-
     /* ── PHASE DISPLAY ──────────────────────────────────────────────────── */
-    .phase-display {
-      display: flex;
-      gap: 10px;
-      align-items: stretch;
-    }
+    .phase-display { display: flex; gap: 10px; align-items: stretch; }
     .phase-dot {
       flex: 1;
       border-radius: 10px;
@@ -325,45 +345,34 @@
       text-align: center;
       background: var(--nc);
       border: 1.5px solid transparent;
-      transition: all 0.08s ease;
+      transition: border-color 0.06s ease, background 0.06s ease;
       position: relative;
       overflow: hidden;
     }
     [data-theme="light"] .phase-dot { background: #f0eee9; }
-
-    .phase-dot.active-phase {
-      border-color: currentColor;
-    }
+    .phase-dot.active-phase { border-color: currentColor; }
     .phase-dot.phase-takeaway { color: var(--gr); }
     .phase-dot.phase-top      { color: var(--g); }
     .phase-dot.phase-impact   { color: #e05c5c; }
-
-    /* count-in state */
-    .phase-dot.phase-countin { color: var(--d); }
-    .phase-dot.phase-countin.active-phase {
-      border-color: var(--d);
-    }
-
-    .phase-dot.active-phase .phase-icon { transform: scale(1.15); }
-
+    .phase-dot.phase-rest     { color: var(--d); }
     .phase-dot::before {
       content: '';
       position: absolute;
       inset: 0;
       background: currentColor;
       opacity: 0;
-      transition: opacity 0.08s ease;
+      transition: opacity 0.06s ease;
     }
     .phase-dot.active-phase::before { opacity: 0.07; }
-
     .phase-icon {
       font-size: 22px;
       display: block;
       margin-bottom: 6px;
-      transition: transform 0.08s ease;
       position: relative;
       z-index: 1;
+      transition: transform 0.06s ease;
     }
+    .phase-dot.active-phase .phase-icon { transform: scale(1.15); }
     .phase-name {
       font-family: 'DM Mono', monospace;
       font-size: 9px;
@@ -395,8 +404,7 @@
     }
     #countin-badge.visible { display: flex; }
     #countin-dot {
-      width: 10px;
-      height: 10px;
+      width: 10px; height: 10px;
       border-radius: 50%;
       background: var(--d);
       animation: countin-pulse 0.5s ease infinite alternate;
@@ -406,7 +414,7 @@
       to   { opacity: 1;   transform: scale(1.1); }
     }
 
-    /* ── START/STOP BUTTON ──────────────────────────────────────────────── */
+    /* ── PLAY BUTTON ─────────────────────────────────────────────────────── */
     .play-btn {
       width: 100%;
       padding: 18px;
@@ -417,7 +425,7 @@
       font-weight: 700;
       letter-spacing: 0.04em;
       cursor: pointer;
-      transition: all 0.18s ease;
+      transition: background 0.18s ease, box-shadow 0.18s ease;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -429,62 +437,17 @@
       background: var(--err);
       animation: pulse-ring 1.2s ease infinite;
     }
-    .play-btn.counting {
-      background: #555;
-      animation: none;
-    }
-    .play-btn:active {
-      transform: scale(0.97);
-    }
+    .play-btn.counting { background: #444; animation: none; }
+    .play-btn:active { transform: scale(0.97); }
     @keyframes pulse-ring {
       0%   { box-shadow: 0 0 0 0 rgba(224,92,92,0.5); }
       70%  { box-shadow: 0 0 0 12px rgba(224,92,92,0); }
       100% { box-shadow: 0 0 0 0 rgba(224,92,92,0); }
     }
-
-    .play-icon {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
-    /* ── TEMPO DETAIL ROW ───────────────────────────────────────────────── */
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .detail-cell {
-      flex: 1;
-      background: var(--nm);
-      border: 0.5px solid rgba(255,255,255,0.07);
-      border-radius: 10px;
-      padding: 14px 14px 12px;
-      text-align: center;
-    }
-    [data-theme="light"] .detail-cell { border-color: rgba(0,0,0,0.08); }
-    .detail-value {
-      font-family: 'DM Mono', monospace;
-      font-size: 22px;
-      font-weight: 500;
-      color: var(--w);
-      display: block;
-      margin-bottom: 2px;
-    }
-    .detail-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--d);
-    }
+    .play-icon { width: 20px; height: 20px; flex-shrink: 0; }
 
     /* ── WELD SCREEN ─────────────────────────────────────────────────────── */
-    .weld-input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .weld-input-group { display: flex; flex-direction: column; gap: 6px; }
     .weld-label {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
@@ -504,19 +467,9 @@
       outline: none;
       transition: border-color 0.18s ease;
     }
-    [data-theme="light"] .weld-field {
-      background: #f0eee9;
-      border-color: rgba(0,0,0,0.1);
-      color: var(--w);
-    }
-    .weld-field:focus {
-      border-color: var(--gr);
-    }
-
-    .seg-row {
-      display: flex;
-      gap: 6px;
-    }
+    [data-theme="light"] .weld-field { background: #f0eee9; border-color: rgba(0,0,0,0.1); }
+    .weld-field:focus { border-color: var(--gr); }
+    .seg-row { display: flex; gap: 6px; }
     .seg-btn {
       flex: 1;
       background: var(--nc);
@@ -532,254 +485,59 @@
       text-align: center;
     }
     [data-theme="light"] .seg-btn { background: #f0eee9; }
-    .seg-btn.active {
-      border-color: var(--gr);
-      color: var(--gr);
-      background: rgba(61,220,132,0.08);
-    }
-
-    .weld-result-box {
-      background: var(--nc);
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-    }
+    .seg-btn.active { border-color: var(--gr); color: var(--gr); background: rgba(61,220,132,0.08); }
+    .weld-result-box { background: var(--nc); border-radius: 12px; padding: 20px; text-align: center; }
     [data-theme="light"] .weld-result-box { background: #f0eee9; }
-    .weld-plays-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--d);
-      margin-bottom: 8px;
-    }
-    .weld-plays-value {
-      font-family: 'DM Mono', monospace;
-      font-size: 56px;
-      font-weight: 500;
-      color: var(--g);
-      line-height: 1;
-    }
-    .weld-plays-unit {
-      font-family: 'DM Mono', monospace;
-      font-size: 14px;
-      color: var(--d);
-      margin-left: 4px;
-    }
-    .weld-breakdown {
-      margin-top: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .weld-plays-value { font-family: 'DM Mono', monospace; font-size: 56px; font-weight: 500; color: var(--g); line-height: 1; }
+    .weld-breakdown { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
     .weld-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: var(--d);
-      padding: 6px 0;
-      border-bottom: 0.5px solid rgba(255,255,255,0.05);
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'DM Mono', monospace; font-size: 12px; color: var(--d);
+      padding: 6px 0; border-bottom: 0.5px solid rgba(255,255,255,0.05);
     }
     [data-theme="light"] .weld-row { border-bottom-color: rgba(0,0,0,0.06); }
     .weld-row:last-child { border-bottom: none; }
-    .weld-row-key { letter-spacing: 0.06em; }
-    .weld-row-val {
-      font-weight: 500;
-      color: var(--w);
-    }
-    .weld-row-val.pos { color: var(--err); }   /* adds yards = harder shot */
-    .weld-row-val.neg { color: var(--gr); }    /* removes yards = easier */
-    .weld-aim-note {
-      margin-top: 10px;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--g);
-      letter-spacing: 0.06em;
-      text-align: center;
-    }
+    .weld-row-val { font-weight: 500; color: var(--w); }
+    .weld-row-val.pos { color: var(--err); }
+    .weld-row-val.neg { color: var(--gr); }
+    .weld-aim-note { margin-top: 10px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--g); letter-spacing: 0.06em; text-align: center; }
 
     /* ── MENTAL SCREEN ───────────────────────────────────────────────────── */
-    .mental-tally {
-      display: flex;
-      gap: 10px;
-    }
-    .tally-cell {
-      flex: 1;
-      background: var(--nc);
-      border-radius: 10px;
-      padding: 14px 10px;
-      text-align: center;
-    }
+    .mental-tally { display: flex; gap: 10px; }
+    .tally-cell { flex: 1; background: var(--nc); border-radius: 10px; padding: 14px 10px; text-align: center; }
     [data-theme="light"] .tally-cell { background: #f0eee9; }
-    .tally-value {
-      font-family: 'DM Mono', monospace;
-      font-size: 28px;
-      font-weight: 500;
-      color: var(--g);
-      display: block;
-      line-height: 1;
-    }
-    .tally-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--d);
-      display: block;
-      margin-top: 4px;
-    }
-
-    .shot-logger {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .shot-logger-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--d);
-    }
-    .toggle-row {
-      display: flex;
-      gap: 8px;
-    }
+    .tally-value { font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500; color: var(--g); display: block; line-height: 1; }
+    .tally-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--d); display: block; margin-top: 4px; }
+    .toggle-row { display: flex; gap: 8px; }
     .toggle-btn {
-      flex: 1;
-      background: var(--nc);
-      border: 1.5px solid transparent;
-      border-radius: 10px;
-      padding: 14px 8px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      text-align: center;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--d);
-      letter-spacing: 0.04em;
+      flex: 1; background: var(--nc); border: 1.5px solid transparent;
+      border-radius: 10px; padding: 14px 8px; cursor: pointer;
+      transition: all 0.15s ease; text-align: center;
+      font-family: 'Barlow Condensed', sans-serif; font-size: 15px;
+      font-weight: 700; color: var(--d); letter-spacing: 0.04em;
     }
     [data-theme="light"] .toggle-btn { background: #f0eee9; }
-    .toggle-btn.yes {
-      border-color: var(--gr);
-      color: var(--gr);
-      background: rgba(61,220,132,0.08);
-    }
-    .toggle-btn.no {
-      border-color: var(--err);
-      color: var(--err);
-      background: rgba(231,76,60,0.08);
-    }
-    .toggle-btn-sub {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      color: var(--d);
-      display: block;
-      margin-top: 2px;
-      letter-spacing: 0.06em;
-    }
-    .toggle-btn.yes .toggle-btn-sub,
-    .toggle-btn.no .toggle-btn-sub { color: inherit; opacity: 0.7; }
-
-    .log-btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      background: var(--gr);
-      color: #fff;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
+    .toggle-btn.yes { border-color: var(--gr); color: var(--gr); background: rgba(61,220,132,0.08); }
+    .toggle-btn.no  { border-color: var(--err); color: var(--err); background: rgba(231,76,60,0.08); }
+    .toggle-btn-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--d); display: block; margin-top: 2px; letter-spacing: 0.06em; }
+    .toggle-btn.yes .toggle-btn-sub, .toggle-btn.no .toggle-btn-sub { color: inherit; opacity: 0.7; }
+    .log-btn { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--gr); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 0.04em; cursor: pointer; transition: all 0.15s ease; }
     .log-btn:active { transform: scale(0.97); }
-
-    .shot-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 260px;
-      overflow-y: auto;
-    }
-    .shot-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--nm);
-      border: 0.5px solid rgba(255,255,255,0.06);
-      border-radius: 8px;
-      padding: 10px 14px;
-    }
+    .shot-list { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
+    .shot-item { display: flex; align-items: center; gap: 10px; background: var(--nm); border: 0.5px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 10px 14px; }
     [data-theme="light"] .shot-item { border-color: rgba(0,0,0,0.07); }
-    .shot-num {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--d);
-      min-width: 24px;
-    }
-    .shot-badges {
-      display: flex;
-      gap: 5px;
-      flex: 1;
-    }
-    .shot-badge {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.06em;
-      padding: 3px 7px;
-      border-radius: 5px;
-    }
-    .shot-badge.y {
-      background: rgba(61,220,132,0.12);
-      color: var(--gr);
-    }
-    .shot-badge.n {
-      background: rgba(231,76,60,0.12);
-      color: var(--err);
-    }
-    .shot-score {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: var(--g);
-      font-weight: 500;
-    }
-
-    .clear-btn {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 10px;
-      background: transparent;
-      color: var(--err);
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
+    .shot-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--d); min-width: 24px; }
+    .shot-badges { display: flex; gap: 5px; flex: 1; }
+    .shot-badge { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.06em; padding: 3px 7px; border-radius: 5px; }
+    .shot-badge.y { background: rgba(61,220,132,0.12); color: var(--gr); }
+    .shot-badge.n { background: rgba(231,76,60,0.12); color: var(--err); }
+    .shot-score { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--g); font-weight: 500; }
+    .clear-btn { width: 100%; padding: 12px; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; background: transparent; color: var(--err); font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.04em; cursor: pointer; transition: all 0.15s ease; }
     [data-theme="light"] .clear-btn { border-color: rgba(0,0,0,0.1); }
-    .clear-btn:hover {
-      background: rgba(231,76,60,0.08);
-      border-color: var(--err);
-    }
+    .clear-btn:hover { background: rgba(231,76,60,0.08); border-color: var(--err); }
 
     /* ── FOOTER ─────────────────────────────────────────────────────────── */
-    footer {
-      text-align: center;
-      padding: 20px 0 0;
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--d);
-      opacity: 0.5;
-      letter-spacing: 0.04em;
-    }
+    footer { text-align: center; padding: 20px 0 0; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--d); opacity: 0.5; letter-spacing: 0.04em; }
   </style>
 </head>
 <body>
@@ -795,11 +553,10 @@
     </div>
   </header>
 
-  <!-- Tab strip -->
   <div class="tab-strip">
-    <button class="tab-btn active" id="tab-tempo" onclick="switchTab('tempo')">Tempo</button>
-    <button class="tab-btn" id="tab-weld"  onclick="switchTab('weld')">WELD</button>
-    <button class="tab-btn" id="tab-mental" onclick="switchTab('mental')">Mental</button>
+    <button class="tab-btn active" id="tab-tempo"  onclick="switchTab('tempo')">Tempo</button>
+    <button class="tab-btn"        id="tab-weld"   onclick="switchTab('weld')">WELD</button>
+    <button class="tab-btn"        id="tab-mental" onclick="switchTab('mental')">Mental</button>
   </div>
 
   <!-- ═══ TEMPO SCREEN ═══════════════════════════════════════════════════ -->
@@ -808,14 +565,14 @@
 
       <div>
         <div class="page-title">Tempo <span>Trainer</span></div>
-        <div class="page-sub">3-TONE SWING METRONOME</div>
+        <div class="page-sub">REAL SWING TIMING · 3-TONE CUE</div>
       </div>
 
-      <!-- Mode toggle -->
+      <!-- Mode -->
       <div class="card">
         <div class="card-label">Swing Mode</div>
         <div class="mode-row">
-          <button class="mode-btn active" id="mode-full" onclick="setMode('full')">
+          <button class="mode-btn active" id="mode-full"  onclick="setMode('full')">
             <span class="mode-btn-label">Full Swing</span>
             <span class="mode-btn-ratio">3 : 1 ratio</span>
           </button>
@@ -823,35 +580,57 @@
             <span class="mode-btn-label">Short Game</span>
             <span class="mode-btn-ratio">2 : 1 ratio</span>
           </button>
-          <button class="mode-btn" id="mode-putt" onclick="setMode('putt')">
+          <button class="mode-btn" id="mode-putt"  onclick="setMode('putt')">
             <span class="mode-btn-label">Putting</span>
-            <span class="mode-btn-ratio">2 : 1 · 76 bpm</span>
+            <span class="mode-btn-ratio">2 : 1 ratio</span>
           </button>
         </div>
       </div>
 
-      <!-- Preset + BPM -->
+      <!-- Preset -->
       <div class="card">
         <div class="card-label">Tempo Preset</div>
-        <div class="preset-names" id="preset-names"></div>
-        <input type="range" id="tempo-slider" min="0" max="100" value="50" oninput="onSlider(this.value)">
-        <div class="bpm-row">
-          <span class="bpm-value" id="bpm-display">--</span>
-          <span class="bpm-unit">BPM</span>
-          <span class="preset-tag" id="preset-tag"></span>
+        <div class="preset-grid" id="preset-grid">
+          <!-- filled by JS -->
+        </div>
+        <div class="swing-time-row">
+          <span class="swing-time-value" id="swing-time-display">—</span>
+          <span class="swing-time-unit">sec</span>
+          <span class="swing-time-label" id="swing-time-tag"></span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-cell">
+            <span class="detail-value" id="detail-back">—</span>
+            <span class="detail-label">Back (ms)</span>
+          </div>
+          <div class="detail-cell">
+            <span class="detail-value" id="detail-down">—</span>
+            <span class="detail-label">Down (ms)</span>
+          </div>
+          <div class="detail-cell">
+            <span class="detail-value" id="detail-ratio">3:1</span>
+            <span class="detail-label">Ratio</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rest gap -->
+      <div class="card">
+        <div class="card-label">Rest Between Swings</div>
+        <div class="gap-row">
+          <span class="gap-label">Gap</span>
+          <input type="range" id="gap-slider" min="2" max="8" step="0.5" value="4" oninput="onGapSlider(this.value)">
+          <span class="gap-value" id="gap-display">4.0s</span>
         </div>
       </div>
 
       <!-- Phase visualizer -->
       <div class="card">
         <div class="card-label">Current Phase</div>
-
-        <!-- Count-in badge: shows during count-in only -->
         <div id="countin-badge">
           <div id="countin-dot"></div>
           <span id="countin-text">Ready…</span>
         </div>
-
         <div class="phase-display" id="phase-display">
           <div class="phase-dot phase-takeaway" id="phase-takeaway">
             <span class="phase-icon">↓</span>
@@ -865,32 +644,20 @@
             <span class="phase-icon">⚡</span>
             <span class="phase-name">Impact</span>
           </div>
+          <div class="phase-dot phase-rest" id="phase-rest">
+            <span class="phase-icon">·</span>
+            <span class="phase-name">Rest</span>
+          </div>
         </div>
       </div>
 
-      <!-- Start/Stop -->
+      <!-- Play -->
       <button class="play-btn" id="play-btn" onclick="togglePlay()">
-        <svg class="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="play-icon-svg">
-          <polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/>
+        <svg class="play-icon" viewBox="0 0 24 24" id="play-icon-svg">
+          <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
         </svg>
         <span id="play-label">Start</span>
       </button>
-
-      <!-- Detail row -->
-      <div class="detail-row">
-        <div class="detail-cell">
-          <span class="detail-value" id="detail-back">--</span>
-          <span class="detail-label">Backswing (ms)</span>
-        </div>
-        <div class="detail-cell">
-          <span class="detail-value" id="detail-down">--</span>
-          <span class="detail-label">Downswing (ms)</span>
-        </div>
-        <div class="detail-cell">
-          <span class="detail-value" id="detail-cycle">--</span>
-          <span class="detail-label">Full Cycle (ms)</span>
-        </div>
-      </div>
 
       <footer>kmansgolf · The Caddie — prototype</footer>
     </main>
@@ -899,13 +666,11 @@
   <!-- ═══ WELD SCREEN ════════════════════════════════════════════════════ -->
   <div class="screen" id="screen-weld">
     <main>
-
       <div>
         <div class="page-title">WELD <span>Calculator</span></div>
         <div class="page-sub">WIND · ELEVATION · LIE · DISTANCE</div>
       </div>
 
-      <!-- D: Raw Distance -->
       <div class="card">
         <div class="card-label">D — Distance (yards)</div>
         <div class="weld-input-group">
@@ -913,48 +678,44 @@
         </div>
       </div>
 
-      <!-- W: Wind -->
       <div class="card">
         <div class="card-label">W — Wind</div>
         <div class="weld-input-group">
           <div class="weld-label">Direction</div>
           <div class="seg-row">
-            <button class="seg-btn active" id="wind-head" onclick="setWindDir('head')">Into</button>
-            <button class="seg-btn" id="wind-tail" onclick="setWindDir('tail')">With</button>
-            <button class="seg-btn" id="wind-cross" onclick="setWindDir('cross')">Cross</button>
-            <button class="seg-btn" id="wind-none" onclick="setWindDir('none')">None</button>
+            <button class="seg-btn active" id="wind-head"  onclick="setWindDir('head')">Into</button>
+            <button class="seg-btn"        id="wind-tail"  onclick="setWindDir('tail')">With</button>
+            <button class="seg-btn"        id="wind-cross" onclick="setWindDir('cross')">Cross</button>
+            <button class="seg-btn"        id="wind-none"  onclick="setWindDir('none')">None</button>
           </div>
           <div class="weld-label" style="margin-top:10px;">Speed (mph)</div>
           <input type="number" class="weld-field" id="w-wind" placeholder="0" min="0" max="40" inputmode="numeric" oninput="calcWeld()">
         </div>
       </div>
 
-      <!-- E: Elevation -->
       <div class="card">
         <div class="card-label">E — Elevation Change</div>
         <div class="weld-input-group">
           <div class="seg-row">
-            <button class="seg-btn active" id="elev-up" onclick="setElevDir('up')">Uphill ↑</button>
-            <button class="seg-btn" id="elev-down" onclick="setElevDir('down')">Downhill ↓</button>
-            <button class="seg-btn" id="elev-flat" onclick="setElevDir('flat')">Flat</button>
+            <button class="seg-btn active" id="elev-up"   onclick="setElevDir('up')">Uphill ↑</button>
+            <button class="seg-btn"        id="elev-down" onclick="setElevDir('down')">Downhill ↓</button>
+            <button class="seg-btn"        id="elev-flat" onclick="setElevDir('flat')">Flat</button>
           </div>
           <div class="weld-label" style="margin-top:10px;">Height change (feet)</div>
           <input type="number" class="weld-field" id="w-elev" placeholder="0" min="0" max="200" inputmode="numeric" oninput="calcWeld()">
         </div>
       </div>
 
-      <!-- L: Lie -->
       <div class="card">
         <div class="card-label">L — Lie</div>
-        <div class="seg-row" style="flex-wrap:wrap;">
+        <div class="seg-row" style="flex-wrap:wrap;gap:6px;">
           <button class="seg-btn active" id="lie-fairway" onclick="setLie('fairway')" style="flex-basis:calc(50% - 3px)">Fairway</button>
-          <button class="seg-btn" id="lie-light" onclick="setLie('light')" style="flex-basis:calc(50% - 3px)">Light Rough</button>
-          <button class="seg-btn" id="lie-thick" onclick="setLie('thick')" style="flex-basis:calc(50% - 3px)">Thick Rough</button>
-          <button class="seg-btn" id="lie-flyer" onclick="setLie('flyer')" style="flex-basis:calc(50% - 3px)">Flyer</button>
+          <button class="seg-btn"        id="lie-light"   onclick="setLie('light')"   style="flex-basis:calc(50% - 3px)">Light Rough</button>
+          <button class="seg-btn"        id="lie-thick"   onclick="setLie('thick')"   style="flex-basis:calc(50% - 3px)">Thick Rough</button>
+          <button class="seg-btn"        id="lie-flyer"   onclick="setLie('flyer')"   style="flex-basis:calc(50% - 3px)">Flyer</button>
         </div>
       </div>
 
-      <!-- Result -->
       <div class="card">
         <div class="card-label">Plays Like</div>
         <div class="weld-result-box">
@@ -972,13 +733,11 @@
   <!-- ═══ MENTAL SCREEN ══════════════════════════════════════════════════ -->
   <div class="screen" id="screen-mental">
     <main>
-
       <div>
         <div class="page-title">Mental <span>Scorecard</span></div>
         <div class="page-sub">CALCULATE · CREATE · EXECUTE</div>
       </div>
 
-      <!-- Running tally -->
       <div class="card">
         <div class="card-label">Round Tally</div>
         <div class="mental-tally">
@@ -1001,49 +760,33 @@
         </div>
       </div>
 
-      <!-- Shot logger -->
       <div class="card">
         <div class="card-label">Log Shot</div>
-        <div class="shot-logger">
-
-          <div>
-            <div class="toggle-row">
-              <button class="toggle-btn" id="calc-btn" onclick="cycleToggle('calc')">
-                Calculate
-                <span class="toggle-btn-sub">C — pre-shot plan</span>
-              </button>
-            </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="toggle-row">
+            <button class="toggle-btn" id="calc-btn" onclick="cycleToggle('calc')">
+              Calculate<span class="toggle-btn-sub">C — pre-shot plan</span>
+            </button>
           </div>
-
-          <div>
-            <div class="toggle-row">
-              <button class="toggle-btn" id="create-btn" onclick="cycleToggle('create')">
-                Create
-                <span class="toggle-btn-sub">C — visualize</span>
-              </button>
-            </div>
+          <div class="toggle-row">
+            <button class="toggle-btn" id="create-btn" onclick="cycleToggle('create')">
+              Create<span class="toggle-btn-sub">C — visualize</span>
+            </button>
           </div>
-
-          <div>
-            <div class="toggle-row">
-              <button class="toggle-btn" id="execute-btn" onclick="cycleToggle('execute')">
-                Execute
-                <span class="toggle-btn-sub">E — commit & swing</span>
-              </button>
-            </div>
+          <div class="toggle-row">
+            <button class="toggle-btn" id="execute-btn" onclick="cycleToggle('execute')">
+              Execute<span class="toggle-btn-sub">E — commit &amp; swing</span>
+            </button>
           </div>
-
           <button class="log-btn" onclick="logShot()">+ Log Shot</button>
         </div>
       </div>
 
-      <!-- Shot list -->
       <div class="card" id="shot-list-card" style="display:none">
         <div class="card-label">Shot Log</div>
         <div class="shot-list" id="shot-list"></div>
       </div>
 
-      <!-- Clear -->
       <button class="clear-btn" onclick="clearMental()">Clear Round</button>
 
       <footer>kmansgolf · The Caddie — prototype</footer>
@@ -1052,63 +795,110 @@
 
   <script>
     // ═══════════════════════════════════════════════════════════════════════
-    // TAB NAVIGATION
+    // PRESETS
+    // All times in seconds (takeaway → impact).
+    // Full swing: 3:1 ratio  →  back = total * 0.75,  down = total * 0.25
+    // Short/Putt: 2:1 ratio  →  back = total * 0.667, down = total * 0.333
     // ═══════════════════════════════════════════════════════════════════════
-    function switchTab(tab) {
-      ['tempo','weld','mental'].forEach(t => {
-        document.getElementById('tab-' + t).classList.toggle('active', t === tab);
-        document.getElementById('screen-' + t).classList.toggle('active', t === tab);
-      });
-      if (tab !== 'tempo' && playing) togglePlay(); // stop metronome on tab switch
-    }
+    const PRESETS = {
+      full: [
+        { name: 'Explosive',    total: 0.80 },  // 18/6 — Rory, Wyndham Clark
+        { name: 'Tour Fast',    total: 0.93 },  // 21/7 — Hogan, Adam Scott
+        { name: 'Tour Std',     total: 1.07 },  // 24/8 — Couples, Scheffler
+        { name: 'Tour Smooth',  total: 1.20 },  // 27/9 — slowest Tour tempo
+        { name: 'Practice',     total: 1.50 },  // deliberate groove work
+      ],
+      short: [
+        { name: 'Fast',    total: 0.70 },  // 14/7
+        { name: 'Tour Std',total: 0.80 },  // 16/8 — Tiger, McDowell
+        { name: 'Smooth',  total: 0.90 },  // 18/9
+        { name: 'Slow',    total: 1.00 },  // 20/10 — Harrington, Hoffman
+        { name: 'Practice',total: 1.10 },  // 22/11
+      ],
+      putt: [
+        { name: 'Fast',    total: 0.70 },
+        { name: 'Tour Std',total: 0.80 },
+        { name: 'Smooth',  total: 0.90 },
+        { name: 'Slow',    total: 1.00 },
+        { name: 'Practice',total: 1.10 },
+      ],
+    };
 
     // ═══════════════════════════════════════════════════════════════════════
-    // TEMPO — PRESETS
+    // STATE
     // ═══════════════════════════════════════════════════════════════════════
-    const PRESETS = [
-      { name: 'Athletic',  bpm: 88 },
-      { name: 'Tour Fast', bpm: 80 },
-      { name: 'Tour Std',  bpm: 72 },
-      { name: 'Smooth',    bpm: 64 },
-      { name: 'Flowing',   bpm: 56 },
-    ];
-    const PUTT_BPM = 76;
-    const BPM_MIN  = PRESETS[PRESETS.length - 1].bpm;
-    const BPM_MAX  = PRESETS[0].bpm;
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // TEMPO — STATE
-    // ═══════════════════════════════════════════════════════════════════════
-    let mode    = 'full';
-    let bpm     = 72;
-    let playing = false;
-    let countingIn = false;
+    let mode         = 'full';
+    let presetIdx    = 2;        // default: Tour Std
+    let restGap      = 4.0;      // seconds between cycles
+    let playing      = false;
+    let countingIn   = false;
 
     let audioCtx       = null;
-    let schedulerTimer = null;
+    let cycleTimer     = null;   // setInterval driving the cycle
     let countinTimer   = null;
-    let nextBeatTime   = 0;
-    let beatPhase      = 0;
+    let cyclePhase     = 0;      // 0=takeaway, 1=top, 2=impact, 3=rest
+    let cycleStartTime = 0;      // audioCtx.currentTime when current cycle began
 
     // ═══════════════════════════════════════════════════════════════════════
-    // TEMPO — AUDIO
+    // HELPERS
     // ═══════════════════════════════════════════════════════════════════════
+    function getRatio()     { return mode === 'full' ? 3 : 2; }
+    function getTotalTime() { return PRESETS[mode][presetIdx].total; }
+
+    function getBackTime() {
+      const r = getRatio();
+      return getTotalTime() * (r / (r + 1));
+    }
+    function getDownTime() {
+      const r = getRatio();
+      return getTotalTime() * (1 / (r + 1));
+    }
+
     function getAudioCtx() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       return audioCtx;
     }
 
+    // ═══════════════════════════════════════════════════════════════════════
+    // AUDIO — FULL / SHORT GAME TONES
+    // type: 0=takeaway, 1=top, 2=impact
+    // ═══════════════════════════════════════════════════════════════════════
     function playTone(type, when) {
       const ctx = getAudioCtx();
-      const configs = {
-        0: { freq: 180, freq2: 90,  gain: 0.55, attack: 0.002, decay: 0.12, type: 'sine'     }, // takeaway
-        1: { freq: 320, freq2: 160, gain: 0.35, attack: 0.001, decay: 0.08, type: 'triangle' }, // mid
-        2: { freq: 900, freq2: 450, gain: 0.70, attack: 0.001, decay: 0.06, type: 'square'   }, // impact
+
+      if (mode === 'putt') {
+        // Putting: soft, pendulum-feel tones — low frequency, gentle attack
+        const puttCfg = {
+          0: { freq: 260, freq2: 200, gain: 0.25, attack: 0.005, decay: 0.18, oscType: 'sine'     }, // stroke
+          1: { freq: 220, freq2: 180, gain: 0.15, attack: 0.004, decay: 0.12, oscType: 'sine'     }, // top
+          2: { freq: 300, freq2: 240, gain: 0.28, attack: 0.004, decay: 0.14, oscType: 'sine'     }, // impact
+        };
+        const c = puttCfg[type];
+        const osc  = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = c.oscType;
+        osc.frequency.setValueAtTime(c.freq, when);
+        osc.frequency.exponentialRampToValueAtTime(c.freq2, when + c.decay);
+        gain.gain.setValueAtTime(0, when);
+        gain.gain.linearRampToValueAtTime(c.gain, when + c.attack);
+        gain.gain.exponentialRampToValueAtTime(0.001, when + c.decay);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(when);
+        osc.stop(when + c.decay + 0.02);
+        return;
+      }
+
+      // Full / Short game: punchy click tones
+      const cfg = {
+        0: { freq: 180, freq2: 90,  gain: 0.55, attack: 0.002, decay: 0.12, oscType: 'sine'     }, // takeaway
+        1: { freq: 320, freq2: 160, gain: 0.35, attack: 0.001, decay: 0.08, oscType: 'triangle' }, // top
+        2: { freq: 900, freq2: 450, gain: 0.70, attack: 0.001, decay: 0.06, oscType: 'square'   }, // impact
       };
-      const c = configs[type];
+      const c = cfg[type];
       const osc  = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = c.type;
+      osc.type = c.oscType;
       osc.frequency.setValueAtTime(c.freq, when);
       osc.frequency.exponentialRampToValueAtTime(c.freq2, when + c.decay);
       gain.gain.setValueAtTime(0, when);
@@ -1119,21 +909,20 @@
       osc.start(when);
       osc.stop(when + c.decay + 0.01);
 
+      // Sub-click body on impact (full/short only)
       if (type === 2) {
-        const noise = ctx.createOscillator();
-        const ng    = ctx.createGain();
-        noise.type  = 'sawtooth';
-        noise.frequency.setValueAtTime(200, when);
-        ng.gain.setValueAtTime(0.3, when);
+        const n  = ctx.createOscillator();
+        const ng = ctx.createGain();
+        n.type = 'sawtooth';
+        n.frequency.setValueAtTime(200, when);
+        ng.gain.setValueAtTime(0.28, when);
         ng.gain.exponentialRampToValueAtTime(0.001, when + 0.03);
-        noise.connect(ng);
-        ng.connect(ctx.destination);
-        noise.start(when);
-        noise.stop(when + 0.04);
+        n.connect(ng); ng.connect(ctx.destination);
+        n.start(when); n.stop(when + 0.04);
       }
     }
 
-    // Silent count-in tone: very soft mid-frequency tick
+    // Count-in tick: subtle sine ping
     function playCountinTone(when) {
       const ctx  = getAudioCtx();
       const osc  = ctx.createOscillator();
@@ -1142,110 +931,100 @@
       osc.frequency.setValueAtTime(440, when);
       gain.gain.setValueAtTime(0, when);
       gain.gain.linearRampToValueAtTime(0.12, when + 0.003);
-      gain.gain.exponentialRampToValueAtTime(0.001, when + 0.06);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(when);
-      osc.stop(when + 0.07);
+      gain.gain.exponentialRampToValueAtTime(0.001, when + 0.07);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(when); osc.stop(when + 0.08);
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // TEMPO — SCHEDULER
+    // CYCLE SCHEDULER
+    // One full cycle = takeaway → top → impact → rest gap
+    // Uses a single setTimeout chain so timing stays accurate relative to
+    // audioCtx rather than drifting with setInterval.
     // ═══════════════════════════════════════════════════════════════════════
-    const LOOKAHEAD   = 0.1;
-    const INTERVAL_MS = 25;
-
-    function getRatio()      { return mode === 'full' ? 3 : 2; }
-    function getTotalBeats() { return getRatio() + 1; }
-    function getBeatDuration() { return 60 / bpm; }
-
-    function scheduleAhead() {
-      const ctx = getAudioCtx();
-      while (nextBeatTime < ctx.currentTime + LOOKAHEAD) {
-        scheduleBeat(beatPhase, nextBeatTime);
-        beatPhase    = (beatPhase + 1) % getTotalBeats();
-        nextBeatTime += getBeatDuration();
-      }
-    }
-
-    function scheduleBeat(phase, when) {
-      const total    = getTotalBeats();
-      const isImpact = phase === total - 1;
-      const isFirst  = phase === 0;
-      const toneType = isFirst ? 0 : isImpact ? 2 : 1;
-      playTone(toneType, when);
-      const delay = Math.max(0, (when - getAudioCtx().currentTime) * 1000);
-      setTimeout(() => updatePhaseUI(phase), delay);
-    }
-
-    function updatePhaseUI(phase) {
+    function scheduleCycle(startAt) {
       if (!playing) return;
-      const ratio = getRatio();
-      ['phase-takeaway','phase-top','phase-impact'].forEach(id =>
-        document.getElementById(id).classList.remove('active-phase'));
-      if (phase === 0) {
-        document.getElementById('phase-takeaway').classList.add('active-phase');
-      } else if (phase < ratio) {
-        document.getElementById('phase-top').classList.add('active-phase');
-      } else {
-        document.getElementById('phase-impact').classList.add('active-phase');
-      }
+
+      const ctx      = getAudioCtx();
+      const backTime = getBackTime();
+      const downTime = getDownTime();
+      const total    = getTotalTime();
+      const gap      = restGap;
+
+      // Schedule all three audio tones
+      playTone(0, startAt);                   // takeaway
+      playTone(1, startAt + backTime);        // top
+      playTone(2, startAt + total);           // impact
+
+      // Visual: takeaway
+      const tTakeaway = Math.max(0, (startAt - ctx.currentTime) * 1000);
+      const tTop      = Math.max(0, (startAt + backTime - ctx.currentTime) * 1000);
+      const tImpact   = Math.max(0, (startAt + total - ctx.currentTime) * 1000);
+      const tRest     = tImpact + 80; // brief delay before rest indicator
+      const tNext     = Math.max(0, (startAt + total + gap - ctx.currentTime) * 1000);
+
+      setTimeout(() => { if (playing) setPhaseUI('takeaway'); }, tTakeaway);
+      setTimeout(() => { if (playing) setPhaseUI('top');      }, tTop);
+      setTimeout(() => { if (playing) setPhaseUI('impact');   }, tImpact);
+      setTimeout(() => { if (playing) setPhaseUI('rest');     }, tRest);
+
+      // Chain next cycle
+      cycleTimer = setTimeout(() => {
+        if (!playing) return;
+        const nextStart = ctx.currentTime + 0.02;
+        scheduleCycle(nextStart);
+      }, tNext);
+    }
+
+    function setPhaseUI(phase) {
+      const ids = ['phase-takeaway','phase-top','phase-impact','phase-rest'];
+      ids.forEach(id => document.getElementById(id).classList.remove('active-phase'));
+      const map = { takeaway:'phase-takeaway', top:'phase-top', impact:'phase-impact', rest:'phase-rest' };
+      if (map[phase]) document.getElementById(map[phase]).classList.add('active-phase');
     }
 
     function clearPhaseUI() {
-      ['phase-takeaway','phase-top','phase-impact'].forEach(id =>
+      ['phase-takeaway','phase-top','phase-impact','phase-rest'].forEach(id =>
         document.getElementById(id).classList.remove('active-phase'));
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // TEMPO — COUNT-IN
+    // COUNT-IN
+    // One beat at the current back-time duration before first cycle fires
     // ═══════════════════════════════════════════════════════════════════════
     function startCountin(onComplete) {
       countingIn = true;
-      const btn   = document.getElementById('play-btn');
-      const label = document.getElementById('play-label');
+      const ctx   = getAudioCtx();
       const badge = document.getElementById('countin-badge');
-      const text  = document.getElementById('countin-text');
-      const phaseDisplay = document.getElementById('phase-display');
+      const pdisp = document.getElementById('phase-display');
 
-      btn.classList.add('counting');
-      btn.classList.remove('playing');
-      label.textContent = 'Stop';
-      badge.classList.add('visible');
-      phaseDisplay.style.opacity = '0.3';
-
-      // Set stop icon while counting
+      document.getElementById('play-btn').classList.add('counting');
+      document.getElementById('play-label').textContent = 'Stop';
       document.getElementById('play-icon-svg').innerHTML =
         '<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
+      badge.classList.add('visible');
+      pdisp.style.opacity = '0.3';
 
-      const ctx = getAudioCtx();
-      const beatDur = getBeatDuration(); // one beat at current bpm
+      const countAt  = ctx.currentTime + 0.05;
+      playCountinTone(countAt);
 
-      // Schedule one silent count-in beat at current tempo
-      const countTime = ctx.currentTime + 0.05;
-      playCountinTone(countTime);
-
-      // Visual count-in text
-      text.textContent = 'Ready…';
-
+      const waitMs = (getBackTime() + 0.05) * 1000;
       countinTimer = setTimeout(() => {
-        if (!countingIn) return; // was cancelled
-        // Count-in done — hand off to main scheduler
+        if (!countingIn) return;
         countingIn = false;
         badge.classList.remove('visible');
-        phaseDisplay.style.opacity = '1';
-        btn.classList.remove('counting');
-        btn.classList.add('playing');
-        onComplete(countTime + beatDur);
-      }, (beatDur + 0.05) * 1000);
+        pdisp.style.opacity = '1';
+        document.getElementById('play-btn').classList.remove('counting');
+        document.getElementById('play-btn').classList.add('playing');
+        onComplete(countAt + getBackTime());
+      }, waitMs);
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // TEMPO — PLAY / STOP
+    // PLAY / STOP
     // ═══════════════════════════════════════════════════════════════════════
     function togglePlay() {
       if (countingIn) {
-        // Cancel count-in
         clearTimeout(countinTimer);
         countingIn = false;
         document.getElementById('countin-badge').classList.remove('visible');
@@ -1257,16 +1036,13 @@
       playing = !playing;
 
       if (playing) {
-        const ctx = getAudioCtx();
-        ctx.resume().then(() => {
-          beatPhase = 0;
-          startCountin((startTime) => {
-            nextBeatTime   = startTime;
-            schedulerTimer = setInterval(scheduleAhead, INTERVAL_MS);
+        getAudioCtx().resume().then(() => {
+          startCountin((firstBeat) => {
+            scheduleCycle(firstBeat);
           });
         });
       } else {
-        clearInterval(schedulerTimer);
+        clearTimeout(cycleTimer);
         clearPhaseUI();
         setPlayStopped();
       }
@@ -1274,16 +1050,16 @@
 
     function setPlayStopped() {
       playing = false;
-      const btn   = document.getElementById('play-btn');
-      const label = document.getElementById('play-label');
-      btn.classList.remove('playing', 'counting');
-      label.textContent = 'Start';
+      clearTimeout(cycleTimer);
+      const btn = document.getElementById('play-btn');
+      btn.classList.remove('playing','counting');
+      document.getElementById('play-label').textContent = 'Start';
       document.getElementById('play-icon-svg').innerHTML =
-        '<polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/>';
+        '<polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>';
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // TEMPO — MODE / SLIDER
+    // MODE
     // ═══════════════════════════════════════════════════════════════════════
     function setMode(m) {
       const wasPlaying = playing || countingIn;
@@ -1291,95 +1067,66 @@
       mode = m;
       ['full','short','putt'].forEach(id =>
         document.getElementById('mode-' + id).classList.toggle('active', id === m));
-      if (m === 'putt') {
-        bpm = PUTT_BPM;
-        syncSliderFromBpm();
-        document.getElementById('tempo-slider').disabled = true;
-        document.getElementById('tempo-slider').style.opacity = '0.4';
-      } else {
-        document.getElementById('tempo-slider').disabled = false;
-        document.getElementById('tempo-slider').style.opacity = '1';
-      }
+      // Keep presetIdx clamped to available presets
+      presetIdx = Math.min(presetIdx, PRESETS[m].length - 1);
+      buildPresetGrid();
       updateDisplay();
-      if (wasPlaying) setTimeout(() => togglePlay(), 100);
+      if (wasPlaying) setTimeout(togglePlay, 120);
     }
 
-    function onSlider(val) {
-      if (mode === 'putt') return;
-      const t = val / 100;
-      bpm = Math.round(BPM_MIN + t * (BPM_MAX - BPM_MIN));
+    // ═══════════════════════════════════════════════════════════════════════
+    // PRESET GRID
+    // ═══════════════════════════════════════════════════════════════════════
+    function buildPresetGrid() {
+      const grid = document.getElementById('preset-grid');
+      const list = PRESETS[mode];
+      grid.innerHTML = list.map((p, i) => `
+        <button class="preset-btn ${i === presetIdx ? 'active' : ''}"
+                onclick="selectPreset(${i})">
+          <span class="preset-btn-name">${p.name}</span>
+          <span class="preset-btn-time">${p.total.toFixed(2)}s</span>
+        </button>
+      `).join('');
+    }
+
+    function selectPreset(i) {
+      const wasPlaying = playing || countingIn;
+      if (wasPlaying) { playing = true; togglePlay(); }
+      presetIdx = i;
+      buildPresetGrid();
       updateDisplay();
+      if (wasPlaying) setTimeout(togglePlay, 120);
     }
 
-    function syncSliderFromBpm() {
-      const t = (bpm - BPM_MIN) / (BPM_MAX - BPM_MIN);
-      document.getElementById('tempo-slider').value = Math.round(t * 100);
+    // ═══════════════════════════════════════════════════════════════════════
+    // REST GAP SLIDER
+    // ═══════════════════════════════════════════════════════════════════════
+    function onGapSlider(val) {
+      restGap = parseFloat(val);
+      document.getElementById('gap-display').textContent = restGap.toFixed(1) + 's';
     }
 
-    function getNearestPreset() {
-      let nearest = PRESETS[0], minDist = Infinity;
-      PRESETS.forEach(p => {
-        const d = Math.abs(p.bpm - bpm);
-        if (d < minDist) { minDist = d; nearest = p; }
-      });
-      return nearest;
-    }
-
+    // ═══════════════════════════════════════════════════════════════════════
+    // DISPLAY
+    // ═══════════════════════════════════════════════════════════════════════
     function updateDisplay() {
-      document.getElementById('bpm-display').textContent = bpm;
-      const nearest = getNearestPreset();
-      document.getElementById('preset-tag').textContent = nearest.name;
-      document.querySelectorAll('.preset-name').forEach((el, i) =>
-        el.classList.toggle('active', PRESETS[i].name === nearest.name));
-      const ratio   = getRatio();
-      const beatMs  = Math.round(getBeatDuration() * 1000);
-      document.getElementById('detail-back').textContent  = beatMs * ratio;
-      document.getElementById('detail-down').textContent  = beatMs;
-      document.getElementById('detail-cycle').textContent = beatMs * (ratio + 1);
-    }
+      const total    = getTotalTime();
+      const backMs   = Math.round(getBackTime() * 1000);
+      const downMs   = Math.round(getDownTime() * 1000);
+      const ratio    = getRatio();
+      const preset   = PRESETS[mode][presetIdx];
 
-    function buildPresetNames() {
-      const container = document.getElementById('preset-names');
-      container.innerHTML = '';
-      PRESETS.forEach((p, i) => {
-        const pct = (p.bpm - BPM_MIN) / (BPM_MAX - BPM_MIN) * 100;
-        const div = document.createElement('div');
-        div.className       = 'preset-name';
-        div.textContent     = p.name;
-        div.dataset.pct     = pct;
-        div.onclick         = () => snapToPreset(i);
-        container.appendChild(div);
-      });
-      positionPresetLabels();
-    }
-
-    function positionPresetLabels() {
-      const slider = document.getElementById('tempo-slider');
-      const thumbW = 22;
-      const trackW = slider.offsetWidth;
-      if (!trackW) return;
-      const usable = trackW - thumbW;
-      document.querySelectorAll('.preset-name').forEach(el => {
-        const pct    = parseFloat(el.dataset.pct) / 100;
-        const xCenter = thumbW / 2 + pct * usable;
-        el.style.left = xCenter + 'px';
-      });
-    }
-
-    function snapToPreset(i) {
-      if (mode === 'putt') return;
-      bpm = PRESETS[i].bpm;
-      syncSliderFromBpm();
-      updateDisplay();
+      document.getElementById('swing-time-display').textContent = total.toFixed(2);
+      document.getElementById('swing-time-tag').textContent     = preset.name;
+      document.getElementById('detail-back').textContent        = backMs;
+      document.getElementById('detail-down').textContent        = downMs;
+      document.getElementById('detail-ratio').textContent       = ratio + ':1';
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // WELD — STATE
+    // WELD
     // ═══════════════════════════════════════════════════════════════════════
-    let windDir = 'head';
-    let elevDir = 'up';
-    let lieType = 'fairway';
-
+    let windDir = 'head', elevDir = 'up', lieType = 'fairway';
     const LIE_ADJ = { fairway: 0, light: -5, thick: -15, flyer: +10 };
 
     function setWindDir(d) {
@@ -1388,79 +1135,57 @@
         document.getElementById('wind-' + id).classList.toggle('active', id === d));
       calcWeld();
     }
-
     function setElevDir(d) {
       elevDir = d;
       ['up','down','flat'].forEach(id =>
         document.getElementById('elev-' + id).classList.toggle('active', id === d));
       calcWeld();
     }
-
     function setLie(l) {
       lieType = l;
       ['fairway','light','thick','flyer'].forEach(id =>
         document.getElementById('lie-' + id).classList.toggle('active', id === l));
       calcWeld();
     }
-
     function calcWeld() {
       const rawDist = parseFloat(document.getElementById('w-distance').value) || 0;
       const windSpd = parseFloat(document.getElementById('w-wind').value)     || 0;
-      const elevFt  = parseFloat(document.getElementById('w-elev').value)      || 0;
-
+      const elevFt  = parseFloat(document.getElementById('w-elev').value)     || 0;
       if (!rawDist) {
-        document.getElementById('weld-result').textContent    = '—';
-        document.getElementById('weld-breakdown').innerHTML   = '';
-        document.getElementById('weld-aim-note').textContent  = '';
+        document.getElementById('weld-result').textContent   = '—';
+        document.getElementById('weld-breakdown').innerHTML  = '';
+        document.getElementById('weld-aim-note').textContent = '';
         return;
       }
-
-      // W: Wind adjustment
       let windAdj = 0, aimNote = '';
       if (windDir === 'head')  windAdj = +windSpd;
       if (windDir === 'tail')  windAdj = -(windSpd / 2);
-      if (windDir === 'cross') {
-        windAdj = 0;
-        if (windSpd > 0) aimNote = `Aim ${Math.round(windSpd * 0.4)} yds into wind`;
-      }
-
-      // E: Elevation adjustment (1 yd per 3 ft)
+      if (windDir === 'cross' && windSpd > 0) aimNote = `Aim ${Math.round(windSpd * 0.4)} yds into wind`;
       let elevAdj = 0;
       if (elevDir === 'up')   elevAdj = +(elevFt / 3);
       if (elevDir === 'down') elevAdj = -(elevFt / 3);
-
-      // L: Lie adjustment
-      const lieAdj = LIE_ADJ[lieType];
-
+      const lieAdj    = LIE_ADJ[lieType];
       const total     = Math.round(rawDist + windAdj + elevAdj + lieAdj);
       const windRound = Math.round(windAdj);
       const elevRound = Math.round(elevAdj);
-
       document.getElementById('weld-result').textContent = total > 0 ? total : '—';
-
-      // Breakdown
       const rows = [
-        { key: 'Raw distance', val: rawDist, adj: 0 },
-        { key: 'Wind (' + windDir + (windSpd ? ' ' + windSpd + 'mph' : '') + ')', val: windRound, adj: windRound },
-        { key: 'Elevation (' + elevDir + (elevFt ? ' ' + elevFt + 'ft' : '') + ')', val: elevRound, adj: elevRound },
-        { key: 'Lie (' + lieType + ')', val: lieAdj, adj: lieAdj },
+        { key: 'Raw distance',  val: rawDist,   adj: 0 },
+        { key: `Wind (${windDir}${windSpd ? ' ' + windSpd + 'mph' : ''})`, val: windRound, adj: windRound },
+        { key: `Elevation (${elevDir}${elevFt ? ' ' + elevFt + 'ft' : ''})`, val: elevRound, adj: elevRound },
+        { key: `Lie (${lieType})`, val: lieAdj, adj: lieAdj },
       ];
-
       document.getElementById('weld-breakdown').innerHTML = rows.map(r => {
-        const sign  = r.adj > 0 ? '+' : '';
-        const cls   = r.adj > 0 ? 'pos' : r.adj < 0 ? 'neg' : '';
+        const sign   = r.adj > 0 ? '+' : '';
+        const cls    = r.adj > 0 ? 'pos' : r.adj < 0 ? 'neg' : '';
         const valStr = r.key === 'Raw distance' ? r.val + ' yds' : (r.adj === 0 ? '±0' : sign + r.val + ' yds');
-        return `<div class="weld-row">
-          <span class="weld-row-key">${r.key}</span>
-          <span class="weld-row-val ${cls}">${valStr}</span>
-        </div>`;
+        return `<div class="weld-row"><span class="weld-row-key">${r.key}</span><span class="weld-row-val ${cls}">${valStr}</span></div>`;
       }).join('');
-
       document.getElementById('weld-aim-note').textContent = aimNote;
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // MENTAL — STATE
+    // MENTAL
     // ═══════════════════════════════════════════════════════════════════════
     let mentalToggles = { calc: null, create: null, execute: null };
     let shots = [];
@@ -1468,79 +1193,65 @@
     function cycleToggle(key) {
       const btn = document.getElementById(key + '-btn');
       const cur = mentalToggles[key];
-      // null → yes → no → null
-      if (cur === null)  { mentalToggles[key] = true;  btn.classList.remove('no');  btn.classList.add('yes'); }
+      if (cur === null)       { mentalToggles[key] = true;  btn.classList.remove('no');  btn.classList.add('yes'); }
       else if (cur === true)  { mentalToggles[key] = false; btn.classList.remove('yes'); btn.classList.add('no');  }
-      else               { mentalToggles[key] = null;  btn.classList.remove('yes','no'); }
+      else                    { mentalToggles[key] = null;  btn.classList.remove('yes','no'); }
     }
-
     function logShot() {
       const { calc, create, execute } = mentalToggles;
-      if (calc === null && create === null && execute === null) return; // nothing set
-
+      if (calc === null && create === null && execute === null) return;
       shots.push({ calc, create, execute });
       updateMentalTally();
       renderShotList();
-
-      // Reset toggles
       mentalToggles = { calc: null, create: null, execute: null };
-      ['calc','create','execute'].forEach(k => {
-        const btn = document.getElementById(k + '-btn');
-        btn.classList.remove('yes','no');
-      });
+      ['calc','create','execute'].forEach(k =>
+        document.getElementById(k + '-btn').classList.remove('yes','no'));
     }
-
     function updateMentalTally() {
       let yes = 0, no = 0, total = 0;
-      shots.forEach(s => {
-        ['calc','create','execute'].forEach(k => {
-          if (s[k] !== null) {
-            total++;
-            if (s[k]) yes++; else no++;
-          }
-        });
-      });
-
+      shots.forEach(s => ['calc','create','execute'].forEach(k => {
+        if (s[k] !== null) { total++; if (s[k]) yes++; else no++; }
+      }));
       document.getElementById('tally-shots').textContent = shots.length;
       document.getElementById('tally-yes').textContent   = yes;
       document.getElementById('tally-no').textContent    = no;
-      document.getElementById('tally-pct').textContent   =
-        total > 0 ? Math.round((yes / total) * 100) + '%' : '—';
+      document.getElementById('tally-pct').textContent   = total > 0 ? Math.round((yes/total)*100) + '%' : '—';
     }
-
     function renderShotList() {
       const list = document.getElementById('shot-list');
       const card = document.getElementById('shot-list-card');
       card.style.display = shots.length ? '' : 'none';
-
+      const labels = { calc:'C', create:'Cr', execute:'E' };
       list.innerHTML = shots.slice().reverse().map((s, ri) => {
-        const i = shots.length - ri;
-        const keys = ['calc','create','execute'];
-        const labels = { calc: 'C', create: 'Cr', execute: 'E' };
-        const badges = keys
-          .filter(k => s[k] !== null)
-          .map(k => `<span class="shot-badge ${s[k] ? 'y' : 'n'}">${labels[k]} ${s[k] ? 'Y' : 'N'}</span>`)
-          .join('');
+        const i      = shots.length - ri;
+        const keys   = ['calc','create','execute'];
+        const badges = keys.filter(k => s[k] !== null)
+          .map(k => `<span class="shot-badge ${s[k] ? 'y' : 'n'}">${labels[k]} ${s[k] ? 'Y' : 'N'}</span>`).join('');
         const yes = keys.filter(k => s[k] === true).length;
         const tot = keys.filter(k => s[k] !== null).length;
-        return `<div class="shot-item">
-          <span class="shot-num">#${i}</span>
-          <div class="shot-badges">${badges}</div>
-          <span class="shot-score">${yes}/${tot}</span>
-        </div>`;
+        return `<div class="shot-item"><span class="shot-num">#${i}</span><div class="shot-badges">${badges}</div><span class="shot-score">${yes}/${tot}</span></div>`;
       }).join('');
     }
-
     function clearMental() {
       if (!shots.length) return;
       if (!confirm('Clear all shots for this round?')) return;
       shots = [];
       mentalToggles = { calc: null, create: null, execute: null };
-      ['calc','create','execute'].forEach(k => {
-        document.getElementById(k + '-btn').classList.remove('yes','no');
-      });
+      ['calc','create','execute'].forEach(k =>
+        document.getElementById(k + '-btn').classList.remove('yes','no'));
       updateMentalTally();
       renderShotList();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TAB NAV
+    // ═══════════════════════════════════════════════════════════════════════
+    function switchTab(tab) {
+      ['tempo','weld','mental'].forEach(t => {
+        document.getElementById('tab-'    + t).classList.toggle('active', t === tab);
+        document.getElementById('screen-' + t).classList.toggle('active', t === tab);
+      });
+      if (tab !== 'tempo' && (playing || countingIn)) togglePlay();
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -1549,10 +1260,8 @@
     function applyTheme(t) {
       const isLight = t === 'light';
       document.body.setAttribute('data-theme', isLight ? 'light' : '');
-      const btn = document.getElementById('theme-toggle');
-      if (btn) btn.textContent = isLight ? '🌙' : '☀️';
-      const meta = document.getElementById('theme-meta');
-      if (meta) meta.setAttribute('content', isLight ? '#f2f2f4' : '#000000');
+      document.getElementById('theme-toggle').textContent = isLight ? '🌙' : '☀️';
+      document.getElementById('theme-meta').setAttribute('content', isLight ? '#f2f2f4' : '#000000');
       localStorage.setItem('range_theme', t);
     }
     function toggleTheme() {
@@ -1562,13 +1271,9 @@
     // ═══════════════════════════════════════════════════════════════════════
     // INIT
     // ═══════════════════════════════════════════════════════════════════════
-    buildPresetNames();
-    bpm = 72;
-    syncSliderFromBpm();
+    buildPresetGrid();
     updateDisplay();
     applyTheme(localStorage.getItem('range_theme') || 'dark');
-    requestAnimationFrame(() => requestAnimationFrame(positionPresetLabels));
-    window.addEventListener('resize', positionPresetLabels);
   </script>
 </body>
 </html>
