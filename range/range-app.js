@@ -209,6 +209,7 @@ function dismissRecoveryCode() {
 
 function doLogout() {
   if (!confirm('Sign out?')) return;
+  clearActiveSession();
   CU = null;
   document.getElementById('bnav').classList.remove('show');
   goTo('s-login');
@@ -518,6 +519,7 @@ function startNextCombine() {
 function confirmQuit() {
   if (confirm('Quit? Completed combine scores will be saved.')) {
     sessionInProgress = false;
+    clearActiveSession();
     Object.keys(sessionResults).length > 0 ? finishSession() : goHome();
   }
 }
