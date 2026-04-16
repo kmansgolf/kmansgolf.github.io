@@ -123,8 +123,9 @@ html,body{height:100%;background:var(--n);color:var(--w);font-family:var(--fb);o
 .emp-s{font-family:var(--fb);font-size:14px;color:var(--d);line-height:1.5}
 
 /* LOGIN */
-#s-login{justify-content:center;padding:32px 24px 40px;overflow-y:auto;background:radial-gradient(ellipse at top,rgba(61,220,132,.05) 0%,transparent 70%),var(--n)}
-.lbrand{text-align:center;margin-bottom:36px;margin-top:16px}
+.login-header{background:#1c1c1e;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;}
+#s-login{justify-content:flex-start;padding:0 0 40px;overflow-y:auto;background:radial-gradient(ellipse at top,rgba(61,220,132,.05) 0%,transparent 70%),var(--n)}
+.lbrand{text-align:center;margin-bottom:36px;margin-top:36px}
 .llogo{font-family:var(--fc);font-size:46px;font-weight:800;color:var(--gr);letter-spacing:3px;line-height:1}
 .lsub{font-family:var(--fc);font-size:13px;letter-spacing:4px;text-transform:uppercase;color:var(--d);margin-top:6px}
 .lbox{background:var(--nc);border-radius:14px;padding:24px;border:1px solid rgba(255,255,255,.08)}
