@@ -10,7 +10,26 @@ window.addEventListener('error', e => {
 const {useState,useEffect,useRef,useCallback} = React;
 const h = React.createElement;
 
+// ── VERSION ───────────────────────────────────────────────────────────────────
+const APP_VERSION = "1.1.0";
+const BUILD_DATE  = "Apr 17, 2026";
+
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
+const REGIONS = [
+  { value: "columbus",  label: "Columbus" },
+  { value: "cincy",     label: "Cincinnati/Dayton" },
+  { value: "cleveland", label: "Cleveland/Akron" },
+];
+
+// Tour options are now region-aware — built dynamically in the app
+// but we keep a flat list for the tour type toggle (regular/senior)
+const TOUR_TYPES = [
+  { value: "",        label: "Select Tour" },
+  { value: "regular", label: "Regular Tour" },
+  { value: "senior",  label: "Senior Tour" },
+];
+
+// Legacy — kept for backward compat with any code still referencing it
 const ALL_TOUR_OPTIONS = [
   {value:"", label:"Select Tour"},
   {value:"regular.columbus", label:"Regular Tour"},
@@ -19,10 +38,28 @@ const ALL_TOUR_OPTIONS = [
 const REGULAR_MEMBERS = [{"id":"45924","name":"Anderson, Todd","flight":"C"},{"id":"57516","name":"Archer, Michael","flight":"D"},{"id":"38126","name":"Arosemena, Che","flight":"B"},{"id":"51099","name":"Bal, Amol","flight":"D"},{"id":"59601","name":"Barker, Jonathan","flight":"A"},{"id":"47128","name":"Beadle, Jamie","flight":"C"},{"id":"61543","name":"Beaver, Brandon","flight":"A"},{"id":"61020","name":"Beck, Joshua","flight":"A"},{"id":"36635","name":"Berry, Chris","flight":"C"},{"id":"60359","name":"Betscher, Wes","flight":"D"},{"id":"57321","name":"Blackburn, Alexander","flight":"Champ"},{"id":"62635","name":"Boyd, Christopher","flight":"C"},{"id":"16378","name":"Boyed, Brian","flight":"A"},{"id":"47964","name":"Brooks, Shay","flight":"Champ"},{"id":"41832","name":"Brown, Jeremy","flight":"A"},{"id":"15242","name":"Brown, Kevin","flight":"B"},{"id":"18670","name":"Burlison, Tom","flight":"A"},{"id":"33406","name":"Burns, Scott","flight":"B"},{"id":"23431","name":"Byrd, Rhoshaun","flight":"A"},{"id":"17648","name":"Campbell, Rich","flight":"Champ"},{"id":"56035","name":"Canlas, Andrew","flight":"C"},{"id":"51627","name":"Cartee, Tyler","flight":"A"},{"id":"54529","name":"Chanatry, Michael","flight":"B"},{"id":"53395","name":"Coyle, Michael","flight":"Champ"},{"id":"62192","name":"Crossfield, Keegan","flight":"D"},{"id":"17772","name":"Crossfield, Kyle","flight":"A"},{"id":"19811","name":"Crossfield, Les","flight":"D"},{"id":"62609","name":"Cuda, Nicolas","flight":"B"},{"id":"58937","name":"Culler, Joe","flight":"A"},{"id":"29736","name":"Curtis, Jack Henry","flight":"Champ"},{"id":"62661","name":"Davis, Dustin","flight":"D"},{"id":"55154","name":"Deitsch, Rylee","flight":"A"},{"id":"40014","name":"Detty, Peter","flight":"A"},{"id":"57777","name":"Di Biase, Joseph","flight":"B"},{"id":"54425","name":"Dilger, Mike","flight":"B"},{"id":"60987","name":"Ducay, Jeff","flight":"D"},{"id":"61830","name":"Earles, Bob","flight":"A"},{"id":"61896","name":"Edwards, Adrienne","flight":"D-W"},{"id":"59377","name":"Edwards, Nathan","flight":"B"},{"id":"58080","name":"Elmore, Ian","flight":"C"},{"id":"57239","name":"Elmore, Jordan","flight":"B"},{"id":"56761","name":"Eveland, Eric","flight":"B"},{"id":"32128","name":"Fleming, Tim","flight":"D"},{"id":"2459","name":"Fryman, John","flight":"Champ"},{"id":"49228","name":"Gaitanos, Gregory","flight":"A"},{"id":"14476","name":"Gardner, Kyle","flight":"A"},{"id":"30164","name":"Gilliland, Steve","flight":"B"},{"id":"54427","name":"Green, Keith","flight":"B"},{"id":"45436","name":"Gregory, Jeff","flight":"C"},{"id":"62256","name":"Grootegoed, Logan","flight":"D"},{"id":"21294","name":"Haney, Brian","flight":"A"},{"id":"62827","name":"Harmon, Raymond","flight":"A"},{"id":"46979","name":"Hohenstein, Cory","flight":"B"},{"id":"49710","name":"Hopkins, Draven","flight":"A"},{"id":"62764","name":"Hurt, Chris","flight":"C"},{"id":"57705","name":"Irwin, Zachary","flight":"B"},{"id":"59971","name":"Jackson, Nathaniel","flight":"D"},{"id":"51522","name":"Janes, Rush","flight":"A"},{"id":"22892","name":"Jenkins, Tim","flight":"B"},{"id":"18701","name":"Jordan, Tom","flight":"B"},{"id":"44674","name":"Joshi, Ballal","flight":"C"},{"id":"2582","name":"Kahari, Cham","flight":"B"},{"id":"62839","name":"Kirtley, Andrew","flight":"A"},{"id":"49764","name":"Knox, Brad","flight":"B"},{"id":"62591","name":"Kondagari, Shrihan","flight":"Champ"},{"id":"44459","name":"Krishna, Manju","flight":"C"},{"id":"54645","name":"Kristy, Brandon","flight":"B"},{"id":"53679","name":"Lanfear, Jerry","flight":"B"},{"id":"59474","name":"Lee, Harvey","flight":"D"},{"id":"8321","name":"Lee, Hyo Seung","flight":"A"},{"id":"62949","name":"Lee, Youngmi","flight":"D-W"},{"id":"47631","name":"Lewis, Dan","flight":"B"},{"id":"59262","name":"Lloyd, Dillon","flight":"C"},{"id":"25236","name":"Lumbatis, Frank","flight":"A"},{"id":"55097","name":"Mansfield, Kevin","flight":"C"},{"id":"56787","name":"Maxson, Evan","flight":"A"},{"id":"62090","name":"McGuckin, Zach","flight":"A"},{"id":"53946","name":"Miller, Greg","flight":"B"},{"id":"23464","name":"Miller, Josh","flight":"C"},{"id":"24275","name":"Novak, Butch","flight":"C"},{"id":"60352","name":"Pancake, Christian","flight":"C"},{"id":"57696","name":"Pantangco, Marvin","flight":"B"},{"id":"49053","name":"Phares, Shaun","flight":"B"},{"id":"36628","name":"Phillips, Steve","flight":"A"},{"id":"53739","name":"Pond, Jeffrey","flight":"B"},{"id":"62816","name":"Prieto, Carlos","flight":"D"},{"id":"62903","name":"Racano, Michael","flight":"D"},{"id":"18307","name":"Reeder, Rex","flight":"A"},{"id":"49144","name":"Rider, Kevin","flight":"A"},{"id":"35242","name":"Rinehart, Travis","flight":"A"},{"id":"51332","name":"Robinson, Jeff","flight":"A"},{"id":"57639","name":"Rosenthal, Brett","flight":"A"},{"id":"59476","name":"Roush, Jeremy","flight":"A"},{"id":"26462","name":"Ruksujjar, Sammy","flight":"A"},{"id":"55788","name":"Ruzicho, Andy","flight":"B"},{"id":"59103","name":"Samant, Abhish","flight":"B"},{"id":"57697","name":"Scott, Kristian","flight":"B"},{"id":"25034","name":"Sears, Travis","flight":"A"},{"id":"59720","name":"Sharrock, Kristopher","flight":"B"},{"id":"58054","name":"Shaw, Phillip","flight":"D"},{"id":"59926","name":"Shields, Eric","flight":"A"},{"id":"20511","name":"Shim, Rob","flight":"A"},{"id":"21229","name":"Shoulders, Dana","flight":"A"},{"id":"58109","name":"Siders, Derek","flight":"C"},{"id":"48295","name":"Siders, Jim","flight":"C"},{"id":"53697","name":"Snodgrass, Eric","flight":"Champ"},{"id":"55746","name":"Spellman, Seth","flight":"B"},{"id":"56817","name":"Strope, Andrew","flight":"Champ"},{"id":"62097","name":"Tank, Jordan","flight":"B"},{"id":"45774","name":"Tinajero, Miguel","flight":"A"},{"id":"56711","name":"Tomechak, Michael","flight":"C"},{"id":"58973","name":"Tumey, Darrell","flight":"D"},{"id":"30281","name":"VanHoose, Mitch","flight":"C"},{"id":"62594","name":"Varney, Nathan","flight":"C"},{"id":"62002","name":"Vexler, Kyle","flight":"C"},{"id":"34022","name":"Waligura, Jade","flight":"A"},{"id":"62990","name":"Walker, Matthew","flight":"C"},{"id":"43884","name":"Walker, Stephen","flight":"A"},{"id":"46277","name":"Yeager, David","flight":"B"},{"id":"41989","name":"Zehnder, Donald","flight":"A"},{"id":"19869","name":"Zipay, Jeff","flight":"A"}];
 const SENIOR_MEMBERS = [{"id":"19549","name":"Alexander, Ron","flight":"Champ"},{"id":"14076","name":"Basinger, Jeff","flight":"A"},{"id":"17120","name":"Benavides, Roberto","flight":"D"},{"id":"15182","name":"Blair, Dwight","flight":"D"},{"id":"20264","name":"Boger, Shane","flight":"B"},{"id":"16259","name":"Brown, Kevin","flight":"C"},{"id":"13274","name":"Burlison, Tom","flight":"A"},{"id":"21227","name":"Burns, Scott","flight":"B"},{"id":"21191","name":"Butler, Toby","flight":"B"},{"id":"12175","name":"Campbell, Rich","flight":"Champ"},{"id":"20525","name":"Canfield, Joe","flight":"Champ"},{"id":"20677","name":"Davis, Harold","flight":"C"},{"id":"19342","name":"Desmond, Terry","flight":"A"},{"id":"20348","name":"Di Biase, Joseph","flight":"B"},{"id":"17322","name":"Efta, Thomas","flight":"B"},{"id":"19474","name":"Fryman, John","flight":"Champ"},{"id":"17324","name":"Gibson, Michael","flight":"B"},{"id":"17874","name":"Heckman, Craig","flight":"A"},{"id":"19335","name":"Holahan, Scott","flight":"Champ"},{"id":"18233","name":"Honeycutt, Rick","flight":"C"},{"id":"14081","name":"Hooshangi, Jaymee","flight":"C"},{"id":"13448","name":"Jenkins, Tim","flight":"C"},{"id":"15343","name":"Jochum, Mark","flight":"C"},{"id":"21224","name":"Jordan, Thomas","flight":"B"},{"id":"20976","name":"Lanfear, Jerry","flight":"B"},{"id":"15859","name":"Link, John","flight":"Champ"},{"id":"12937","name":"Lumbatis, Frank","flight":"A"},{"id":"17888","name":"Luzio, Chris","flight":"D"},{"id":"17956","name":"Mansfield, Kevin","flight":"B"},{"id":"20145","name":"Maxwell, Bradley","flight":"A"},{"id":"15481","name":"Maynard, Garrett","flight":"B"},{"id":"20885","name":"McElwee, Jason","flight":"D"},{"id":"17641","name":"Meeks, Gavin","flight":"A"},{"id":"17490","name":"Montgomery, John","flight":"B"},{"id":"19528","name":"Mowery, Jerry","flight":"Champ"},{"id":"15628","name":"Myers, Michael","flight":"B"},{"id":"17198","name":"Myricks, Dalon","flight":"B"},{"id":"20370","name":"Newcomb, Michael","flight":"C"},{"id":"10654","name":"Novak, Butch","flight":"D"},{"id":"12721","name":"Parsley, Joseph","flight":"B"},{"id":"8413","name":"Picking, Kenneth","flight":"B"},{"id":"21022","name":"Polick, Brian","flight":"Champ"},{"id":"17817","name":"Pond, Jeffrey","flight":"B"},{"id":"21265","name":"Racano, Michael","flight":"D"},{"id":"13790","name":"Riley, Steve","flight":"B"},{"id":"11172","name":"Ruksujjar, Sam","flight":"A"},{"id":"20259","name":"Scheiderer, Dean","flight":"C"},{"id":"20552","name":"Scott, Kristian","flight":"A"},{"id":"21164","name":"Shim, Rob","flight":"C"},{"id":"17424","name":"Shoulders, Dana","flight":"A"},{"id":"15287","name":"Siders, Jim","flight":"C"},{"id":"9096","name":"Smialek, Richard","flight":"B"},{"id":"20437","name":"Snodgrass, Eric","flight":"Champ"},{"id":"17226","name":"Stonebraker, Jonathan","flight":"B"},{"id":"17484","name":"Thomas, Terry","flight":"D"},{"id":"18100","name":"Tumey, Darrell","flight":"D"},{"id":"19347","name":"Tunison, Bub","flight":"B"},{"id":"18193","name":"Widman, Thomas","flight":"B"},{"id":"14894","name":"Yeager, David","flight":"C"},{"id":"10764","name":"Zipay, Jeff","flight":"A"}];
 
-// Build a fast lookup map by ID across both tours
+// ── CINCINNATI/DAYTON MEMBERS ─────────────────────────────────────────────────
+// TODO: Paste scraped members here from:
+//   Regular: amateurgolftour.net/cincinnati_tour_pages/members.aspx
+//   Senior:  senioramateurgolftour.net/cincy_tour_pages/members.aspx
+// Format: { id: "12345", name: "Last, First", flight: "B" }
+const CINCY_REGULAR_MEMBERS = [];
+const CINCY_SENIOR_MEMBERS  = [];
+
+// ── CLEVELAND/AKRON MEMBERS ───────────────────────────────────────────────────
+// TODO: Paste scraped members here from:
+//   Regular: amateurgolftour.net/cleveland_tour_pages/members.aspx
+//   (No Senior Tour for Cleveland/Akron)
+const CLEVELAND_REGULAR_MEMBERS = [];
+
+// ── MEMBER MAP ────────────────────────────────────────────────────────────────
+// Build a fast lookup map by ID across all tours and regions
 const MEMBER_MAP = {};
 REGULAR_MEMBERS.forEach(m=>{ MEMBER_MAP[m.id]={...m,tour:"regular",region:"columbus"}; });
 SENIOR_MEMBERS.forEach(m=>{ MEMBER_MAP[m.id]={...m,tour:"senior",region:"columbus"}; });
+CINCY_REGULAR_MEMBERS.forEach(m=>{ MEMBER_MAP[m.id]={...m,tour:"regular",region:"cincy"}; });
+CINCY_SENIOR_MEMBERS.forEach(m=>{ MEMBER_MAP[m.id]={...m,tour:"senior",region:"cincy"}; });
+CLEVELAND_REGULAR_MEMBERS.forEach(m=>{ MEMBER_MAP[m.id]={...m,tour:"regular",region:"cleveland"}; });
 
 // Keep backward compat
 const ID_REGION_MAP = {
@@ -185,6 +222,17 @@ const COURSES = {
     {h:16,par:5,yds:512,hcp:4},{h:17,par:4,yds:375,hcp:6},{h:18,par:4,yds:372,hcp:14},
   ]},
   "The Lakes Golf & CC":       {par:72,yardage:7140,rating:74.8,slope:139,private:true,holes:[]},
+  // NCR Country Club — North Course (Kettering, OH)
+  // Senior Tour tees: White/Blue combo ~6,400 yds
+  // Source: Official USGA course database / NCR scorecard
+  "NCR Country Club (North)":  {par:70,yardage:6411,rating:71.2,slope:130,holes:[
+    {h:1, par:4,yds:385,hcp:9 },{h:2, par:4,yds:355,hcp:13},{h:3, par:4,yds:390,hcp:5 },
+    {h:4, par:3,yds:165,hcp:17},{h:5, par:4,yds:420,hcp:1 },{h:6, par:5,yds:510,hcp:3 },
+    {h:7, par:3,yds:185,hcp:15},{h:8, par:4,yds:375,hcp:11},{h:9, par:4,yds:370,hcp:7 },
+    {h:10,par:4,yds:380,hcp:10},{h:11,par:4,yds:395,hcp:2 },{h:12,par:3,yds:155,hcp:18},
+    {h:13,par:5,yds:515,hcp:4 },{h:14,par:3,yds:160,hcp:16},{h:15,par:4,yds:385,hcp:6 },
+    {h:16,par:4,yds:375,hcp:14},{h:17,par:5,yds:505,hcp:8 },{h:18,par:4,yds:382,hcp:12},
+  ]},
 };
 
 const COURSE_COORDS = {
@@ -204,4 +252,37 @@ const COURSE_COORDS = {
   "Lancaster Country Club":    {lat:39.7198,lng:-82.5993},
   "Lancaster Golf Club":       {lat:39.7154,lng:-82.5887},
   "The Lakes Golf & CC":       {lat:40.0751,lng:-82.8459},
+};
+
+// NCR North added to COURSE_COORDS via edit above — appending separately
+// (The str_replace above added it to COURSES object already)
+// Add to COURSE_COORDS object by appending here:
+COURSE_COORDS["NCR Country Club (North)"] = {lat:39.6934,lng:-84.1698};
+
+// ── SCHEDULE — CINCY/DAYTON ───────────────────────────────────────────────────
+// TODO: Populate from senioramateurgolftour.net/cincy_tour_pages and
+//       amateurgolftour.net/cincinnati_tour_pages schedule pages
+// Format: {date:"YYYY-MM-DD", course:"Course Name", tid:12345}
+const CINCY_SCHEDULE = {
+  regular: [],
+  senior: [
+    // NCR tournament coming up — add tid once you have it from the tour page:
+    // {date:"2026-04-19", course:"NCR Country Club (North)", tid:XXXXX},
+  ],
+};
+
+// ── SCHEDULE — CLEVELAND/AKRON ────────────────────────────────────────────────
+// No Senior Tour for Cleveland/Akron
+const CLEVELAND_SCHEDULE = {
+  regular: [],
+};
+
+// ── COMBINED SCHEDULE MAP ─────────────────────────────────────────────────────
+// Keyed by tourKey format "tourType.region" — matches app state
+const SCHEDULE_MAP = {
+  "regular.columbus":  SCHEDULE.regular,
+  "senior.columbus":   SCHEDULE.senior,
+  "regular.cincy":     CINCY_SCHEDULE.regular,
+  "senior.cincy":      CINCY_SCHEDULE.senior,
+  "regular.cleveland": CLEVELAND_SCHEDULE.regular,
 };

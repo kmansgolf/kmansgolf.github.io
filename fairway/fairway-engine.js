@@ -1,11 +1,12 @@
 // ── HELPERS ───────────────────────────────────────────────────────────────────
-function getTodayTournament(tourType){
+// tourKey format: "tourType.region" e.g. "regular.columbus", "senior.cincy"
+function getTodayTournament(tourKey){
   const today=new Date().toISOString().split("T")[0];
-  return SCHEDULE[tourType]?.find(t=>t.date===today)||null;
+  return (SCHEDULE_MAP[tourKey]||[]).find(t=>t.date===today)||null;
 }
-function getNextTournament(tourType){
+function getNextTournament(tourKey){
   const today=new Date().toISOString().split("T")[0];
-  return SCHEDULE[tourType]?.find(t=>t.date>today)||null;
+  return (SCHEDULE_MAP[tourKey]||[]).find(t=>t.date>today)||null;
 }
 function detectRegion(id){
   return MEMBER_MAP[String(id)] || MEMBER_MAP[String(parseInt(id))] || ID_REGION_MAP[parseInt(id)] || null;
@@ -15,20 +16,24 @@ function searchMembersLocal(query, tourFilter) {
   const q = query.trim().toLowerCase();
   if (!q || q.length < 2) return [];
   const results = [];
-  if (!tourFilter || tourFilter === "regular") {
-    REGULAR_MEMBERS.forEach(m => {
+  // All member arrays — null tourFilter = search everything
+  const pools = [
+    {arr: REGULAR_MEMBERS,        tour:"regular", region:"columbus"},
+    {arr: SENIOR_MEMBERS,         tour:"senior",  region:"columbus"},
+    {arr: CINCY_REGULAR_MEMBERS,  tour:"regular", region:"cincy"},
+    {arr: CINCY_SENIOR_MEMBERS,   tour:"senior",  region:"cincy"},
+    {arr: CLEVELAND_REGULAR_MEMBERS, tour:"regular", region:"cleveland"},
+  ];
+  for (const {arr, tour, region} of pools) {
+    if (tourFilter && tourFilter !== tour) continue;
+    for (const m of arr) {
       if (m.name.toLowerCase().includes(q)) {
-        results.push({...m, tour:"regular", region:"columbus"});
+        // Avoid duplicate IDs across tours (senior+regular same person = different IDs, ok)
+        if (!results.find(r => r.id === m.id && r.tour === tour)) {
+          results.push({...m, tour, region});
+        }
       }
-    });
-  }
-  if (!tourFilter || tourFilter === "senior") {
-    SENIOR_MEMBERS.forEach(m => {
-      if (m.name.toLowerCase().includes(q)) {
-        const exists = results.find(r => r.id === m.id);
-        if (!exists) results.push({...m, tour:"senior", region:"columbus"});
-      }
-    });
+    }
   }
   return results.slice(0, 8);
 }

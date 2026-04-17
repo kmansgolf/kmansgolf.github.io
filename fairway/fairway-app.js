@@ -1,6 +1,6 @@
 // ── COUNTDOWN ─────────────────────────────────────────────────────────────────
 // ── LEADERBOARD ───────────────────────────────────────────────────────────────
-function LeaderboardTab({playerId, playerName, tourType, todayEvent, activeEvent: activeEventProp, nextEvent}){
+function LeaderboardTab({playerId, playerName, tourType, region, todayEvent, activeEvent: activeEventProp, nextEvent}){
   const activeEvent = activeEventProp || todayEvent || nextEvent;
   const [data,    setData]    = useState(null);
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ function LeaderboardTab({playerId, playerName, tourType, todayEvent, activeEvent
     if (!activeEvent) return;
     setLoading(true); setError(null);
     try {
-      const res = await fetch(`${WORKER_URL}/leaderboard?tid=${activeEvent.tid}&tour=${tourType}`);
+      const res = await fetch(`${WORKER_URL}/leaderboard?tid=${activeEvent.tid}&tour=${tourType}&region=${region||"columbus"}`);
       if (!res.ok) throw new Error("Worker " + res.status);
       const payload = await res.json();
       if (payload.error) throw new Error(payload.error);
@@ -87,7 +87,7 @@ function LeaderboardTab({playerId, playerName, tourType, todayEvent, activeEvent
 }
 
 // ── SKINS ─────────────────────────────────────────────────────────────────────
-function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: activeEventProp, nextEvent}){
+function SkinsTab({playerId, playerName, tourType, region, todayEvent, activeEvent: activeEventProp, nextEvent}){
   const activeEvent = activeEventProp || todayEvent || nextEvent;
   const [data,    setData]    = useState(null);
   const [loading, setLoading] = useState(false);
@@ -101,7 +101,7 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
     if (!activeEvent) return;
     setLoading(true); setError(null);
     try {
-      const res = await fetch(`${WORKER_URL}/skins?tid=${activeEvent.tid}&tour=${tourType}`);
+      const res = await fetch(`${WORKER_URL}/skins?tid=${activeEvent.tid}&tour=${tourType}&region=${region||"columbus"}`);
       if (!res.ok) throw new Error("Worker " + res.status);
       const payload = await res.json();
       if (payload.error) throw new Error(payload.error);
@@ -235,7 +235,7 @@ function SkinsTab({playerId, playerName, tourType, todayEvent, activeEvent: acti
 
 // ── PAIRINGS ─────────────────────────────────────────────────────────────────
 
-function PairingsTab({playerId, playerName, tourType, todayEvent, activeEvent: activeEventProp, nextEvent}) {
+function PairingsTab({playerId, playerName, tourType, region, todayEvent, activeEvent: activeEventProp, nextEvent}) {
   const activeEvent = activeEventProp || todayEvent || nextEvent;
   const [pairings, setPairings] = useState(null);
   const [scores,   setScores]   = useState(null);
@@ -254,7 +254,7 @@ function PairingsTab({playerId, playerName, tourType, todayEvent, activeEvent: a
     if (!activeEvent) return;
     setLoading(true); setErrMsg(null);
     try {
-      const res = await fetch(`${WORKER_URL}/pairings?tid=${activeEvent.tid}&tour=${tourType}`);
+      const res = await fetch(`${WORKER_URL}/pairings?tid=${activeEvent.tid}&tour=${tourType}&region=${region||"columbus"}`);
       if (!res.ok) throw new Error("Worker " + res.status);
       const p = await res.json();
       setPairings(p);
@@ -276,7 +276,7 @@ function PairingsTab({playerId, playerName, tourType, todayEvent, activeEvent: a
     if (!players || !players.length || !activeEvent) return;
     setScoresLoading(true);
     try {
-      const res = await fetch(`${WORKER_URL}/leaderboard?tid=${activeEvent.tid}&tour=${tourType}`);
+      const res = await fetch(`${WORKER_URL}/leaderboard?tid=${activeEvent.tid}&tour=${tourType}&region=${region||"columbus"}`);
       if (!res.ok) throw new Error();
       const data = await res.json();
       // Build map of player name -> score data from leaderboard
@@ -316,7 +316,7 @@ function PairingsTab({playerId, playerName, tourType, todayEvent, activeEvent: a
   // ── no tournament today — show schedule + pairings if posted ──
   if (!todayEvent) {
     const today2 = new Date().toISOString().split("T")[0];
-    const next4 = (SCHEDULE[tourType]?.filter(t => t.date > today2) || []).slice(0, 4);
+    const next4 = (SCHEDULE_MAP[`${tourType}.${region}`]?.filter(t => t.date > today2) || []).slice(0, 4);
 
     // If pairings are already posted for next event, fall through to full pairings view below
     if (pairings?.posted) {
@@ -484,7 +484,7 @@ function StatChip({label,value,color,bg}){
   );
 }
 
-function SpectatorTab({tourType,todayEvent,activeEvent:watchActiveEvent,nextEvent}){
+function SpectatorTab({tourType,region,todayEvent,activeEvent:watchActiveEvent,nextEvent}){
   const [watchList,      setWatchList]      = useState(()=>ls("gw_watchList",[]));
   const [nameInput,      setNameInput]      = useState("");
   const [watchSuggestions, setWatchSuggestions] = useState([]);
@@ -541,7 +541,7 @@ function SpectatorTab({tourType,todayEvent,activeEvent:watchActiveEvent,nextEven
     if (!watchActiveEvent?.tid) return;
     setLoading(p=>({...p,[name]:true}));
     try{
-      const res=await fetch(`${WORKER_URL}/leaderboard?tid=${watchActiveEvent.tid}&tour=${tourType}`);
+      const res=await fetch(`${WORKER_URL}/leaderboard?tid=${watchActiveEvent.tid}&tour=${tourType}&region=${region||"columbus"}`);
       if(!res.ok) throw new Error();
       const payload=await res.json();
       // Parse raw HTML using global parseLeaderboardHtml from engine.js
@@ -707,13 +707,18 @@ function App(){
   const [selectedTid,   setSelectedTid]   = useState(()=>ls("gw_selectedTid",""));
   const [suggestions,   setSuggestions]   = useState([]);
 
-  const tourType    = (tourKey||"regular.columbus").split(".")[0];
-  const todayEvent  = getTodayTournament(tourType);
-  const nextEvent   = getNextTournament(tourType);
-  const schedule    = SCHEDULE[tourType] || [];
-  // selectedTid overrides auto-detection; fall back to today→next
-  const activeEvent = schedule.find(t=>t.tid===parseInt(selectedTid)||t.tid===selectedTid)
+  // tourKey format: "tourType.region" e.g. "regular.columbus", "senior.cincy"
+  const resolvedKey = tourKey || "regular.columbus";
+  const tourType    = resolvedKey.split(".")[0];
+  const region      = resolvedKey.split(".")[1] || "columbus";
+
+  const schedule    = SCHEDULE_MAP[resolvedKey] || [];
+  const todayEvent  = getTodayTournament(resolvedKey);
+  const nextEvent   = getNextTournament(resolvedKey);
+  const activeEvent = schedule.find(t=>t.tid===parseInt(selectedTid)||t.tid===String(selectedTid))
                    || todayEvent || nextEvent;
+
+  const hasSenior = region !== "cleveland";
 
   useEffect(()=>{lsSet("gw_searchInput",searchInput);},[searchInput]);
   useEffect(()=>{lsSet("gw_playerId",playerId);},[playerId]);
@@ -721,19 +726,31 @@ function App(){
   useEffect(()=>{lsSet("gw_tourKey",tourKey);},[tourKey]);
   useEffect(()=>{lsSet("gw_selectedTid",selectedTid);},[selectedTid]);
 
-  // Local member search — instant, no API needed
-  function searchMembers(val) {
-    if (!val || val.length < 2) { setSuggestions([]); return; }
-    const results = searchMembersLocal(val, tourType);
-    setSuggestions(results);
+  // If on senior.cleveland somehow, correct it
+  useEffect(()=>{
+    if (region==="cleveland" && tourType==="senior") {
+      setTourKey("regular.cleveland");
+      setSelectedTid("");
+    }
+  },[region, tourType]);
+
+  function handleRegionChange(newRegion) {
+    const safeTourType = (newRegion==="cleveland" && tourType==="senior") ? "regular" : tourType;
+    setTourKey(`${safeTourType}.${newRegion}`);
+    setSelectedTid("");
+  }
+
+  function handleTourTypeChange(newTourType) {
+    if (!newTourType) return;
+    setTourKey(`${newTourType}.${region}`);
+    setSelectedTid("");
   }
 
   function handleSearch(val) {
     setSearchInput(val);
     setSuggestions([]);
-    if (!val.trim()) { setPlayerId(""); setPlayerName(""); setSearchLoading(false); return; }
+    if (!val.trim()) { setPlayerId(""); setPlayerName(""); return; }
 
-    // Numeric ID — check hardcoded map first, then accept as-is
     if (/^\d+$/.test(val.trim())) {
       const info = detectRegion(val.trim());
       if (info) {
@@ -748,8 +765,10 @@ function App(){
       return;
     }
 
-    // Name search — instant local lookup
-    searchMembers(val);
+    const q = val.trim().toLowerCase();
+    if (q.length < 2) { setSuggestions([]); return; }
+    // Search all regions
+    setSuggestions(searchMembersLocal(val, null));
   }
 
   function selectSuggestion(s) {
@@ -758,7 +777,6 @@ function App(){
     setPlayerName(s.name);
     setTourKey(`${s.tour}.${s.region||"columbus"}`);
     setSuggestions([]);
-    setSearchLoading(false);
   }
 
   const TABS=[
@@ -767,6 +785,8 @@ function App(){
     {key:"skins",      label:"💰 Skins"},
     {key:"spectator",  label:"👁 Watch"},
   ];
+
+  const regionLabel = REGIONS.find(r=>r.value===region)?.label || region;
 
   return h("div",{className:"fw-root"},
     h("div",{className:"fw-shell-fixed"},
@@ -782,57 +802,79 @@ function App(){
         )
       ),
 
-    // Setup bar
-    h("div",{className:"fw-setup"},
-      h("div",{className:"fw-field"},
-        h("input",{
-          type:"text",
-          placeholder:"e.g. Mansfield or 55097",
-          value:searchInput,
-          onChange:e=>handleSearch(e.target.value),
-          className:"fw-input "+(playerName?"fw-input--valid":"")
-        }),
-        playerName && h("div",{className:"fw-confirm"},
-          "✓ "+playerName+" · ID "+playerId+" · "+( MEMBER_MAP[String(playerId)]?.flight||"") +" Flight"),
-        !playerName && searchInput.length>1 && suggestions.length===0 && !(/^\d+$/.test(searchInput)) &&
-          h("div",{className:"fw-no-match"},"No members found"),
-        suggestions.length>0 && h("div",{className:"fw-dropdown"},
-          suggestions.map(s=>h("div",{key:s.id,
-            onClick:()=>selectSuggestion(s),
-            className:"fw-dropdown-item"},
-            h("span",{className:"fw-dropdown-item-name"},s.name),
-            h("span",{className:"fw-dropdown-item-meta"},s.tour+" · "+s.id)
-          ))
+      // Setup bar — player search + tour type
+      h("div",{className:"fw-setup"},
+        h("div",{className:"fw-field"},
+          h("input",{
+            type:"text",
+            placeholder:"e.g. Mansfield or 55097",
+            value:searchInput,
+            onChange:e=>handleSearch(e.target.value),
+            className:"fw-input "+(playerName?"fw-input--valid":"")
+          }),
+          playerName && h("div",{className:"fw-confirm"},
+            "✓ "+playerName+" · ID "+playerId+" · "+(MEMBER_MAP[String(playerId)]?.flight||"")+" Flt · "+(REGIONS.find(r=>r.value===(MEMBER_MAP[String(playerId)]?.region||region))?.label||region)),
+          !playerName && searchInput.length>1 && suggestions.length===0 && !(/^\d+$/.test(searchInput)) &&
+            h("div",{className:"fw-no-match"},"No members found"),
+          suggestions.length>0 && h("div",{className:"fw-dropdown"},
+            suggestions.map(s=>h("div",{key:s.id+s.tour,
+              onClick:()=>selectSuggestion(s),
+              className:"fw-dropdown-item"},
+              h("span",{className:"fw-dropdown-item-name"},s.name),
+              h("span",{className:"fw-dropdown-item-meta"},
+                h("span",{className:"fw-badge "+(s.tour==="senior"?"fw-badge--sr":"fw-badge--reg")},s.tour==="senior"?"SR":"REG"),
+                " "+s.flight+" · "+(REGIONS.find(r=>r.value===s.region)?.label||s.region)
+              )
+            ))
+          )
+        ),
+        h("div",{style:{flexShrink:0}},
+          h("select",{
+            value:tourType,
+            onChange:e=>handleTourTypeChange(e.target.value),
+            className:"fw-select"
+          },
+            h("option",{value:""},"Tour"),
+            h("option",{value:"regular"},"Regular"),
+            hasSenior && h("option",{value:"senior"},"Senior")
+          )
         )
       ),
-      h("div",{style:{flexShrink:0}},
-        h("select",{value:tourKey,onChange:e=>{setTourKey(e.target.value);setSelectedTid("");},className:"fw-select"},
-          ALL_TOUR_OPTIONS.map(o=>h("option",{key:o.value,value:o.value},o.label))
+
+      // Region selector row
+      h("div",{className:"fw-setup fw-setup--region"},
+        REGIONS.map(r=>
+          h("button",{
+            key:r.value,
+            onClick:()=>handleRegionChange(r.value),
+            className:"fw-region-btn"+(region===r.value?" fw-region-btn--active":"")
+          },r.label)
         )
-      )
-    ),
-    // Tournament selector row
-    h("div",{className:"fw-setup",style:{paddingTop:0,paddingBottom:6}},
-      h("div",{style:{width:"100%",fontSize:11,color:"var(--muted)",fontWeight:700,letterSpacing:"0.04em",marginBottom:4}},"TOURNAMENT"),
-      h("select",{
-        value: selectedTid || (activeEvent?.tid||""),
-        onChange: e=>setSelectedTid(e.target.value),
-        style:{width:"100%",background:"#2c2c2e",color:"#f5f5f7",border:"1px solid rgba(255,255,255,0.12)",
-          borderRadius:6,padding:"6px 8px",fontSize:13,fontFamily:"var(--font-body)"}
-      },
-        schedule.map(t=>h("option",{key:t.tid,value:t.tid},
-          t.date+" · "+t.course
-        ))
-      )
-    ),
+      ),
 
-    // Countdown / today banner
+      // Tournament selector row
+      h("div",{className:"fw-setup",style:{paddingTop:0,paddingBottom:6}},
+        h("div",{style:{width:"100%",fontSize:11,color:"var(--muted)",fontWeight:700,letterSpacing:"0.04em",marginBottom:4}},"TOURNAMENT"),
+        schedule.length===0
+          ? h("div",{className:"fw-status fw-status--muted",style:{fontSize:12,padding:"4px 0"}},
+              "No schedule loaded for "+regionLabel+". Add tids to SCHEDULE_MAP in fairway-data.js.")
+          : h("select",{
+              value: selectedTid || (activeEvent?.tid||""),
+              onChange: e=>setSelectedTid(e.target.value),
+              style:{width:"100%",background:"#2c2c2e",color:"#f5f5f7",border:"1px solid rgba(255,255,255,0.12)",
+                borderRadius:6,padding:"6px 8px",fontSize:13,fontFamily:"var(--font-body)"}
+            },
+              schedule.map(t=>h("option",{key:t.tid,value:t.tid},
+                t.date+" · "+t.course
+              ))
+            )
+      ),
 
-    // Tabs
-    h("div",{className:"fw-tabs"},
-      TABS.map(t=>h("button",{key:t.key,onClick:()=>setTab(t.key),
-        className:"fw-tab "+(tab===t.key?"fw-tab--active":"")},t.label))
-    ),
+      // Tabs
+      h("div",{className:"fw-tabs"},
+        TABS.map(t=>h("button",{key:t.key,onClick:()=>setTab(t.key),
+          className:"fw-tab "+(tab===t.key?"fw-tab--active":"")},t.label))
+      ),
       // Guest banner
       !playerName && h("div",{className:"fw-guest-banner"},
         h("div",{className:"fw-guest-dot"}),
@@ -843,10 +885,11 @@ function App(){
 
     // Scrollable content
     h("div",{className:"fw-shell-scroll"},
-      tab==="pairings"    &&h(PairingsTab,{playerId,playerName,tourType,todayEvent,activeEvent,nextEvent:getNextTournament(tourType)}),
-      tab==="leaderboard" &&h(LeaderboardTab,{playerId,playerName,tourType,todayEvent,activeEvent,nextEvent:getNextTournament(tourType)}),
-      tab==="skins"       &&h(SkinsTab,{playerId,playerName,tourType,todayEvent,activeEvent,nextEvent:getNextTournament(tourType)}),
-      tab==="spectator"   &&h(SpectatorTab,{tourType,todayEvent,activeEvent,nextEvent:getNextTournament(tourType)}),
+      tab==="pairings"    &&h(PairingsTab,{playerId,playerName,tourType,region,todayEvent,activeEvent,nextEvent:getNextTournament(resolvedKey)}),
+      tab==="leaderboard" &&h(LeaderboardTab,{playerId,playerName,tourType,region,todayEvent,activeEvent,nextEvent:getNextTournament(resolvedKey)}),
+      tab==="skins"       &&h(SkinsTab,{playerId,playerName,tourType,region,todayEvent,activeEvent,nextEvent:getNextTournament(resolvedKey)}),
+      tab==="spectator"   &&h(SpectatorTab,{tourType,region,todayEvent,activeEvent,nextEvent:getNextTournament(resolvedKey)}),
+      h("div",{className:"fw-version"},`v${APP_VERSION} · ${BUILD_DATE}`)
     )
   );
 }
