@@ -1,5 +1,6 @@
 // ── caddie-engine.js ──────────────────────────────────────────────────────
-// Pure logic: audio engine, cycle scheduler, WELD calculator, mental tally.
+// Pure logic: audio engine, cycle scheduler, WELD calculator, mental tally,
+// Tiger 5 mistake tracker.
 // Reads from caddie-data.js. No direct DOM writes except via callbacks
 // passed in from caddie-app.js (onPhase, onCycleEnd).
 // ─────────────────────────────────────────────────────────────────────────
@@ -220,7 +221,6 @@ function mentalLoad() {
     const raw = localStorage.getItem(MENTAL_KEY);
     if (raw) shots = JSON.parse(raw);
   } catch (e) {
-    // localStorage blocked (private mode etc.) — fall back to sessionStorage
     try {
       const raw = sessionStorage.getItem(MENTAL_KEY);
       if (raw) shots = JSON.parse(raw);
@@ -258,4 +258,40 @@ function mentalTally() {
     if (s[k] !== null) { total++; if (s[k]) yes++; else no++; }
   }));
   return { yes, no, total, shots: shots.length, pct: total > 0 ? Math.round((yes / total) * 100) : null };
+}
+
+// ── TIGER 5 STATE & LOGIC ─────────────────────────────────────────────────
+const TIGER5_KEY = 'caddie_tiger5';
+const TIGER5_KEYS = ['threeputt', 'doubles', 'par5bogey', 'bogey150', 'doublechip'];
+
+let tiger5 = { threeputt: 0, doubles: 0, par5bogey: 0, bogey150: 0, doublechip: 0 };
+
+function tiger5Load() {
+  try {
+    const raw = localStorage.getItem(TIGER5_KEY);
+    if (raw) tiger5 = Object.assign({ threeputt: 0, doubles: 0, par5bogey: 0, bogey150: 0, doublechip: 0 }, JSON.parse(raw));
+  } catch (e) {
+    try {
+      const raw = sessionStorage.getItem(TIGER5_KEY);
+      if (raw) tiger5 = Object.assign({ threeputt: 0, doubles: 0, par5bogey: 0, bogey150: 0, doublechip: 0 }, JSON.parse(raw));
+    } catch (_) {}
+  }
+}
+
+function tiger5Save() {
+  const data = JSON.stringify(tiger5);
+  try {
+    localStorage.setItem(TIGER5_KEY, data);
+  } catch (e) {
+    try { sessionStorage.setItem(TIGER5_KEY, data); } catch (_) {}
+  }
+}
+
+function tiger5Clear() {
+  TIGER5_KEYS.forEach(k => { tiger5[k] = 0; });
+  tiger5Save();
+}
+
+function tiger5Tally() {
+  return TIGER5_KEYS.reduce((sum, k) => sum + tiger5[k], 0);
 }

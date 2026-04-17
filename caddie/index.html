@@ -28,9 +28,10 @@
   </header>
 
   <div class="tab-strip">
-    <button class="tab-btn active" id="tab-tempo"  onclick="switchTab('tempo')">Tempo</button>
-    <button class="tab-btn"        id="tab-weld"   onclick="switchTab('weld')">WELD</button>
-    <button class="tab-btn"        id="tab-mental" onclick="switchTab('mental')">Mental</button>
+    <button class="tab-btn active" id="tab-tempo"    onclick="switchTab('tempo')">Tempo</button>
+    <button class="tab-btn"        id="tab-weld"     onclick="switchTab('weld')">WELD</button>
+    <button class="tab-btn"        id="tab-mental"   onclick="switchTab('mental')">Mental</button>
+    <button class="tab-btn"        id="tab-strategy" onclick="switchTab('strategy')">Strategy</button>
   </div>
 
   <!-- ═══ TEMPO SCREEN ═══════════════════════════════════════════════════ -->
@@ -260,7 +261,205 @@
         <div class="shot-list" id="shot-list"></div>
       </div>
 
+      <!-- ── TIGER 5 ─────────────────────────────────────────────────── -->
+      <div class="card">
+        <div class="card-label">Tiger 5 — Mistake Tracker</div>
+        <div class="tiger5-total-row">
+          <span class="tiger5-total-label">Total Mistakes</span>
+          <span class="tiger5-total-value" id="tiger5-total">0</span>
+        </div>
+        <div class="tiger5-list">
+          <div class="tiger5-row">
+            <span class="tiger5-name">Three-Putts</span>
+            <div class="tiger5-counter">
+              <span class="tiger5-count" id="t5-threeputt">0</span>
+              <button class="tiger5-btn" onclick="tiger5Increment('threeputt')">+</button>
+            </div>
+          </div>
+          <div class="tiger5-row">
+            <span class="tiger5-name">Doubles</span>
+            <div class="tiger5-counter">
+              <span class="tiger5-count" id="t5-doubles">0</span>
+              <button class="tiger5-btn" onclick="tiger5Increment('doubles')">+</button>
+            </div>
+          </div>
+          <div class="tiger5-row">
+            <span class="tiger5-name">Par 5 Bogeys</span>
+            <div class="tiger5-counter">
+              <span class="tiger5-count" id="t5-par5bogey">0</span>
+              <button class="tiger5-btn" onclick="tiger5Increment('par5bogey')">+</button>
+            </div>
+          </div>
+          <div class="tiger5-row">
+            <span class="tiger5-name">Bogey Inside 150</span>
+            <div class="tiger5-counter">
+              <span class="tiger5-count" id="t5-bogey150">0</span>
+              <button class="tiger5-btn" onclick="tiger5Increment('bogey150')">+</button>
+            </div>
+          </div>
+          <div class="tiger5-row" style="border-bottom:none;">
+            <span class="tiger5-name">Double Chips</span>
+            <div class="tiger5-counter">
+              <span class="tiger5-count" id="t5-doublechip">0</span>
+              <button class="tiger5-btn" onclick="tiger5Increment('doublechip')">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <button class="clear-btn" onclick="clearMental()">Clear Round</button>
+
+      <footer>kmansgolf · The Caddie — prototype</footer>
+    </main>
+  </div>
+
+  <!-- ═══ STRATEGY SCREEN ════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-strategy">
+    <main>
+
+      <div>
+        <div class="page-title">Course <span>Strategy</span></div>
+        <div class="page-sub">DECADE · BROADIE · FAWCETT</div>
+      </div>
+
+      <!-- Tee Shot Rules -->
+      <div class="card strat-card">
+        <button class="strat-header" onclick="toggleStrat('tee')">
+          <span class="strat-title">🏌️ Tee Shot Rules</span>
+          <span class="strat-chevron" id="strat-chevron-tee">›</span>
+        </button>
+        <div class="strat-body" id="strat-body-tee">
+          <div class="strat-rule">
+            <div class="strat-rule-label">Default Club</div>
+            <div class="strat-rule-text">Driver is the default. Only move down if a specific penalty requires it — don't leave driver in the bag out of comfort.</div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">Hazard Hierarchy</div>
+            <div class="strat-rule-text">Avoid in order of severity:</div>
+            <div class="strat-hierarchy">
+              <div class="strat-tier strat-tier-ob">OB / Lost Ball</div>
+              <div class="strat-tier strat-tier-water">Water</div>
+              <div class="strat-tier strat-tier-trees">Trees</div>
+              <div class="strat-tier strat-tier-bunker">Bunker</div>
+              <div class="strat-tier strat-tier-rough">Rough</div>
+            </div>
+          </div>
+          <div class="strat-rule" style="border-bottom:none;">
+            <div class="strat-rule-label">Death Zone</div>
+            <div class="strat-rule-text">60–70 yards is the hardest distance in golf. Shape your tee shot to avoid leaving full swings into this range — favor inside 50 or outside 80.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Approach Targets -->
+      <div class="card strat-card">
+        <button class="strat-header" onclick="toggleStrat('approach')">
+          <span class="strat-title">🎯 Approach Targets</span>
+          <span class="strat-chevron" id="strat-chevron-approach">›</span>
+        </button>
+        <div class="strat-body" id="strat-body-approach">
+          <div class="strat-rule">
+            <div class="strat-rule-label">Pin System</div>
+            <div class="strat-pins">
+              <div class="strat-pin strat-pin-green">
+                <span class="strat-pin-dot"></span>
+                <div>
+                  <div class="strat-pin-name">Green</div>
+                  <div class="strat-pin-desc">Attack the flag. Short side miss acceptable.</div>
+                </div>
+              </div>
+              <div class="strat-pin strat-pin-yellow">
+                <span class="strat-pin-dot"></span>
+                <div>
+                  <div class="strat-pin-name">Yellow</div>
+                  <div class="strat-pin-desc">Aim middle of green. Give yourself a putt.</div>
+                </div>
+              </div>
+              <div class="strat-pin strat-pin-red">
+                <span class="strat-pin-dot"></span>
+                <div>
+                  <div class="strat-pin-name">Red</div>
+                  <div class="strat-pin-desc">Aim away from trouble. Bogey is fine here.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">70/30 Rule</div>
+            <div class="strat-rule-text">Plan for your average shot, not your best. 70% of approach shots should find the green safely. Reserve the aggressive line for truly attackable pins.</div>
+          </div>
+          <div class="strat-rule" style="border-bottom:none;">
+            <div class="strat-rule-label">Never Short-Side</div>
+            <div class="strat-rule-text">A short-sided miss is the worst result — no green, no angle, no shot. Miss on the fat side every time.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expectation Check -->
+      <div class="card strat-card">
+        <button class="strat-header" onclick="toggleStrat('expect')">
+          <span class="strat-title">📊 Expectation Check</span>
+          <span class="strat-chevron" id="strat-chevron-expect">›</span>
+        </button>
+        <div class="strat-body" id="strat-body-expect">
+          <div class="strat-rule">
+            <div class="strat-rule-label">Make % by Distance (Broadie)</div>
+            <div class="strat-make-table">
+              <div class="strat-make-row strat-make-header">
+                <span>Distance</span><span>Make %</span><span>Avg Proximity</span>
+              </div>
+              <div class="strat-make-row">
+                <span>3 ft</span><span class="strat-make-pct high">96%</span><span>—</span>
+              </div>
+              <div class="strat-make-row">
+                <span>5 ft</span><span class="strat-make-pct high">77%</span><span>—</span>
+              </div>
+              <div class="strat-make-row">
+                <span>8 ft</span><span class="strat-make-pct mid">50%</span><span>—</span>
+              </div>
+              <div class="strat-make-row">
+                <span>10 ft</span><span class="strat-make-pct mid">40%</span><span>—</span>
+              </div>
+              <div class="strat-make-row">
+                <span>15 ft</span><span class="strat-make-pct low">25%</span><span>—</span>
+              </div>
+              <div class="strat-make-row">
+                <span>20 ft</span><span class="strat-make-pct low">16%</span><span>—</span>
+              </div>
+              <div class="strat-make-row">
+                <span>30 ft</span><span class="strat-make-pct low">8%</span><span>—</span>
+              </div>
+            </div>
+          </div>
+          <div class="strat-rule" style="border-bottom:none;">
+            <div class="strat-rule-label">Proximity Reality (Tour avg from 150 yds)</div>
+            <div class="strat-rule-text">~20 feet. Amateur average is closer to 35–40 feet. Plan your two-putt. A made birdie putt from 20 ft is a bonus, not the expectation.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recovery Decision -->
+      <div class="card strat-card">
+        <button class="strat-header" onclick="toggleStrat('recovery')">
+          <span class="strat-title">🌲 Recovery Decision</span>
+          <span class="strat-chevron" id="strat-chevron-recovery">›</span>
+        </button>
+        <div class="strat-body" id="strat-body-recovery">
+          <div class="strat-rule">
+            <div class="strat-rule-label">100-Yard Rule</div>
+            <div class="strat-rule-text">From trouble, your goal is to get within 100 yards — not to the green. A 60% chance of recovery that leaves you 100 out beats a 30% chance at the green that risks a double.</div>
+          </div>
+          <div class="strat-rule" style="border-bottom:none;">
+            <div class="strat-rule-label">Punch Out Logic</div>
+            <div class="strat-rule-text">If your lie requires more than a 25° angle change from the target line, punch out sideways. The smartest bogey beats the costly double every time.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Credit footer -->
+      <div class="strat-credit">
+        Strategy principles based on Scott Fawcett's DECADE system (<span style="color:var(--gr)">decade.golf</span>) and Mark Broadie's strokes gained research.
+      </div>
 
       <footer>kmansgolf · The Caddie — prototype</footer>
     </main>

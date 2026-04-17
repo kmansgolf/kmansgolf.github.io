@@ -5,7 +5,7 @@
 
 // ── TAB NAV ───────────────────────────────────────────────────────────────
 function switchTab(tab) {
-  ['tempo','weld','mental'].forEach(t => {
+  ['tempo','weld','mental','strategy'].forEach(t => {
     document.getElementById('tab-'    + t).classList.toggle('active', t === tab);
     document.getElementById('screen-' + t).classList.toggle('active', t === tab);
   });
@@ -191,18 +191,21 @@ function cycleToggle(key) {
 function logShot() {
   if (!mentalLog()) return;
   _renderMental();
-  // Reset toggle button states
   ['calc','create','execute'].forEach(k =>
     document.getElementById(k + '-btn').classList.remove('yes','no'));
 }
 
 function clearMental() {
-  if (!shots.length) return;
-  if (!confirm('Clear all shots for this round?')) return;
+  const hasMental = shots.length > 0;
+  const hasTiger5 = tiger5Tally() > 0;
+  if (!hasMental && !hasTiger5) return;
+  if (!confirm('Clear Mental Scorecard and Tiger 5 for this round?')) return;
   mentalClear();
+  tiger5Clear();
   ['calc','create','execute'].forEach(k =>
     document.getElementById(k + '-btn').classList.remove('yes','no'));
   _renderMental();
+  _renderTiger5();
 }
 
 function _renderMental() {
@@ -234,6 +237,33 @@ function _renderMental() {
   }).join('');
 }
 
+// ── TIGER 5 UI ────────────────────────────────────────────────────────────
+// HTML calls this; it delegates to the engine then re-renders.
+// Engine's tiger5Increment is defined in caddie-engine.js and does the
+// actual state mutation + save. We shadow-call it here by inlining
+// to avoid a naming collision (both files used the same name originally).
+function tiger5Increment(key) {
+  if (!(key in tiger5)) return;
+  tiger5[key]++;
+  tiger5Save();
+  _renderTiger5();
+}
+
+function _renderTiger5() {
+  ['threeputt','doubles','par5bogey','bogey150','doublechip'].forEach(k => {
+    document.getElementById('t5-' + k).textContent = tiger5[k];
+  });
+  document.getElementById('tiger5-total').textContent = tiger5Tally();
+}
+
+// ── STRATEGY UI ───────────────────────────────────────────────────────────
+function toggleStrat(section) {
+  const body    = document.getElementById('strat-body-' + section);
+  const chevron = document.getElementById('strat-chevron-' + section);
+  const isOpen  = body.classList.toggle('open');
+  chevron.textContent = isOpen ? '˅' : '›';
+}
+
 // ── THEME ─────────────────────────────────────────────────────────────────
 function applyTheme(t) {
   const isLight = t === 'light';
@@ -250,8 +280,10 @@ function toggleTheme() {
 // ── INIT ──────────────────────────────────────────────────────────────────
 (function init() {
   mentalLoad();
+  tiger5Load();
   buildPresetGrid();
   updateDisplay();
   applyTheme(localStorage.getItem('range_theme') || 'dark');
   _renderMental();
+  _renderTiger5();
 })();
