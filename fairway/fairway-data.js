@@ -117,13 +117,13 @@ const COURSES = {
     {h:13,par:3,yds:170,hcp:16},{h:14,par:4,yds:400,hcp:6},{h:15,par:4,yds:380,hcp:10},
     {h:16,par:3,yds:160,hcp:18},{h:17,par:5,yds:515,hcp:4},{h:18,par:4,yds:385,hcp:14},
   ]},
-  "NCR South":                 {par:70,yardage:6720,rating:72.5,slope:133,holes:[
-    {h:1,par:4,yds:410,hcp:5},{h:2,par:5,yds:530,hcp:1},{h:3,par:3,yds:180,hcp:13},
-    {h:4,par:4,yds:395,hcp:7},{h:5,par:4,yds:385,hcp:9},{h:6,par:4,yds:375,hcp:11},
-    {h:7,par:4,yds:370,hcp:3},{h:8,par:4,yds:365,hcp:15},{h:9,par:3,yds:160,hcp:17},
-    {h:10,par:4,yds:400,hcp:6},{h:11,par:3,yds:170,hcp:14},{h:12,par:5,yds:520,hcp:2},
-    {h:13,par:3,yds:155,hcp:18},{h:14,par:4,yds:390,hcp:8},{h:15,par:4,yds:380,hcp:10},
-    {h:16,par:4,yds:370,hcp:12},{h:17,par:4,yds:360,hcp:16},{h:18,par:4,yds:355,hcp:4},
+  "NCR South":                 {par:71,holes:[
+    {h:1,par:4,yds:452},{h:2,par:3,yds:174},{h:3,par:4,yds:432},
+    {h:4,par:4,yds:390},{h:5,par:5,yds:558},{h:6,par:5,yds:552},
+    {h:7,par:4,yds:428},{h:8,par:3,yds:172},{h:9,par:4,yds:441},
+    {h:10,par:5,yds:548},{h:11,par:4,yds:383},{h:12,par:4,yds:460},
+    {h:13,par:3,yds:204},{h:14,par:4,yds:401},{h:15,par:3,yds:234},
+    {h:16,par:4,yds:453},{h:17,par:4,yds:352},{h:18,par:4,yds:421},
   ]},
   "The Virtues Golf Club":     {par:72,yardage:7243,rating:75.1,slope:138,holes:[
     {h:1,par:4,yds:435,hcp:9},{h:2,par:4,yds:420,hcp:5},{h:3,par:4,yds:410,hcp:11},
@@ -222,17 +222,6 @@ const COURSES = {
     {h:16,par:5,yds:512,hcp:4},{h:17,par:4,yds:375,hcp:6},{h:18,par:4,yds:372,hcp:14},
   ]},
   "The Lakes Golf & CC":       {par:72,yardage:7140,rating:74.8,slope:139,private:true,holes:[]},
-  // NCR Country Club — North Course (Kettering, OH)
-  // Senior Tour tees: White/Blue combo ~6,400 yds
-  // Source: Official USGA course database / NCR scorecard
-  "NCR Country Club (North)":  {par:70,yardage:6411,rating:71.2,slope:130,holes:[
-    {h:1, par:4,yds:385,hcp:9 },{h:2, par:4,yds:355,hcp:13},{h:3, par:4,yds:390,hcp:5 },
-    {h:4, par:3,yds:165,hcp:17},{h:5, par:4,yds:420,hcp:1 },{h:6, par:5,yds:510,hcp:3 },
-    {h:7, par:3,yds:185,hcp:15},{h:8, par:4,yds:375,hcp:11},{h:9, par:4,yds:370,hcp:7 },
-    {h:10,par:4,yds:380,hcp:10},{h:11,par:4,yds:395,hcp:2 },{h:12,par:3,yds:155,hcp:18},
-    {h:13,par:5,yds:515,hcp:4 },{h:14,par:3,yds:160,hcp:16},{h:15,par:4,yds:385,hcp:6 },
-    {h:16,par:4,yds:375,hcp:14},{h:17,par:5,yds:505,hcp:8 },{h:18,par:4,yds:382,hcp:12},
-  ]},
 };
 
 const COURSE_COORDS = {
@@ -254,20 +243,13 @@ const COURSE_COORDS = {
   "The Lakes Golf & CC":       {lat:40.0751,lng:-82.8459},
 };
 
-// NCR North added to COURSE_COORDS via edit above — appending separately
-// (The str_replace above added it to COURSES object already)
-// Add to COURSE_COORDS object by appending here:
-COURSE_COORDS["NCR Country Club (North)"] = {lat:39.6934,lng:-84.1698};
-
 // ── SCHEDULE — CINCY/DAYTON ───────────────────────────────────────────────────
-// TODO: Populate from senioramateurgolftour.net/cincy_tour_pages and
-//       amateurgolftour.net/cincinnati_tour_pages schedule pages
-// Format: {date:"YYYY-MM-DD", course:"Course Name", tid:12345}
 const CINCY_SCHEDULE = {
-  regular: [],
+  regular: [
+    {date:"2026-04-20",course:"NCR South",tid:17992,time:"8:00 AM"},
+  ],
   senior: [
-    // NCR tournament coming up — add tid once you have it from the tour page:
-    // {date:"2026-04-19", course:"NCR Country Club (North)", tid:XXXXX},
+    {date:"2026-04-20",course:"NCR South",tid:6335,time:"2:00 PM"},
   ],
 };
 
