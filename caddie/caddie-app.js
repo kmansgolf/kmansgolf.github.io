@@ -95,6 +95,11 @@ function logShot() {
   _renderMental();
   ['calc','create','execute'].forEach(k =>
     document.getElementById(k + '-btn').classList.remove('yes','no'));
+  // explicitly collapse all accordion sections after logging
+  ACC_KEYS.forEach(k => {
+    document.getElementById('acc-body-'    + k).classList.remove('open');
+    document.getElementById('acc-chevron-' + k).textContent = '›';
+  });
 }
 
 function clearMental() {
