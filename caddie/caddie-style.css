@@ -1,3 +1,4 @@
+/* © 2026 Kevin Mansfield. All rights reserved. */
 /* ── caddie-style.css ────────────────────────────────────────────────────── */
 
 /* ── TOKENS ─────────────────────────────────────────────────────────── */
@@ -191,7 +192,7 @@ main {
 
 .acc-title {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--w);
@@ -216,7 +217,7 @@ main {
 }
 .acc-body.open {
   max-height: 1200px; /* large enough for WELD content */
-  padding: 16px 20px 20px;
+  padding: 20px 20px 24px;
   border-top-color: rgba(255,255,255,0.07);
 }
 [data-theme="light"] .acc-body.open { border-top-color: rgba(0,0,0,0.07); }
@@ -559,30 +560,32 @@ footer {
 }
 [data-theme="light"] .strat-body.open { border-top-color: rgba(0,0,0,0.07); }
 .strat-rule {
-  padding: 14px 0;
-  border-bottom: 0.5px solid rgba(255,255,255,0.06);
+  padding: 16px 0;
+  border-bottom: 0.5px solid rgba(255,255,255,0.08);
 }
 [data-theme="light"] .strat-rule { border-bottom-color: rgba(0,0,0,0.06); }
 .strat-rule-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--d);
-  margin-bottom: 8px;
+  color: var(--gr);
+  margin-bottom: 6px;
 }
 .strat-rule-text {
   font-family: 'Barlow', sans-serif;
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 1.6;
   color: var(--w);
+  opacity: 0.9;
 }
 .strat-hierarchy { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
 .strat-tier {
-  padding: 8px 14px;
-  border-radius: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
@@ -605,16 +608,17 @@ footer {
 .strat-pin-red    .strat-pin-dot { background: var(--err); }
 .strat-pin-name {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
+  letter-spacing: 0.02em;
   color: var(--w);
 }
 .strat-pin-desc {
   font-family: 'Barlow', sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--d);
-  margin-top: 2px;
-  line-height: 1.4;
+  margin-top: 3px;
+  line-height: 1.45;
 }
 .strat-make-table { display: flex; flex-direction: column; gap: 0; margin-top: 10px; }
 .strat-make-row {
@@ -691,16 +695,18 @@ footer {
 [data-theme="light"] .help-section { border-bottom-color: rgba(0,0,0,0.07); }
 .help-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .help-section-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--d);
+  color: var(--gr);
   margin-bottom: 6px;
 }
 .help-text {
   font-family: 'Barlow', sans-serif;
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 1.6;
   color: var(--w);
+  opacity: 0.9;
 }
