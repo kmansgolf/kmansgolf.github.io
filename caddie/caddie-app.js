@@ -5,128 +5,10 @@
 
 // ── TAB NAV ───────────────────────────────────────────────────────────────
 function switchTab(tab) {
-  ['tempo','weld','mental','strategy'].forEach(t => {
+  ['weld','mental','strategy'].forEach(t => {
     document.getElementById('tab-'    + t).classList.toggle('active', t === tab);
     document.getElementById('screen-' + t).classList.toggle('active', t === tab);
   });
-  if (tab !== 'tempo' && (playing || countingIn)) _stopAll();
-}
-
-// ── TEMPO UI ──────────────────────────────────────────────────────────────
-function setMode(m) {
-  const wasPlaying = playing || countingIn;
-  if (wasPlaying) _stopAll();
-  mode = m;
-  ['full','short','putt'].forEach(id =>
-    document.getElementById('mode-' + id).classList.toggle('active', id === m));
-  presetIdx = Math.min(presetIdx, PRESETS[m].length - 1);
-  buildPresetGrid();
-  updateDisplay();
-  if (wasPlaying) setTimeout(togglePlay, 120);
-}
-
-function buildPresetGrid() {
-  const grid = document.getElementById('preset-grid');
-  grid.innerHTML = PRESETS[mode].map((p, i) => `
-    <button class="preset-btn ${i === presetIdx ? 'active' : ''}"
-            onclick="selectPreset(${i})">
-      <span class="preset-btn-name">${p.name}</span>
-      <span class="preset-btn-time">${p.total.toFixed(2)}s</span>
-    </button>
-  `).join('');
-}
-
-function selectPreset(i) {
-  const wasPlaying = playing || countingIn;
-  if (wasPlaying) _stopAll();
-  presetIdx = i;
-  buildPresetGrid();
-  updateDisplay();
-  if (wasPlaying) setTimeout(togglePlay, 120);
-}
-
-function onGapSlider(val) {
-  restGap = parseFloat(val);
-  document.getElementById('gap-display').textContent = restGap.toFixed(1) + 's';
-}
-
-function updateDisplay() {
-  const total  = getTotalTime();
-  const backMs = Math.round(getBackTime() * 1000);
-  const downMs = Math.round(getDownTime() * 1000);
-  const ratio  = getRatio();
-  const preset = PRESETS[mode][presetIdx];
-  document.getElementById('swing-time-display').textContent = total.toFixed(2);
-  document.getElementById('swing-time-tag').textContent     = preset.name;
-  document.getElementById('detail-back').textContent        = backMs;
-  document.getElementById('detail-down').textContent        = downMs;
-  document.getElementById('detail-ratio').textContent       = ratio + ':1';
-}
-
-// Phase UI
-function _setPhaseUI(phase) {
-  const map = { takeaway:'phase-takeaway', top:'phase-top', impact:'phase-impact', rest:'phase-rest' };
-  ['phase-takeaway','phase-top','phase-impact','phase-rest'].forEach(id =>
-    document.getElementById(id).classList.remove('active-phase'));
-  if (map[phase]) document.getElementById(map[phase]).classList.add('active-phase');
-}
-
-function _clearPhaseUI() {
-  ['phase-takeaway','phase-top','phase-impact','phase-rest'].forEach(id =>
-    document.getElementById(id).classList.remove('active-phase'));
-}
-
-// Play / Stop
-function togglePlay() {
-  if (countingIn) { _stopAll(); return; }
-
-  playing = !playing;
-
-  if (playing) {
-    getAudioCtx().resume().then(() => {
-      _setCountinUI(true);
-      startCountin((firstBeat) => {
-        _setCountinUI(false);
-        document.getElementById('play-btn').classList.add('playing');
-        scheduleCycle(firstBeat, _setPhaseUI);
-      });
-    });
-  } else {
-    _stopAll();
-  }
-}
-
-function _stopAll() {
-  if (countingIn) cancelCountin();
-  stopCycle();
-  playing = false;
-  _clearPhaseUI();
-  _setCountinUI(false);
-  const btn = document.getElementById('play-btn');
-  btn.classList.remove('playing','counting');
-  document.getElementById('play-label').textContent = 'Start';
-  document.getElementById('play-icon-svg').innerHTML =
-    '<polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>';
-}
-
-function _setCountinUI(active) {
-  const badge = document.getElementById('countin-badge');
-  const pdisp = document.getElementById('phase-display');
-  const btn   = document.getElementById('play-btn');
-  const label = document.getElementById('play-label');
-  if (active) {
-    badge.classList.add('visible');
-    pdisp.style.opacity = '0.3';
-    btn.classList.add('counting');
-    btn.classList.remove('playing');
-    label.textContent = 'Stop';
-    document.getElementById('play-icon-svg').innerHTML =
-      '<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
-  } else {
-    badge.classList.remove('visible');
-    pdisp.style.opacity = '1';
-    btn.classList.remove('counting');
-  }
 }
 
 // ── WELD UI ───────────────────────────────────────────────────────────────
@@ -238,10 +120,6 @@ function _renderMental() {
 }
 
 // ── TIGER 5 UI ────────────────────────────────────────────────────────────
-// HTML calls this; it delegates to the engine then re-renders.
-// Engine's tiger5Increment is defined in caddie-engine.js and does the
-// actual state mutation + save. We shadow-call it here by inlining
-// to avoid a naming collision (both files used the same name originally).
 function tiger5Increment(key) {
   if (!(key in tiger5)) return;
   tiger5[key]++;
@@ -281,8 +159,6 @@ function toggleTheme() {
 (function init() {
   mentalLoad();
   tiger5Load();
-  buildPresetGrid();
-  updateDisplay();
   applyTheme(localStorage.getItem('range_theme') || 'dark');
   _renderMental();
   _renderTiger5();
