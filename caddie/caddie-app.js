@@ -5,10 +5,30 @@
 
 // ── TAB NAV ───────────────────────────────────────────────────────────────
 function switchTab(tab) {
-  ['weld','mental','strategy'].forEach(t => {
+  ['round','reference'].forEach(t => {
     document.getElementById('tab-'    + t).classList.toggle('active', t === tab);
     document.getElementById('screen-' + t).classList.toggle('active', t === tab);
   });
+}
+
+// ── ACCORDION ─────────────────────────────────────────────────────────────
+// 'awareness' is pinned — never touched by toggleAcc
+const ACC_KEYS = ['tee','weld','recovery','approach','logshot'];
+
+function toggleAcc(key) {
+  const isOpen = document.getElementById('acc-body-' + key).classList.contains('open');
+
+  // collapse all
+  ACC_KEYS.forEach(k => {
+    document.getElementById('acc-body-'    + k).classList.remove('open');
+    document.getElementById('acc-chevron-' + k).textContent = '›';
+  });
+
+  // open target if it wasn't already open
+  if (!isOpen) {
+    document.getElementById('acc-body-'    + key).classList.add('open');
+    document.getElementById('acc-chevron-' + key).textContent = '˅';
+  }
 }
 
 // ── WELD UI ───────────────────────────────────────────────────────────────
@@ -92,31 +112,38 @@ function clearMental() {
 
 function _renderMental() {
   const t = mentalTally();
-  document.getElementById('tally-shots').textContent = t.shots;
-  document.getElementById('tally-yes').textContent   = t.yes;
-  document.getElementById('tally-no').textContent    = t.no;
-  document.getElementById('tally-pct').textContent   = t.pct !== null ? t.pct + '%' : '—';
+  // tally IDs still exist in data but tally display is not in 3a UI — guard safely
+  const tallyPct   = document.getElementById('tally-pct');
+  const tallyShots = document.getElementById('tally-shots');
+  const tallyYes   = document.getElementById('tally-yes');
+  const tallyNo    = document.getElementById('tally-no');
+  if (tallyPct)   tallyPct.textContent   = t.pct !== null ? t.pct + '%' : '—';
+  if (tallyShots) tallyShots.textContent = t.shots;
+  if (tallyYes)   tallyYes.textContent   = t.yes;
+  if (tallyNo)    tallyNo.textContent    = t.no;
 
   const list = document.getElementById('shot-list');
   const card = document.getElementById('shot-list-card');
-  card.style.display = shots.length ? '' : 'none';
+  if (card) card.style.display = shots.length ? '' : 'none';
 
-  const labels = { calc:'C', create:'Cr', execute:'E' };
-  list.innerHTML = shots.slice().reverse().map((s, ri) => {
-    const i      = shots.length - ri;
-    const keys   = ['calc','create','execute'];
-    const badges = keys
-      .filter(k => s[k] !== null)
-      .map(k => `<span class="shot-badge ${s[k] ? 'y' : 'n'}">${labels[k]} ${s[k] ? 'Y' : 'N'}</span>`)
-      .join('');
-    const yes = keys.filter(k => s[k] === true).length;
-    const tot = keys.filter(k => s[k] !== null).length;
-    return `<div class="shot-item">
-      <span class="shot-num">#${i}</span>
-      <div class="shot-badges">${badges}</div>
-      <span class="shot-score">${yes}/${tot}</span>
-    </div>`;
-  }).join('');
+  if (list) {
+    const labels = { calc:'C', create:'Cr', execute:'E' };
+    list.innerHTML = shots.slice().reverse().map((s, ri) => {
+      const i      = shots.length - ri;
+      const keys   = ['calc','create','execute'];
+      const badges = keys
+        .filter(k => s[k] !== null)
+        .map(k => `<span class="shot-badge ${s[k] ? 'y' : 'n'}">${labels[k]} ${s[k] ? 'Y' : 'N'}</span>`)
+        .join('');
+      const yes = keys.filter(k => s[k] === true).length;
+      const tot = keys.filter(k => s[k] !== null).length;
+      return `<div class="shot-item">
+        <span class="shot-num">#${i}</span>
+        <div class="shot-badges">${badges}</div>
+        <span class="shot-score">${yes}/${tot}</span>
+      </div>`;
+    }).join('');
+  }
 }
 
 // ── TIGER 5 UI ────────────────────────────────────────────────────────────
@@ -134,12 +161,13 @@ function _renderTiger5() {
   document.getElementById('tiger5-total').textContent = tiger5Tally();
 }
 
-// ── STRATEGY UI ───────────────────────────────────────────────────────────
-function toggleStrat(section) {
-  const body    = document.getElementById('strat-body-' + section);
-  const chevron = document.getElementById('strat-chevron-' + section);
-  const isOpen  = body.classList.toggle('open');
-  chevron.textContent = isOpen ? '˅' : '›';
+// ── HELP MODAL ────────────────────────────────────────────────────────────
+function openHelpModal() {
+  document.getElementById('help-modal').classList.add('active');
+}
+
+function closeHelpModal() {
+  document.getElementById('help-modal').classList.remove('active');
 }
 
 // ── THEME ─────────────────────────────────────────────────────────────────
