@@ -296,6 +296,22 @@ main {
   text-align: center;
 }
 
+/* ── WELD FORMULA LINE ───────────────────────────────────────────────── */
+.weld-formula {
+  margin-top: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--d);
+  text-align: center;
+  letter-spacing: 0.04em;
+  min-height: 16px;
+}
+
+/* ── CROSS DIR ROW ───────────────────────────────────────────────────── */
+#cross-dir-row {
+  padding-top: 4px;
+}
+
 /* ── MENTAL / LOG SHOT ───────────────────────────────────────────────── */
 .toggle-btn {
   flex: 1;

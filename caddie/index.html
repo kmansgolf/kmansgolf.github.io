@@ -1,3 +1,4 @@
+<!-- © 2026 Kevin Mansfield. All rights reserved. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,6 +92,16 @@
                 <button class="seg-btn"        id="wind-cross" onclick="uiSetWindDir('cross')">Cross</button>
                 <button class="seg-btn"        id="wind-none"  onclick="uiSetWindDir('none')">None</button>
               </div>
+
+              <!-- Diagonal modifier — shown only when Cross is active -->
+              <div id="cross-dir-row" style="display:none; margin-top:8px;">
+                <div class="weld-label">Wind Angle</div>
+                <div class="seg-row" style="margin-top:6px;">
+                  <button class="seg-btn active" id="crossdir-none" onclick="uiSetCrossDir('none')">Pure Cross</button>
+                  <button class="seg-btn"        id="crossdir-head" onclick="uiSetCrossDir('head')">Cross-Into</button>
+                  <button class="seg-btn"        id="crossdir-tail" onclick="uiSetCrossDir('tail')">Cross-With</button>
+                </div>
+              </div>
               <div class="weld-label" style="margin-top:10px;">Speed (mph)</div>
               <input type="number" class="weld-field" id="w-wind"
                      placeholder="0" min="0" max="40" inputmode="numeric"
@@ -131,6 +142,7 @@
             </div>
             <div class="weld-breakdown" id="weld-breakdown"></div>
             <div class="weld-aim-note"  id="weld-aim-note"></div>
+            <div class="weld-formula"   id="weld-formula"></div>
           </div>
 
           <button class="weld-reset-btn" onclick="resetWeld()">↺ Reset</button>

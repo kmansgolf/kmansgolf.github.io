@@ -1,3 +1,4 @@
+// © 2026 Kevin Mansfield. All rights reserved.
 // ── caddie-app.js ─────────────────────────────────────────────────────────
 // UI layer: event handlers, DOM updates, tab switching, theme, init.
 // Depends on caddie-data.js and caddie-engine.js.
@@ -45,6 +46,20 @@ function uiSetWindDir(d) {
   setWindDir(d);
   ['head','tail','cross','none'].forEach(id =>
     document.getElementById('wind-' + id).classList.toggle('active', id === d));
+
+  // Show diagonal toggle only when Cross is selected
+  const crossRow = document.getElementById('cross-dir-row');
+  if (crossRow) crossRow.style.display = d === 'cross' ? 'block' : 'none';
+
+  // Reset cross dir to 'none' when switching away from Cross
+  if (d !== 'cross') {
+    setCrossDir('none');
+    ['none','head','tail'].forEach(id => {
+      const btn = document.getElementById('crossdir-' + id);
+      if (btn) btn.classList.toggle('active', id === 'none');
+    });
+  }
+
   _renderWeld();
 }
 
@@ -59,6 +74,13 @@ function uiSetLie(l) {
   setLie(l);
   ['fairway','light','thick','flyer'].forEach(id =>
     document.getElementById('lie-' + id).classList.toggle('active', id === l));
+  _renderWeld();
+}
+
+function uiSetCrossDir(d) {
+  setCrossDir(d);
+  ['none','head','tail'].forEach(id =>
+    document.getElementById('crossdir-' + id).classList.toggle('active', id === d));
   _renderWeld();
 }
 
@@ -77,6 +99,9 @@ function _renderWeld() {
 
   document.getElementById('weld-result').textContent   = result.playsLike > 0 ? result.playsLike : '—';
   document.getElementById('weld-aim-note').textContent = result.aimNote;
+
+  const formulaEl = document.getElementById('weld-formula');
+  if (formulaEl) formulaEl.textContent = result.formula || '';
   document.getElementById('weld-breakdown').innerHTML  = result.rows.map(r => {
     const sign   = r.adj > 0 ? '+' : '';
     const cls    = r.adj > 0 ? 'pos' : r.adj < 0 ? 'neg' : '';
@@ -106,8 +131,14 @@ function resetWeld() {
   uiSetElevDir('up');
   uiSetLie('fairway');
 
-  // Clear result display (uiSet* calls _renderWeld which handles this,
-  // but distance is now empty so result clears automatically)
+  // Reset cross dir and hide diagonal row
+  uiSetCrossDir('none');
+  const crossRow = document.getElementById('cross-dir-row');
+  if (crossRow) crossRow.style.display = 'none';
+
+  // Clear formula line
+  const formulaEl = document.getElementById('weld-formula');
+  if (formulaEl) formulaEl.textContent = '';
 }
 
 // ── MENTAL UI ─────────────────────────────────────────────────────────────

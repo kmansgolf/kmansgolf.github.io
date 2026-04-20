@@ -1,3 +1,4 @@
+// © 2026 Kevin Mansfield. All rights reserved.
 // ── caddie-engine.js ──────────────────────────────────────────────────────
 // Pure logic: WELD calculator, mental tally, Tiger 5 mistake tracker.
 // Reads from caddie-data.js. No DOM writes.
@@ -6,11 +7,13 @@
 // ── WELD STATE & CALC ─────────────────────────────────────────────────────
 let windDir = 'head';
 let elevDir = 'up';
-let lieType = 'fairway';
+let lieType  = 'fairway';
+let crossDir = 'none'; // 'none' | 'head' | 'tail' — diagonal modifier when windDir === 'cross'
 
-function setWindDir(d) { windDir = d; }
-function setElevDir(d) { elevDir = d; }
-function setLie(l)     { lieType = l; }
+function setWindDir(d)  { windDir  = d; }
+function setElevDir(d)  { elevDir  = d; }
+function setLie(l)      { lieType  = l; }
+function setCrossDir(d) { crossDir = d; }
 
 function calcWeld(rawDist, windSpd, elevFt) {
   if (!rawDist) return null;
@@ -19,8 +22,14 @@ function calcWeld(rawDist, windSpd, elevFt) {
   if (windDir === 'head')  windAdj = +windSpd;
   if (windDir === 'tail')  windAdj = -(windSpd / 2);
   if (windDir === 'cross' && windSpd > 0) {
-    windAdj = 0;
-    aimNote = `Aim ${Math.round(windSpd * 0.4)} yds into wind`;
+    const lateralMult = crossDir !== 'none' ? 0.75 : 1.0;
+    const driftFt     = Math.round(windSpd * lateralMult * rawDist / 100);
+    const driftYds    = Math.round(driftFt / 3);
+    aimNote = `Aim ${driftFt} ft (≈${driftYds} yds) into wind`;
+
+    // Diagonal: partial distance adjustment for head/tail component
+    if (crossDir === 'head') windAdj = +(windSpd * 0.25);
+    if (crossDir === 'tail') windAdj = -(windSpd * 0.25 / 2);
   }
 
   let elevAdj = 0;
@@ -33,6 +42,7 @@ function calcWeld(rawDist, windSpd, elevFt) {
   return {
     playsLike,
     aimNote,
+    formula: buildFormulaString(rawDist, windAdj, elevAdj, lieAdj, playsLike),
     rows: [
       { key: 'Raw distance',                                        val: rawDist,              adj: 0        },
       { key: `Wind (${windDir}${windSpd ? ' ' + windSpd + 'mph' : ''})`, val: Math.round(windAdj), adj: Math.round(windAdj) },
@@ -40,6 +50,15 @@ function calcWeld(rawDist, windSpd, elevFt) {
       { key: `Lie (${lieType})`,                                    val: lieAdj,               adj: lieAdj   },
     ],
   };
+}
+
+function buildFormulaString(raw, wind, elev, lie, result) {
+  const parts = [`${raw}`];
+  if (wind !== 0) parts.push((wind > 0 ? '+' : '') + Math.round(wind) + ' wind');
+  if (elev !== 0) parts.push((elev > 0 ? '+' : '') + Math.round(elev) + ' elev');
+  if (lie  !== 0) parts.push((lie  > 0 ? '+' : '') + lie              + ' lie');
+  if (parts.length === 1) return ''; // no adjustments — skip formula line
+  return parts.join(' ') + ' = ' + result + ' yds';
 }
 
 // ── MENTAL STATE & LOGIC ──────────────────────────────────────────────────
