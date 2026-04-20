@@ -24,143 +24,156 @@
     <div class="header-right">
       <span class="app-label">The Caddie</span>
       <button id="theme-toggle" onclick="toggleTheme()">☀️</button>
+      <button id="help-btn" onclick="openHelpModal()">?</button>
     </div>
   </header>
 
   <div class="tab-strip">
-    <button class="tab-btn active" id="tab-weld"     onclick="switchTab('weld')">WELD</button>
-    <button class="tab-btn"        id="tab-mental"   onclick="switchTab('mental')">Mental</button>
-    <button class="tab-btn"        id="tab-strategy" onclick="switchTab('strategy')">Strategy</button>
+    <button class="tab-btn active" id="tab-round"     onclick="switchTab('round')">Round</button>
+    <button class="tab-btn"        id="tab-reference" onclick="switchTab('reference')">Reference</button>
   </div>
 
-  <!-- ═══ WELD SCREEN ════════════════════════════════════════════════════ -->
-  <div class="screen active" id="screen-weld">
+  <!-- ═══ ROUND SCREEN ══════════════════════════════════════════════════ -->
+  <div class="screen active" id="screen-round">
     <main>
 
-      <div>
-        <div class="page-title">WELD <span>Calculator</span></div>
-        <div class="page-sub">WIND · ELEVATION · LIE · DISTANCE</div>
+      <!-- ── Tee Shot Decision ─────────────────────────────────────── -->
+      <div class="acc-section" id="acc-tee">
+        <button class="acc-header" onclick="toggleAcc('tee')">
+          <span class="acc-title">🏌️ Tee Shot Decision</span>
+          <span class="acc-chevron" id="acc-chevron-tee">›</span>
+        </button>
+        <div class="acc-body" id="acc-body-tee">
+          <p style="color:var(--d);font-size:14px;line-height:1.5;">Tee shot guidance coming in Phase 3b.</p>
+        </div>
       </div>
 
-      <div class="card">
-        <div class="card-label">D — Distance (yards)</div>
-        <input type="number" class="weld-field" id="w-distance"
-               placeholder="150" min="1" max="350" inputmode="numeric"
-               oninput="_renderWeld()">
-      </div>
+      <!-- ── WELD Calculator ───────────────────────────────────────── -->
+      <div class="acc-section" id="acc-weld">
+        <button class="acc-header" onclick="toggleAcc('weld')">
+          <span class="acc-title">📐 WELD Calculator</span>
+          <span class="acc-chevron" id="acc-chevron-weld">›</span>
+        </button>
+        <div class="acc-body" id="acc-body-weld">
 
-      <div class="card">
-        <div class="card-label">W — Wind</div>
-        <div class="weld-input-group">
-          <div class="weld-label">Direction</div>
-          <div class="seg-row">
-            <button class="seg-btn active" id="wind-head"  onclick="uiSetWindDir('head')">Into</button>
-            <button class="seg-btn"        id="wind-tail"  onclick="uiSetWindDir('tail')">With</button>
-            <button class="seg-btn"        id="wind-cross" onclick="uiSetWindDir('cross')">Cross</button>
-            <button class="seg-btn"        id="wind-none"  onclick="uiSetWindDir('none')">None</button>
+          <div class="card-label" style="margin-bottom:14px;">D — Distance (yards)</div>
+          <div class="card" style="margin-bottom:0;">
+            <input type="number" class="weld-field" id="w-distance"
+                   placeholder="150" min="1" max="350" inputmode="numeric"
+                   oninput="_renderWeld()">
           </div>
-          <div class="weld-label" style="margin-top:10px;">Speed (mph)</div>
-          <input type="number" class="weld-field" id="w-wind"
-                 placeholder="0" min="0" max="40" inputmode="numeric"
-                 oninput="_renderWeld()">
-        </div>
-      </div>
 
-      <div class="card">
-        <div class="card-label">E — Elevation Change</div>
-        <div class="weld-input-group">
-          <div class="seg-row">
-            <button class="seg-btn active" id="elev-up"   onclick="uiSetElevDir('up')">Uphill ↑</button>
-            <button class="seg-btn"        id="elev-down" onclick="uiSetElevDir('down')">Downhill ↓</button>
-            <button class="seg-btn"        id="elev-flat" onclick="uiSetElevDir('flat')">Flat</button>
+          <div class="card" style="margin-top:12px;">
+            <div class="card-label">W — Wind</div>
+            <div class="weld-input-group">
+              <div class="weld-label">Direction</div>
+              <div class="seg-row">
+                <button class="seg-btn active" id="wind-head"  onclick="uiSetWindDir('head')">Into</button>
+                <button class="seg-btn"        id="wind-tail"  onclick="uiSetWindDir('tail')">With</button>
+                <button class="seg-btn"        id="wind-cross" onclick="uiSetWindDir('cross')">Cross</button>
+                <button class="seg-btn"        id="wind-none"  onclick="uiSetWindDir('none')">None</button>
+              </div>
+              <div class="weld-label" style="margin-top:10px;">Speed (mph)</div>
+              <input type="number" class="weld-field" id="w-wind"
+                     placeholder="0" min="0" max="40" inputmode="numeric"
+                     oninput="_renderWeld()">
+            </div>
           </div>
-          <div class="weld-label" style="margin-top:10px;">Height change (feet)</div>
-          <input type="number" class="weld-field" id="w-elev"
-                 placeholder="0" min="0" max="200" inputmode="numeric"
-                 oninput="_renderWeld()">
+
+          <div class="card" style="margin-top:12px;">
+            <div class="card-label">E — Elevation Change</div>
+            <div class="weld-input-group">
+              <div class="seg-row">
+                <button class="seg-btn active" id="elev-up"   onclick="uiSetElevDir('up')">Uphill ↑</button>
+                <button class="seg-btn"        id="elev-down" onclick="uiSetElevDir('down')">Downhill ↓</button>
+                <button class="seg-btn"        id="elev-flat" onclick="uiSetElevDir('flat')">Flat</button>
+              </div>
+              <div class="weld-label" style="margin-top:10px;">Height change (feet)</div>
+              <input type="number" class="weld-field" id="w-elev"
+                     placeholder="0" min="0" max="200" inputmode="numeric"
+                     oninput="_renderWeld()">
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px;">
+            <div class="card-label">L — Lie</div>
+            <div class="seg-row" style="flex-wrap:wrap;gap:6px;">
+              <button class="seg-btn active" id="lie-fairway" onclick="uiSetLie('fairway')" style="flex-basis:calc(50% - 3px)">Fairway</button>
+              <button class="seg-btn"        id="lie-light"   onclick="uiSetLie('light')"   style="flex-basis:calc(50% - 3px)">Light Rough</button>
+              <button class="seg-btn"        id="lie-thick"   onclick="uiSetLie('thick')"   style="flex-basis:calc(50% - 3px)">Thick Rough</button>
+              <button class="seg-btn"        id="lie-flyer"   onclick="uiSetLie('flyer')"   style="flex-basis:calc(50% - 3px)">Flyer</button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px;">
+            <div class="card-label">Plays Like</div>
+            <div class="weld-result-box">
+              <div class="weld-plays-value" id="weld-result">—</div>
+              <div style="margin-top:4px;font-family:'DM Mono',monospace;font-size:12px;color:var(--d)">yards</div>
+            </div>
+            <div class="weld-breakdown" id="weld-breakdown"></div>
+            <div class="weld-aim-note"  id="weld-aim-note"></div>
+          </div>
+
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-label">L — Lie</div>
-        <div class="seg-row" style="flex-wrap:wrap;gap:6px;">
-          <button class="seg-btn active" id="lie-fairway" onclick="uiSetLie('fairway')" style="flex-basis:calc(50% - 3px)">Fairway</button>
-          <button class="seg-btn"        id="lie-light"   onclick="uiSetLie('light')"   style="flex-basis:calc(50% - 3px)">Light Rough</button>
-          <button class="seg-btn"        id="lie-thick"   onclick="uiSetLie('thick')"   style="flex-basis:calc(50% - 3px)">Thick Rough</button>
-          <button class="seg-btn"        id="lie-flyer"   onclick="uiSetLie('flyer')"   style="flex-basis:calc(50% - 3px)">Flyer</button>
+      <!-- ── Recovery Decision ─────────────────────────────────────── -->
+      <div class="acc-section" id="acc-recovery">
+        <button class="acc-header" onclick="toggleAcc('recovery')">
+          <span class="acc-title">🌲 Recovery Decision</span>
+          <span class="acc-chevron" id="acc-chevron-recovery">›</span>
+        </button>
+        <div class="acc-body" id="acc-body-recovery">
+          <p style="color:var(--d);font-size:14px;line-height:1.5;">Recovery guidance coming in Phase 3b.</p>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-label">Plays Like</div>
-        <div class="weld-result-box">
-          <div class="weld-plays-value" id="weld-result">—</div>
-          <div style="margin-top:4px;font-family:'DM Mono',monospace;font-size:12px;color:var(--d)">yards</div>
+      <!-- ── Approach Target ───────────────────────────────────────── -->
+      <div class="acc-section" id="acc-approach">
+        <button class="acc-header" onclick="toggleAcc('approach')">
+          <span class="acc-title">🎯 Approach Target</span>
+          <span class="acc-chevron" id="acc-chevron-approach">›</span>
+        </button>
+        <div class="acc-body" id="acc-body-approach">
+          <p style="color:var(--d);font-size:14px;line-height:1.5;">Approach guidance coming in Phase 3b.</p>
         </div>
-        <div class="weld-breakdown" id="weld-breakdown"></div>
-        <div class="weld-aim-note"  id="weld-aim-note"></div>
       </div>
+
+      <!-- ── Log Shot ──────────────────────────────────────────────── -->
+      <div class="acc-section" id="acc-logshot">
+        <button class="acc-header" onclick="toggleAcc('logshot')">
+          <span class="acc-title">✏️ Log Shot</span>
+          <span class="acc-chevron" id="acc-chevron-logshot">›</span>
+        </button>
+        <div class="acc-body" id="acc-body-logshot">
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <button class="toggle-btn" id="calc-btn"   onclick="cycleToggle('calc')">
+              Calculate<span class="toggle-btn-sub">C — pre-shot plan</span>
+            </button>
+            <button class="toggle-btn" id="create-btn" onclick="cycleToggle('create')">
+              Create<span class="toggle-btn-sub">C — visualize</span>
+            </button>
+            <button class="toggle-btn" id="execute-btn" onclick="cycleToggle('execute')">
+              Execute<span class="toggle-btn-sub">E — commit &amp; swing</span>
+            </button>
+            <button class="log-btn" onclick="logShot()">+ Log Shot</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Clear Round button ────────────────────────────────────── -->
+      <button class="clear-btn" onclick="clearMental()">Clear Round</button>
 
       <footer>kmansgolf · The Caddie — prototype</footer>
+
     </main>
-  </div>
 
-  <!-- ═══ MENTAL SCREEN ══════════════════════════════════════════════════ -->
-  <div class="screen" id="screen-mental">
-    <main>
-
-      <div>
-        <div class="page-title">Mental <span>Scorecard</span></div>
-        <div class="page-sub">CALCULATE · CREATE · EXECUTE</div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">Round Tally</div>
-        <div class="mental-tally">
-          <div class="tally-cell">
-            <span class="tally-value" id="tally-pct">—</span>
-            <span class="tally-label">Mental %</span>
-          </div>
-          <div class="tally-cell">
-            <span class="tally-value" id="tally-yes" style="color:var(--gr)">0</span>
-            <span class="tally-label">Yes</span>
-          </div>
-          <div class="tally-cell">
-            <span class="tally-value" id="tally-no" style="color:var(--err)">0</span>
-            <span class="tally-label">No</span>
-          </div>
-          <div class="tally-cell">
-            <span class="tally-value" id="tally-shots">0</span>
-            <span class="tally-label">Shots</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">Log Shot</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <button class="toggle-btn" id="calc-btn"   onclick="cycleToggle('calc')">
-            Calculate<span class="toggle-btn-sub">C — pre-shot plan</span>
-          </button>
-          <button class="toggle-btn" id="create-btn" onclick="cycleToggle('create')">
-            Create<span class="toggle-btn-sub">C — visualize</span>
-          </button>
-          <button class="toggle-btn" id="execute-btn" onclick="cycleToggle('execute')">
-            Execute<span class="toggle-btn-sub">E — commit &amp; swing</span>
-          </button>
-          <button class="log-btn" onclick="logShot()">+ Log Shot</button>
-        </div>
-      </div>
-
-      <div class="card" id="shot-list-card" style="display:none">
-        <div class="card-label">Shot Log</div>
-        <div class="shot-list" id="shot-list"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">Round Awareness</div>
+    <!-- ── Round Awareness Bar (pinned) ─────────────────────────── -->
+    <div id="round-awareness-bar">
+      <div class="awareness-inner">
         <div class="tiger5-total-row">
-          <span class="tiger5-total-label">Total Mistakes</span>
+          <span class="tiger5-total-label">Round Awareness · Total Mistakes</span>
           <span class="tiger5-total-value" id="tiger5-total">0</span>
         </div>
         <div class="tiger5-list">
@@ -201,190 +214,25 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <button class="clear-btn" onclick="clearMental()">Clear Round</button>
+  </div><!-- /#screen-round -->
 
-      <footer>kmansgolf · The Caddie — prototype</footer>
+  <!-- ═══ REFERENCE SCREEN ══════════════════════════════════════════════ -->
+  <div class="screen" id="screen-reference">
+    <main>
+      <div class="page-title">Strategy <span>Reference</span></div>
+      <p style="color:var(--d);text-align:center;margin-top:24px;">Reference content coming in Phase 3c.</p>
     </main>
   </div>
 
-  <!-- ═══ STRATEGY SCREEN ════════════════════════════════════════════════ -->
-  <div class="screen" id="screen-strategy">
-    <main>
-
-      <div>
-        <div class="page-title">Course <span>Strategy</span></div>
-        <div class="page-sub">DECADE · BROADIE</div>
-      </div>
-
-      <!-- Tee Shot Rules -->
-      <div class="card strat-card">
-        <button class="strat-header" onclick="toggleStrat('tee')">
-          <span class="strat-title">🏌️ Tee Shot Rules</span>
-          <span class="strat-chevron" id="strat-chevron-tee">›</span>
-        </button>
-        <div class="strat-body" id="strat-body-tee">
-          <div class="strat-rule">
-            <div class="strat-rule-label">Default Club</div>
-            <div class="strat-rule-text">Driver is the default. Only move down if a specific penalty requires it — don't leave driver in the bag out of comfort.</div>
-          </div>
-          <div class="strat-rule">
-            <div class="strat-rule-label">Hazard Hierarchy</div>
-            <div class="strat-rule-text">Avoid in order of severity:</div>
-            <div class="strat-hierarchy">
-              <div class="strat-tier strat-tier-ob">OB / Lost Ball</div>
-              <div class="strat-tier strat-tier-water">Water</div>
-              <div class="strat-tier strat-tier-trees">Trees</div>
-              <div class="strat-tier strat-tier-bunker">Bunker</div>
-              <div class="strat-tier strat-tier-rough">Rough</div>
-            </div>
-          </div>
-          <div class="strat-rule" style="border-bottom:none;">
-            <div class="strat-rule-label">Miss Smart</div>
-            <div class="strat-rule-text">When laying back, pick a number that leaves a full shot in. Half swings create inconsistency — commit to a full swing distance.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Approach Targets -->
-      <div class="card strat-card">
-        <button class="strat-header" onclick="toggleStrat('approach')">
-          <span class="strat-title">🎯 Approach Targets</span>
-          <span class="strat-chevron" id="strat-chevron-approach">›</span>
-        </button>
-        <div class="strat-body" id="strat-body-approach">
-          <div class="strat-rule">
-            <div class="strat-rule-label">Distance Thresholds by Handicap</div>
-            <div class="strat-make-table">
-              <div class="strat-make-row strat-make-header">
-                <span>Handicap</span><span>Center Green</span><span>Attack Flag</span>
-              </div>
-              <div class="strat-make-row">
-                <span>20+</span><span>100+ yds</span><span>&lt;50 yds</span>
-              </div>
-              <div class="strat-make-row">
-                <span>15–20</span><span>100+ yds</span><span>&lt;75 yds</span>
-              </div>
-              <div class="strat-make-row">
-                <span>10–15</span><span>125+ yds</span><span>&lt;100 yds</span>
-              </div>
-              <div class="strat-make-row">
-                <span>5–10</span><span>135+ yds</span><span>&lt;100 yds</span>
-              </div>
-              <div class="strat-make-row">
-                <span>0–5</span><span>150+ yds</span><span>&lt;125 yds</span>
-              </div>
-            </div>
-          </div>
-          <div class="strat-rule">
-            <div class="strat-rule-label">Pin System — Inside Scoring Range Only</div>
-            <div class="strat-pins">
-              <div class="strat-pin strat-pin-green">
-                <span class="strat-pin-dot"></span>
-                <div>
-                  <div class="strat-pin-name">Green</div>
-                  <div class="strat-pin-desc">Attack the flag. Miss fat side still preferred.</div>
-                </div>
-              </div>
-              <div class="strat-pin strat-pin-yellow">
-                <span class="strat-pin-dot"></span>
-                <div>
-                  <div class="strat-pin-name">Yellow</div>
-                  <div class="strat-pin-desc">Aim middle of green. Give yourself a putt.</div>
-                </div>
-              </div>
-              <div class="strat-pin strat-pin-red">
-                <span class="strat-pin-dot"></span>
-                <div>
-                  <div class="strat-pin-name">Red</div>
-                  <div class="strat-pin-desc">Aim away from trouble. Bogey is fine here.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="strat-rule">
-            <div class="strat-rule-label">70/30 Rule</div>
-            <div class="strat-rule-text">Plan for your average shot, not your best. 70% of approach shots should find the green safely. Reserve the aggressive line for truly attackable pins.</div>
-          </div>
-          <div class="strat-rule" style="border-bottom:none;">
-            <div class="strat-rule-label">Never Short-Side</div>
-            <div class="strat-rule-text">A short-sided miss is the worst result on any pin — no green, no angle, no shot. Miss on the fat side every time.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Expectation Check -->
-      <div class="card strat-card">
-        <button class="strat-header" onclick="toggleStrat('expect')">
-          <span class="strat-title">📊 Expectation Check</span>
-          <span class="strat-chevron" id="strat-chevron-expect">›</span>
-        </button>
-        <div class="strat-body" id="strat-body-expect">
-          <div class="strat-rule">
-            <div class="strat-rule-label">Make % by Distance (Broadie)</div>
-            <div class="strat-make-table">
-              <div class="strat-make-row strat-make-header">
-                <span>Distance</span><span>Make %</span><span>Avg Proximity</span>
-              </div>
-              <div class="strat-make-row">
-                <span>3 ft</span><span class="strat-make-pct high">96%</span><span>—</span>
-              </div>
-              <div class="strat-make-row">
-                <span>5 ft</span><span class="strat-make-pct high">77%</span><span>—</span>
-              </div>
-              <div class="strat-make-row">
-                <span>8 ft</span><span class="strat-make-pct mid">50%</span><span>—</span>
-              </div>
-              <div class="strat-make-row">
-                <span>10 ft</span><span class="strat-make-pct mid">40%</span><span>—</span>
-              </div>
-              <div class="strat-make-row">
-                <span>15 ft</span><span class="strat-make-pct low">25%</span><span>—</span>
-              </div>
-              <div class="strat-make-row">
-                <span>20 ft</span><span class="strat-make-pct low">16%</span><span>—</span>
-              </div>
-              <div class="strat-make-row">
-                <span>30 ft</span><span class="strat-make-pct low">8%</span><span>—</span>
-              </div>
-            </div>
-          </div>
-          <div class="strat-rule" style="border-bottom:none;">
-            <div class="strat-rule-label">Proximity Reality (Tour avg from 150 yds)</div>
-            <div class="strat-rule-text">~20 feet. Amateur average is closer to 35–40 feet. Plan your two-putt. A made birdie putt from 20 ft is a bonus, not the expectation.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recovery Decision -->
-      <div class="card strat-card">
-        <button class="strat-header" onclick="toggleStrat('recovery')">
-          <span class="strat-title">🌲 Recovery Decision</span>
-          <span class="strat-chevron" id="strat-chevron-recovery">›</span>
-        </button>
-        <div class="strat-body" id="strat-body-recovery">
-          <div class="strat-rule">
-            <div class="strat-rule-label">Reset Your Par</div>
-            <div class="strat-rule-text">From trouble, bogey is your new par. Tour pros make bogey 80%+ from recovery situations. Accept it before you swing.</div>
-          </div>
-          <div class="strat-rule">
-            <div class="strat-rule-label">The Stranger Test</div>
-            <div class="strat-rule-text">Imagine someone walked you up to this ball cold — no history, no emotion. What's the smartest play? That's your shot.</div>
-          </div>
-          <div class="strat-rule" style="border-bottom:none;">
-            <div class="strat-rule-label">The Cost</div>
-            <div class="strat-rule-text">Trees at 200 yards = ~1 extra stroke vs. fairway (Broadie: 3.87 expected vs. ~3.0 from fairway). Hero shots risk turning 1 into 3.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Credit footer -->
-      <div class="strat-credit">
-        Strategy principles based on Scott Fawcett's DECADE system (<span style="color:var(--gr)">decade.golf</span>) and Mark Broadie's strokes gained research.
-      </div>
-
-      <footer>kmansgolf · The Caddie — prototype</footer>
-    </main>
+  <!-- ═══ HELP MODAL ════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="help-modal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeHelpModal()">✕</button>
+      <div class="modal-title">Help &amp; Credits</div>
+      <p style="color:var(--d);">Help content coming in Phase 3c.</p>
+    </div>
   </div>
 
   <!-- Load order: data → engine → app -->
