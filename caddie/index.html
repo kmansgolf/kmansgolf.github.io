@@ -147,6 +147,24 @@
           <span class="acc-chevron" id="acc-chevron-logshot">›</span>
         </button>
         <div class="acc-body" id="acc-body-logshot">
+          <div class="mental-tally" style="margin-bottom:14px;">
+            <div class="tally-cell">
+              <span class="tally-value" id="tally-pct">—</span>
+              <span class="tally-label">Mental %</span>
+            </div>
+            <div class="tally-cell">
+              <span class="tally-value" id="tally-yes" style="color:var(--gr)">0</span>
+              <span class="tally-label">Yes</span>
+            </div>
+            <div class="tally-cell">
+              <span class="tally-value" id="tally-no" style="color:var(--err)">0</span>
+              <span class="tally-label">No</span>
+            </div>
+            <div class="tally-cell">
+              <span class="tally-value" id="tally-shots">0</span>
+              <span class="tally-label">Shots</span>
+            </div>
+          </div>
           <div style="display:flex;flex-direction:column;gap:10px;">
             <button class="toggle-btn" id="calc-btn"   onclick="cycleToggle('calc')">
               Calculate<span class="toggle-btn-sub">C — pre-shot plan</span>
@@ -158,6 +176,10 @@
               Execute<span class="toggle-btn-sub">E — commit &amp; swing</span>
             </button>
             <button class="log-btn" onclick="logShot()">+ Log Shot</button>
+          </div>
+          <div class="card" id="shot-list-card" style="display:none;margin-top:12px;">
+            <div class="card-label">Shot Log</div>
+            <div class="shot-list" id="shot-list"></div>
           </div>
         </div>
       </div>
