@@ -1,6 +1,183 @@
-// range-engine.js — Skill profile engine, benchmarks, prescriptions
+// range-engine.js — Shared audio context, tempo engine, skill profile engine
+
 // ═══════════════════════════════════════════
-//  PHASE 2 — SKILL PROFILE ENGINE
+//  SHARED AUDIO CONTEXT
+//  Singleton — tempo uses it today; any future
+//  Range audio feature should call getAudioCtx()
+//  rather than constructing its own.
+// ═══════════════════════════════════════════
+let _sharedAudioCtx = null;
+function getAudioCtx() {
+  if (!_sharedAudioCtx) {
+    _sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return _sharedAudioCtx;
+}
+
+// ═══════════════════════════════════════════
+//  TEMPO STATE  (all vars prefixed t_ to avoid
+//  collision with Range session state)
+// ═══════════════════════════════════════════
+let t_mode      = 'full';
+let t_presetIdx = 2;       // default: Tour Std
+let t_restGap   = 4.0;     // seconds between cycles
+
+let t_playing    = false;
+let t_countingIn = false;
+
+let t_cycleTimer    = null;
+let t_countinTimer  = null;
+let t_countinBackTime = null; // captured at count-in start — never changes mid-count
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function t_getRatio()     { return t_mode === 'full' ? 3 : 2; }
+function t_getTotalTime() { return TEMPO_PRESETS[t_mode][t_presetIdx].total; }
+function t_getBackTime()  { const r = t_getRatio(); return t_getTotalTime() * (r / (r + 1)); }
+function t_getDownTime()  { const r = t_getRatio(); return t_getTotalTime() * (1 / (r + 1)); }
+
+// ── Audio ──────────────────────────────────────────────────────────────────
+// type: 0 = takeaway, 1 = top, 2 = impact
+function t_playTone(type, when) {
+  const ctx = getAudioCtx();
+
+  if (t_mode === 'putt') {
+    // Putting: soft sine tones — pendulum feel, no crack
+    const puttCfg = {
+      0: { freq: 260, freq2: 200, gain: 0.25, attack: 0.005, decay: 0.18 },
+      1: { freq: 220, freq2: 180, gain: 0.15, attack: 0.004, decay: 0.12 },
+      2: { freq: 300, freq2: 240, gain: 0.28, attack: 0.004, decay: 0.14 },
+    };
+    const c = puttCfg[type];
+    const osc = ctx.createOscillator();
+    const g   = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(c.freq, when);
+    osc.frequency.exponentialRampToValueAtTime(c.freq2, when + c.decay);
+    g.gain.setValueAtTime(0, when);
+    g.gain.linearRampToValueAtTime(c.gain, when + c.attack);
+    g.gain.exponentialRampToValueAtTime(0.001, when + c.decay);
+    osc.connect(g); g.connect(ctx.destination);
+    osc.start(when); osc.stop(when + c.decay + 0.02);
+    return;
+  }
+
+  // Full / Short game: punchy click tones
+  const cfg = {
+    0: { freq: 180, freq2: 90,  gain: 0.55, attack: 0.002, decay: 0.12, type: 'sine'     },
+    1: { freq: 320, freq2: 160, gain: 0.35, attack: 0.001, decay: 0.08, type: 'triangle' },
+    2: { freq: 900, freq2: 450, gain: 0.70, attack: 0.001, decay: 0.06, type: 'square'   },
+  };
+  const c = cfg[type];
+  const osc = ctx.createOscillator();
+  const g   = ctx.createGain();
+  osc.type = c.type;
+  osc.frequency.setValueAtTime(c.freq, when);
+  osc.frequency.exponentialRampToValueAtTime(c.freq2, when + c.decay);
+  g.gain.setValueAtTime(0, when);
+  g.gain.linearRampToValueAtTime(c.gain, when + c.attack);
+  g.gain.exponentialRampToValueAtTime(0.001, when + c.decay);
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(when); osc.stop(when + c.decay + 0.01);
+
+  // Sub-click body on impact
+  if (type === 2) {
+    const n  = ctx.createOscillator();
+    const ng = ctx.createGain();
+    n.type = 'sawtooth';
+    n.frequency.setValueAtTime(200, when);
+    ng.gain.setValueAtTime(0.28, when);
+    ng.gain.exponentialRampToValueAtTime(0.001, when + 0.03);
+    n.connect(ng); ng.connect(ctx.destination);
+    n.start(when); n.stop(when + 0.04);
+  }
+}
+
+function t_playCountinTone(when) {
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const g   = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(440, when);
+  g.gain.setValueAtTime(0, when);
+  g.gain.linearRampToValueAtTime(0.12, when + 0.003);
+  g.gain.exponentialRampToValueAtTime(0.001, when + 0.07);
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(when); osc.stop(when + 0.08);
+}
+
+// ── Cycle scheduler ────────────────────────────────────────────────────────
+// setTimeout chain anchored to audioCtx.currentTime — no drift.
+// onPhase(phase): 'takeaway'|'top'|'impact'|'rest' — UI callback
+function t_scheduleCycle(startAt, onPhase) {
+  if (!t_playing) return;
+
+  const ctx      = getAudioCtx();
+  const backTime = t_getBackTime();
+  const total    = t_getTotalTime();
+  const gap      = t_restGap;
+
+  t_playTone(0, startAt);            // takeaway
+  t_playTone(1, startAt + backTime); // top
+  t_playTone(2, startAt + total);    // impact
+
+  const now       = ctx.currentTime;
+  const tTakeaway = Math.max(0, (startAt - now) * 1000);
+  const tTop      = Math.max(0, (startAt + backTime - now) * 1000);
+  const tImpact   = Math.max(0, (startAt + total - now) * 1000);
+  const tRest     = tImpact + 80;
+  const tNext     = Math.max(0, (startAt + total + gap - now) * 1000);
+
+  setTimeout(() => { if (t_playing) onPhase('takeaway'); }, tTakeaway);
+  setTimeout(() => { if (t_playing) onPhase('top');      }, tTop);
+  setTimeout(() => { if (t_playing) onPhase('impact');   }, tImpact);
+  setTimeout(() => { if (t_playing) onPhase('rest');     }, tRest);
+
+  t_cycleTimer = setTimeout(() => {
+    if (!t_playing) return;
+    t_scheduleCycle(ctx.currentTime + 0.02, onPhase);
+  }, tNext);
+}
+
+// ── Count-in ───────────────────────────────────────────────────────────────
+// Captures backTime at call time so preset changes mid-count don't glitch.
+function t_startCountin(onComplete) {
+  t_countingIn      = true;
+  t_countinBackTime = t_getBackTime(); // capture now — immutable for this count-in
+
+  const ctx     = getAudioCtx();
+  const countAt = ctx.currentTime + 0.05;
+  t_playCountinTone(countAt);
+
+  const waitMs = (t_countinBackTime + 0.05) * 1000;
+  t_countinTimer = setTimeout(() => {
+    if (!t_countingIn) return;
+    t_countingIn      = false;
+    const firstBeat   = countAt + (t_countinBackTime || t_getBackTime());
+    t_countinBackTime = null;
+    onComplete(firstBeat);
+  }, waitMs);
+}
+
+function t_cancelCountin() {
+  clearTimeout(t_countinTimer);
+  t_countingIn      = false;
+  t_countinBackTime = null;
+}
+
+function t_stopCycle() {
+  clearTimeout(t_cycleTimer);
+  t_playing = false;
+}
+
+// ── Public stop-all (called by tab-switch guard) ───────────────────────────
+function t_haltAll() {
+  if (t_countingIn) t_cancelCountin();
+  t_stopCycle();
+  t_playing = false;
+}
+
+// ═══════════════════════════════════════════
+//  SKILL PROFILE ENGINE
 // ═══════════════════════════════════════════
 
 const P2_THRESHOLD_PTS = 6; // short=1pt, long=2pts

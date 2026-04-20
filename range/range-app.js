@@ -236,6 +236,8 @@ function enterApp(tab) {
     navTo('s-history', 'tab-history');
   } else if (tab === 'profile') {
     navTo('s-profile', 'tab-profile');
+  } else if (tab === 'tempo') {
+    navTo('s-tempo', 'tab-tempo');
   } else if (CU?.firstRun) {
     showFirstRun();
   } else {
@@ -267,6 +269,8 @@ function setActiveTab(tabId) {
 }
 
 function navTo(id, tabId) {
+  // Stop tempo if leaving it
+  if (tabId && tabId !== 'tab-tempo' && (t_playing || t_countingIn)) t_haltAll(), t_syncPlayBtn();
   if (tabId) setActiveTab(tabId);
   if (id === 's-practice') {
     if (sessionInProgress) {
@@ -277,6 +281,7 @@ function navTo(id, tabId) {
     }
   } else if (id === 's-history') { buildHistory(); goTo(id); }
   else if (id === 's-profile') { buildProfile(); goTo(id); }
+  else if (id === 's-tempo') { goTo(id); }
   else { refreshHome(); goTo(id); }
 }
 
@@ -1222,6 +1227,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Apply saved theme immediately — before login, so returning users see correct theme on login screen
   applyTheme(localStorage.getItem('range_theme') || 'dark');
 
+  // Initialise Tempo UI (builds preset grid, sets display values)
+  t_buildPresetGrid();
+  t_updateDisplay();
+
   // Rehydrate session after pull-to-refresh or page reload
   const savedUser = sessionStorage.getItem('range_session_user');
   if (savedUser) {
@@ -1338,6 +1347,131 @@ function loadTestData() {
   buildProfile();
   document.getElementById('import-status').textContent = '✅ 8 test sessions loaded.';
   document.getElementById('import-status').style.color = 'var(--gr)';
+}
+
+// ═══════════════════════════════════════════
+//  TEMPO UI
+// ═══════════════════════════════════════════
+function t_setMode(m) {
+  const wasPlaying = t_playing || t_countingIn;
+  if (wasPlaying) { t_haltAll(); t_syncPlayBtn(); }
+  t_mode = m;
+  ['full','short','putt'].forEach(id =>
+    document.getElementById('t-mode-' + id).classList.toggle('active', id === m));
+  t_presetIdx = Math.min(t_presetIdx, TEMPO_PRESETS[m].length - 1);
+  t_buildPresetGrid();
+  t_updateDisplay();
+  if (wasPlaying) setTimeout(t_togglePlay, 120);
+}
+
+function t_buildPresetGrid() {
+  const grid = document.getElementById('t-preset-grid');
+  if (!grid) return;
+  grid.innerHTML = TEMPO_PRESETS[t_mode].map((p, i) => `
+    <button class="t-preset-btn ${i === t_presetIdx ? 'active' : ''}"
+            onclick="t_selectPreset(${i})">
+      <span class="t-preset-name">${p.name}</span>
+      <span class="t-preset-time">${p.total.toFixed(2)}s</span>
+    </button>
+  `).join('');
+}
+
+function t_selectPreset(i) {
+  const wasPlaying = t_playing || t_countingIn;
+  if (wasPlaying) { t_haltAll(); t_syncPlayBtn(); }
+  t_presetIdx = i;
+  t_buildPresetGrid();
+  t_updateDisplay();
+  if (wasPlaying) setTimeout(t_togglePlay, 120);
+}
+
+function t_onGapSlider(val) {
+  t_restGap = parseFloat(val);
+  const el = document.getElementById('t-gap-display');
+  if (el) el.textContent = t_restGap.toFixed(1) + 's';
+}
+
+function t_updateDisplay() {
+  const total  = t_getTotalTime();
+  const backMs = Math.round(t_getBackTime() * 1000);
+  const downMs = Math.round(t_getDownTime() * 1000);
+  const ratio  = t_getRatio();
+  const preset = TEMPO_PRESETS[t_mode][t_presetIdx];
+  const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  setTxt('t-swing-time', total.toFixed(2));
+  setTxt('t-swing-tag',  preset.name);
+  setTxt('t-back-ms',    backMs);
+  setTxt('t-down-ms',    downMs);
+  setTxt('t-ratio',      ratio + ':1');
+}
+
+function t_setPhaseUI(phase) {
+  ['takeaway','top','impact','rest'].forEach(p => {
+    const el = document.getElementById('t-phase-' + p);
+    if (el) el.classList.toggle('active', p === phase);
+  });
+}
+
+function t_clearPhaseUI() {
+  ['takeaway','top','impact','rest'].forEach(p => {
+    const el = document.getElementById('t-phase-' + p);
+    if (el) el.classList.remove('active');
+  });
+}
+
+function t_setCountinUI(active) {
+  const badge = document.getElementById('t-countin-badge');
+  const pdisp = document.getElementById('t-phase-display');
+  const btn   = document.getElementById('t-play-btn');
+  const lbl   = document.getElementById('t-play-label');
+  const svg   = document.getElementById('t-play-svg');
+  if (!btn) return;
+  if (active) {
+    if (badge) badge.classList.add('visible');
+    if (pdisp) pdisp.style.opacity = '0.3';
+    btn.classList.add('counting');
+    btn.classList.remove('playing');
+    if (lbl) lbl.textContent = 'Stop';
+    if (svg) svg.innerHTML = '<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
+  } else {
+    if (badge) badge.classList.remove('visible');
+    if (pdisp) pdisp.style.opacity = '1';
+    btn.classList.remove('counting');
+  }
+}
+
+function t_syncPlayBtn() {
+  // Syncs play button to stopped state — called after t_haltAll()
+  t_clearPhaseUI();
+  t_setCountinUI(false);
+  const btn = document.getElementById('t-play-btn');
+  const lbl = document.getElementById('t-play-label');
+  const svg = document.getElementById('t-play-svg');
+  if (!btn) return;
+  btn.classList.remove('playing', 'counting');
+  if (lbl) lbl.textContent = 'Start';
+  if (svg) svg.innerHTML = '<polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>';
+}
+
+function t_togglePlay() {
+  if (t_countingIn) { t_haltAll(); t_syncPlayBtn(); return; }
+
+  t_playing = !t_playing;
+
+  if (t_playing) {
+    getAudioCtx().resume().then(() => {
+      t_setCountinUI(true);
+      t_startCountin((firstBeat) => {
+        t_setCountinUI(false);
+        const btn = document.getElementById('t-play-btn');
+        if (btn) btn.classList.add('playing');
+        t_scheduleCycle(firstBeat, t_setPhaseUI);
+      });
+    });
+  } else {
+    t_haltAll();
+    t_syncPlayBtn();
+  }
 }
 
 // ── SWIPE DOWN TO REFRESH ─────────────────────────────────────────────────────
