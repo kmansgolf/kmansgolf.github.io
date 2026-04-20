@@ -262,18 +262,18 @@ function mentalTally() {
 
 // ── TIGER 5 STATE & LOGIC ─────────────────────────────────────────────────
 const TIGER5_KEY = 'caddie_tiger5';
-const TIGER5_KEYS = ['threeputt', 'doubles', 'par5bogey', 'bogey150', 'doublechip'];
+const TIGER5_KEYS = ['threeputt', 'doubles', 'penalties', 'wedgebogey', 'missedupdown'];
 
-let tiger5 = { threeputt: 0, doubles: 0, par5bogey: 0, bogey150: 0, doublechip: 0 };
+let tiger5 = { threeputt: 0, doubles: 0, penalties: 0, wedgebogey: 0, missedupdown: 0 };
 
 function tiger5Load() {
   try {
     const raw = localStorage.getItem(TIGER5_KEY);
-    if (raw) tiger5 = Object.assign({ threeputt: 0, doubles: 0, par5bogey: 0, bogey150: 0, doublechip: 0 }, JSON.parse(raw));
+    if (raw) tiger5 = Object.assign({ threeputt: 0, doubles: 0, penalties: 0, wedgebogey: 0, missedupdown: 0 }, JSON.parse(raw));
   } catch (e) {
     try {
       const raw = sessionStorage.getItem(TIGER5_KEY);
-      if (raw) tiger5 = Object.assign({ threeputt: 0, doubles: 0, par5bogey: 0, bogey150: 0, doublechip: 0 }, JSON.parse(raw));
+      if (raw) tiger5 = Object.assign({ threeputt: 0, doubles: 0, penalties: 0, wedgebogey: 0, missedupdown: 0 }, JSON.parse(raw));
     } catch (_) {}
   }
 }

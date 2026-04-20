@@ -199,7 +199,7 @@ function clearMental() {
   const hasMental = shots.length > 0;
   const hasTiger5 = tiger5Tally() > 0;
   if (!hasMental && !hasTiger5) return;
-  if (!confirm('Clear Mental Scorecard and Tiger 5 for this round?')) return;
+  if (!confirm('Clear Mental Scorecard and Round Awareness for this round?')) return;
   mentalClear();
   tiger5Clear();
   ['calc','create','execute'].forEach(k =>
@@ -250,7 +250,7 @@ function tiger5Increment(key) {
 }
 
 function _renderTiger5() {
-  ['threeputt','doubles','par5bogey','bogey150','doublechip'].forEach(k => {
+  ['threeputt','doubles','penalties','wedgebogey','missedupdown'].forEach(k => {
     document.getElementById('t5-' + k).textContent = tiger5[k];
   });
   document.getElementById('tiger5-total').textContent = tiger5Tally();
