@@ -11,7 +11,7 @@ function switchTab(tab) {
   });
 }
 
-// ── ACCORDION ─────────────────────────────────────────────────────────────
+// ── ACCORDION (Round) ─────────────────────────────────────────────────────
 // 'awareness' is pinned — never touched by toggleAcc
 const ACC_KEYS = ['tee','weld','recovery','approach','logshot'];
 
@@ -29,6 +29,15 @@ function toggleAcc(key) {
     document.getElementById('acc-body-'    + key).classList.add('open');
     document.getElementById('acc-chevron-' + key).textContent = '˅';
   }
+}
+
+// ── ACCORDION (Reference / Strategy cards) ────────────────────────────────
+// Independent toggle — no collapse-others behavior
+function toggleStrat(section) {
+  const body    = document.getElementById('strat-body-'    + section);
+  const chevron = document.getElementById('strat-chevron-' + section);
+  const isOpen  = body.classList.toggle('open');
+  chevron.textContent = isOpen ? '˅' : '›';
 }
 
 // ── WELD UI ───────────────────────────────────────────────────────────────
@@ -81,6 +90,26 @@ function _renderWeld() {
   }).join('');
 }
 
+function resetWeld() {
+  // Reset engine state
+  setWindDir('head');
+  setElevDir('up');
+  setLie('fairway');
+
+  // Reset input fields
+  document.getElementById('w-distance').value = '';
+  document.getElementById('w-wind').value = '';
+  document.getElementById('w-elev').value = '';
+
+  // Reset seg button active states
+  uiSetWindDir('head');
+  uiSetElevDir('up');
+  uiSetLie('fairway');
+
+  // Clear result display (uiSet* calls _renderWeld which handles this,
+  // but distance is now empty so result clears automatically)
+}
+
 // ── MENTAL UI ─────────────────────────────────────────────────────────────
 function cycleToggle(key) {
   const btn = document.getElementById(key + '-btn');
@@ -117,7 +146,6 @@ function clearMental() {
 
 function _renderMental() {
   const t = mentalTally();
-  // tally IDs still exist in data but tally display is not in 3a UI — guard safely
   const tallyPct   = document.getElementById('tally-pct');
   const tallyShots = document.getElementById('tally-shots');
   const tallyYes   = document.getElementById('tally-yes');
@@ -126,6 +154,10 @@ function _renderMental() {
   if (tallyShots) tallyShots.textContent = t.shots;
   if (tallyYes)   tallyYes.textContent   = t.yes;
   if (tallyNo)    tallyNo.textContent    = t.no;
+
+  // Badge on Log Shot accordion header
+  const badge = document.getElementById('logshot-pct-badge');
+  if (badge) badge.textContent = t.pct !== null ? t.pct + '%' : '';
 
   const list = document.getElementById('shot-list');
   const card = document.getElementById('shot-list-card');
@@ -155,6 +187,14 @@ function _renderMental() {
 function tiger5Increment(key) {
   if (!(key in tiger5)) return;
   tiger5[key]++;
+  tiger5Save();
+  _renderTiger5();
+}
+
+function tiger5Decrement(key) {
+  if (!(key in tiger5)) return;
+  if (tiger5[key] <= 0) return;
+  tiger5[key]--;
   tiger5Save();
   _renderTiger5();
 }

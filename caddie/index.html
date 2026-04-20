@@ -44,7 +44,25 @@
           <span class="acc-chevron" id="acc-chevron-tee">›</span>
         </button>
         <div class="acc-body" id="acc-body-tee">
-          <p style="color:var(--d);font-size:14px;line-height:1.5;">Tee shot guidance coming in Phase 3b.</p>
+          <div class="strat-rule">
+            <div class="strat-rule-label">Default Club</div>
+            <div class="strat-rule-text">Driver is the default. Only move down if a specific penalty forces it — don't leave driver in the bag out of comfort.</div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">Hazard Hierarchy</div>
+            <div class="strat-rule-text">Avoid in order of severity:</div>
+            <div class="strat-hierarchy">
+              <div class="strat-tier strat-tier-ob">OB / Lost Ball</div>
+              <div class="strat-tier strat-tier-water">Water</div>
+              <div class="strat-tier strat-tier-trees">Trees</div>
+              <div class="strat-tier strat-tier-bunker">Bunker</div>
+              <div class="strat-tier strat-tier-rough">Rough</div>
+            </div>
+          </div>
+          <div class="strat-rule" style="border-bottom:none;">
+            <div class="strat-rule-label">Miss Smart</div>
+            <div class="strat-rule-text">When laying back, pick a distance that leaves a full shot in. Half swings create inconsistency — commit to a full swing distance.</div>
+          </div>
         </div>
       </div>
 
@@ -115,6 +133,8 @@
             <div class="weld-aim-note"  id="weld-aim-note"></div>
           </div>
 
+          <button class="weld-reset-btn" onclick="resetWeld()">↺ Reset</button>
+
         </div>
       </div>
 
@@ -125,7 +145,18 @@
           <span class="acc-chevron" id="acc-chevron-recovery">›</span>
         </button>
         <div class="acc-body" id="acc-body-recovery">
-          <p style="color:var(--d);font-size:14px;line-height:1.5;">Recovery guidance coming in Phase 3b.</p>
+          <div class="strat-rule">
+            <div class="strat-rule-label">Reset Your Par</div>
+            <div class="strat-rule-text">From trouble, bogey is your new par. Tour pros make bogey 80%+ from recovery situations. Accept it before you swing.</div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">The Stranger Test</div>
+            <div class="strat-rule-text">Imagine someone walked you up to this ball cold — no history, no emotion. What's the smartest play? That's your shot.</div>
+          </div>
+          <div class="strat-rule" style="border-bottom:none;">
+            <div class="strat-rule-label">The Cost</div>
+            <div class="strat-rule-text">Trees at 200 yards = ~1 extra stroke vs. fairway. Hero shots risk turning 1 into 3.</div>
+          </div>
         </div>
       </div>
 
@@ -136,7 +167,40 @@
           <span class="acc-chevron" id="acc-chevron-approach">›</span>
         </button>
         <div class="acc-body" id="acc-body-approach">
-          <p style="color:var(--d);font-size:14px;line-height:1.5;">Approach guidance coming in Phase 3b.</p>
+          <div class="strat-rule">
+            <div class="strat-rule-label">Pin System — Inside Scoring Range Only</div>
+            <div class="strat-pins">
+              <div class="strat-pin strat-pin-green">
+                <span class="strat-pin-dot"></span>
+                <div>
+                  <div class="strat-pin-name">Green Pin</div>
+                  <div class="strat-pin-desc">Attack the flag. Miss fat side.</div>
+                </div>
+              </div>
+              <div class="strat-pin strat-pin-yellow">
+                <span class="strat-pin-dot"></span>
+                <div>
+                  <div class="strat-pin-name">Yellow Pin</div>
+                  <div class="strat-pin-desc">Middle of green. Give yourself a putt.</div>
+                </div>
+              </div>
+              <div class="strat-pin strat-pin-red">
+                <span class="strat-pin-dot"></span>
+                <div>
+                  <div class="strat-pin-name">Red Pin</div>
+                  <div class="strat-pin-desc">Aim away from trouble. Bogey is fine.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">70/30 Rule</div>
+            <div class="strat-rule-text">Plan for your average shot, not your best. 70% of approaches should find the green safely.</div>
+          </div>
+          <div class="strat-rule" style="border-bottom:none;">
+            <div class="strat-rule-label">Never Short-Side</div>
+            <div class="strat-rule-text">A short-sided miss is the worst result on any hole. Miss fat side every time.</div>
+          </div>
         </div>
       </div>
 
@@ -144,7 +208,10 @@
       <div class="acc-section" id="acc-logshot">
         <button class="acc-header" onclick="toggleAcc('logshot')">
           <span class="acc-title">✏️ Log Shot</span>
-          <span class="acc-chevron" id="acc-chevron-logshot">›</span>
+          <span class="acc-logshot-meta">
+            <span id="logshot-pct-badge"></span>
+            <span class="acc-chevron" id="acc-chevron-logshot">›</span>
+          </span>
         </button>
         <div class="acc-body" id="acc-body-logshot">
           <div class="mental-tally" style="margin-bottom:14px;">
@@ -202,6 +269,7 @@
           <div class="tiger5-row">
             <span class="tiger5-name">3-Putts</span>
             <div class="tiger5-counter">
+              <button class="tiger5-btn tiger5-btn-dec" onclick="tiger5Decrement('threeputt')">−</button>
               <span class="tiger5-count" id="t5-threeputt">0</span>
               <button class="tiger5-btn" onclick="tiger5Increment('threeputt')">+</button>
             </div>
@@ -209,6 +277,7 @@
           <div class="tiger5-row">
             <span class="tiger5-name">Doubles+</span>
             <div class="tiger5-counter">
+              <button class="tiger5-btn tiger5-btn-dec" onclick="tiger5Decrement('doubles')">−</button>
               <span class="tiger5-count" id="t5-doubles">0</span>
               <button class="tiger5-btn" onclick="tiger5Increment('doubles')">+</button>
             </div>
@@ -216,6 +285,7 @@
           <div class="tiger5-row">
             <span class="tiger5-name">Penalties</span>
             <div class="tiger5-counter">
+              <button class="tiger5-btn tiger5-btn-dec" onclick="tiger5Decrement('penalties')">−</button>
               <span class="tiger5-count" id="t5-penalties">0</span>
               <button class="tiger5-btn" onclick="tiger5Increment('penalties')">+</button>
             </div>
@@ -223,6 +293,7 @@
           <div class="tiger5-row">
             <span class="tiger5-name">Wedge Bogeys</span>
             <div class="tiger5-counter">
+              <button class="tiger5-btn tiger5-btn-dec" onclick="tiger5Decrement('wedgebogey')">−</button>
               <span class="tiger5-count" id="t5-wedgebogey">0</span>
               <button class="tiger5-btn" onclick="tiger5Increment('wedgebogey')">+</button>
             </div>
@@ -230,6 +301,7 @@
           <div class="tiger5-row" style="border-bottom:none;">
             <span class="tiger5-name">Missed Up &amp; Downs</span>
             <div class="tiger5-counter">
+              <button class="tiger5-btn tiger5-btn-dec" onclick="tiger5Decrement('missedupdown')">−</button>
               <span class="tiger5-count" id="t5-missedupdown">0</span>
               <button class="tiger5-btn" onclick="tiger5Increment('missedupdown')">+</button>
             </div>
@@ -244,7 +316,149 @@
   <div class="screen" id="screen-reference">
     <main>
       <div class="page-title">Strategy <span>Reference</span></div>
-      <p style="color:var(--d);text-align:center;margin-top:24px;">Reference content coming in Phase 3c.</p>
+
+      <!-- Card 1: Tee Shot Rules -->
+      <div class="acc-section strat-card">
+        <button class="acc-header strat-header" onclick="toggleStrat('tee')">
+          <span class="strat-title">🏌️ Tee Shot Rules</span>
+          <span class="strat-chevron" id="strat-chevron-tee">›</span>
+        </button>
+        <div class="strat-body" id="strat-body-tee">
+          <div class="strat-rule">
+            <div class="strat-rule-label">Default Club</div>
+            <div class="strat-rule-text">Driver is the default. Only move down if a specific penalty forces it — don't leave driver in the bag out of comfort.</div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">Hazard Hierarchy</div>
+            <div class="strat-rule-text">Avoid in order of severity:</div>
+            <div class="strat-hierarchy">
+              <div class="strat-tier strat-tier-ob">OB / Lost Ball</div>
+              <div class="strat-tier strat-tier-water">Water</div>
+              <div class="strat-tier strat-tier-trees">Trees</div>
+              <div class="strat-tier strat-tier-bunker">Bunker</div>
+              <div class="strat-tier strat-tier-rough">Rough</div>
+            </div>
+          </div>
+          <div class="strat-rule" style="border-bottom:none;">
+            <div class="strat-rule-label">Miss Smart</div>
+            <div class="strat-rule-text">When laying back, pick a distance that leaves a full shot in. Half swings create inconsistency — commit to a full swing distance.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Approach Targets -->
+      <div class="acc-section strat-card">
+        <button class="acc-header strat-header" onclick="toggleStrat('approach')">
+          <span class="strat-title">🎯 Approach Targets</span>
+          <span class="strat-chevron" id="strat-chevron-approach">›</span>
+        </button>
+        <div class="strat-body" id="strat-body-approach">
+          <div class="strat-rule">
+            <div class="strat-rule-label">Pin System — Inside Scoring Range Only</div>
+            <div class="strat-pins">
+              <div class="strat-pin strat-pin-green">
+                <span class="strat-pin-dot"></span>
+                <div>
+                  <div class="strat-pin-name">Green Pin</div>
+                  <div class="strat-pin-desc">Attack the flag. Miss fat side.</div>
+                </div>
+              </div>
+              <div class="strat-pin strat-pin-yellow">
+                <span class="strat-pin-dot"></span>
+                <div>
+                  <div class="strat-pin-name">Yellow Pin</div>
+                  <div class="strat-pin-desc">Middle of green. Give yourself a putt.</div>
+                </div>
+              </div>
+              <div class="strat-pin strat-pin-red">
+                <span class="strat-pin-dot"></span>
+                <div>
+                  <div class="strat-pin-name">Red Pin</div>
+                  <div class="strat-pin-desc">Aim away from trouble. Bogey is fine.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">70/30 Rule</div>
+            <div class="strat-rule-text">Plan for your average shot, not your best. 70% of approaches should find the green safely.</div>
+          </div>
+          <div class="strat-rule" style="border-bottom:none;">
+            <div class="strat-rule-label">Never Short-Side</div>
+            <div class="strat-rule-text">A short-sided miss is the worst result on any hole. Miss fat side every time.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Expectation Check -->
+      <div class="acc-section strat-card">
+        <button class="acc-header strat-header" onclick="toggleStrat('expect')">
+          <span class="strat-title">📊 Expectation Check</span>
+          <span class="strat-chevron" id="strat-chevron-expect">›</span>
+        </button>
+        <div class="strat-body" id="strat-body-expect">
+          <div class="strat-rule">
+            <div class="strat-rule-label">Tour Make % by Distance (Broadie)</div>
+            <div class="strat-make-table">
+              <div class="strat-make-row strat-make-header">
+                <span>Distance</span><span>Tour Make %</span>
+              </div>
+              <div class="strat-make-row">
+                <span>3 ft</span><span class="strat-make-pct high">96%</span>
+              </div>
+              <div class="strat-make-row">
+                <span>5 ft</span><span class="strat-make-pct high">77%</span>
+              </div>
+              <div class="strat-make-row">
+                <span>8 ft</span><span class="strat-make-pct mid">50%</span>
+              </div>
+              <div class="strat-make-row">
+                <span>10 ft</span><span class="strat-make-pct mid">40%</span>
+              </div>
+              <div class="strat-make-row">
+                <span>15 ft</span><span class="strat-make-pct low">25%</span>
+              </div>
+              <div class="strat-make-row">
+                <span>20 ft</span><span class="strat-make-pct low">16%</span>
+              </div>
+              <div class="strat-make-row">
+                <span>30 ft</span><span class="strat-make-pct low">7%</span>
+              </div>
+            </div>
+          </div>
+          <div class="strat-rule" style="border-bottom:none;">
+            <div class="strat-rule-label">Proximity Note</div>
+            <div class="strat-rule-text">Tour average from 150 yards: 20–25 feet. Amateurs: 40–60 feet. Aim to be on the green, not near the pin.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Recovery Decision -->
+      <div class="acc-section strat-card">
+        <button class="acc-header strat-header" onclick="toggleStrat('recovery')">
+          <span class="strat-title">🌲 Recovery Decision</span>
+          <span class="strat-chevron" id="strat-chevron-recovery">›</span>
+        </button>
+        <div class="strat-body" id="strat-body-recovery">
+          <div class="strat-rule">
+            <div class="strat-rule-label">Reset Your Par</div>
+            <div class="strat-rule-text">From trouble, bogey is your new par. Tour pros make bogey 80%+ from recovery situations. Accept it before you swing.</div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">The Stranger Test</div>
+            <div class="strat-rule-text">Imagine someone walked you up to this ball cold — no history, no emotion. What's the smartest play? That's your shot.</div>
+          </div>
+          <div class="strat-rule" style="border-bottom:none;">
+            <div class="strat-rule-label">The Cost</div>
+            <div class="strat-rule-text">Trees at 200 yards = ~1 extra stroke vs. fairway. Hero shots risk turning 1 into 3.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="strat-credit">
+        Strategy based on Scott Fawcett's DECADE system (<span style="color:var(--gr)">decade.golf</span>) and Mark Broadie's strokes gained research.
+      </div>
+
     </main>
   </div>
 
@@ -253,7 +467,18 @@
     <div class="modal-box">
       <button class="modal-close" onclick="closeHelpModal()">✕</button>
       <div class="modal-title">Help &amp; Credits</div>
-      <p style="color:var(--d);">Help content coming in Phase 3c.</p>
+      <div class="help-section">
+        <div class="help-section-label">Round Mode</div>
+        <p class="help-text">Work through each section in order before each shot. WELD calculates adjusted distance. Log Shot tracks your mental process using the C-C-E framework. Round Awareness tallies costly mistakes.</p>
+      </div>
+      <div class="help-section">
+        <div class="help-section-label">C-C-E Framework</div>
+        <p class="help-text">Calculate (pre-shot plan) → Create (visualize the shot) → Execute (commit and swing). Log Y/N for each step after every shot.</p>
+      </div>
+      <div class="help-section">
+        <div class="help-section-label">Credits</div>
+        <p class="help-text">Mental scorecard: Dr. Michael Lardon. Course strategy: Scott Fawcett (DECADE) + Mark Broadie. Recovery framework: VISION54 (Nilsson/Marriott).</p>
+      </div>
     </div>
   </div>
 

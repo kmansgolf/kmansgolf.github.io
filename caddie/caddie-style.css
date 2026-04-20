@@ -518,3 +518,189 @@ footer {
   letter-spacing: 0.02em;
   margin-bottom: 14px;
 }
+
+/* ── STRATEGY CARDS ─────────────────────────────────────────────────── */
+.strat-card { padding: 0; overflow: hidden; }
+.strat-header {
+  width: 100%;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  cursor: pointer;
+  text-align: left;
+  gap: 10px;
+}
+.strat-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--w);
+}
+.strat-chevron {
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  color: var(--d);
+  flex-shrink: 0;
+}
+.strat-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 0 20px;
+  border-top: 0.5px solid transparent;
+}
+.strat-body.open {
+  max-height: 2000px;
+  padding: 16px 20px 20px;
+  border-top-color: rgba(255,255,255,0.07);
+}
+[data-theme="light"] .strat-body.open { border-top-color: rgba(0,0,0,0.07); }
+.strat-rule {
+  padding: 14px 0;
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
+}
+[data-theme="light"] .strat-rule { border-bottom-color: rgba(0,0,0,0.06); }
+.strat-rule-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--d);
+  margin-bottom: 8px;
+}
+.strat-rule-text {
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--w);
+}
+.strat-hierarchy { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.strat-tier {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.strat-tier-ob     { background: rgba(231,76,60,0.18);  color: #e74c3c; }
+.strat-tier-water  { background: rgba(52,152,219,0.18); color: #3498db; }
+.strat-tier-trees  { background: rgba(46,204,113,0.18); color: #2ecc71; }
+.strat-tier-bunker { background: rgba(230,176,80,0.18); color: #e6b050; }
+.strat-tier-rough  { background: rgba(110,110,115,0.18);color: #8e8e93; }
+.strat-pins { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.strat-pin { display: flex; align-items: flex-start; gap: 12px; }
+.strat-pin-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.strat-pin-green  .strat-pin-dot { background: var(--gr); }
+.strat-pin-yellow .strat-pin-dot { background: var(--g); }
+.strat-pin-red    .strat-pin-dot { background: var(--err); }
+.strat-pin-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--w);
+}
+.strat-pin-desc {
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  color: var(--d);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.strat-make-table { display: flex; flex-direction: column; gap: 0; margin-top: 10px; }
+.strat-make-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 0.5px solid rgba(255,255,255,0.05);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--w);
+}
+[data-theme="light"] .strat-make-row { border-bottom-color: rgba(0,0,0,0.06); }
+.strat-make-row:last-child { border-bottom: none; }
+.strat-make-header { color: var(--d); font-size: 10px; letter-spacing: 0.08em; }
+.strat-make-pct { font-weight: 500; }
+.strat-make-pct.high { color: var(--gr); }
+.strat-make-pct.mid  { color: var(--g); }
+.strat-make-pct.low  { color: var(--err); }
+.strat-credit {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--d);
+  text-align: center;
+  padding: 10px 0 4px;
+  line-height: 1.6;
+  opacity: 0.7;
+}
+
+/* ── WELD RESET BUTTON ───────────────────────────────────────────────── */
+.weld-reset-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--d);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+[data-theme="light"] .weld-reset-btn { border-color: rgba(0,0,0,0.1); }
+.weld-reset-btn:hover { border-color: var(--d); color: var(--w); }
+
+/* ── TIGER 5 DECREMENT BUTTON ────────────────────────────────────────── */
+.tiger5-btn-dec {
+  border-color: rgba(255,255,255,0.08);
+  color: var(--d);
+}
+.tiger5-btn-dec:active { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); transform: scale(0.92); }
+
+/* ── LOG SHOT HEADER BADGE ───────────────────────────────────────────── */
+.acc-logshot-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#logshot-pct-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--g);
+}
+
+/* ── HELP MODAL SECTIONS ─────────────────────────────────────────────── */
+.help-section {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.07);
+}
+[data-theme="light"] .help-section { border-bottom-color: rgba(0,0,0,0.07); }
+.help-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.help-section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--d);
+  margin-bottom: 6px;
+}
+.help-text {
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--w);
+}
