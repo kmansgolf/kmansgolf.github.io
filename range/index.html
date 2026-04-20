@@ -82,6 +82,7 @@
     <button class="tab-btn"        id="tab-games"    onclick="openGames()">🎮 Games</button>
     <button class="tab-btn"        id="tab-history"  onclick="navTo('s-history','tab-history')">📈 History</button>
     <button class="tab-btn"        id="tab-profile"  onclick="navTo('s-profile','tab-profile')">👤 Profile</button>
+    <button class="tab-btn"        id="tab-tempo"    onclick="navTo('s-tempo','tab-tempo')">🎵 Tempo</button>
   </div>
 </div>
 
@@ -318,6 +319,111 @@
       <div class="firstrun-txt"><strong>Skill Profile unlocks after 6 session points</strong>Short sessions = 1pt, full sessions = 2pts. Once unlocked, the app diagnoses your weaknesses automatically.</div>
     </div>
     <button class="btn" onclick="dismissFirstRun()" style="margin-top:20px">Let's Go →</button>
+  </div>
+</div>
+
+<!-- ══ TEMPO TRAINER ══ -->
+<div id="s-tempo" class="scr">
+  <div class="sb" style="padding-top:0">
+
+    <div class="t-hero">
+      <div class="t-hero-title">Tempo <span>Trainer</span></div>
+      <div class="t-hero-sub">REAL SWING TIMING · 3-TONE CUE</div>
+    </div>
+
+    <!-- Mode -->
+    <div class="card">
+      <div class="ct">Swing Mode</div>
+      <div class="t-mode-row">
+        <button class="t-mode-btn active" id="t-mode-full"  onclick="t_setMode('full')">
+          <span class="t-mode-label">Full Swing</span>
+          <span class="t-mode-ratio">3 : 1</span>
+        </button>
+        <button class="t-mode-btn" id="t-mode-short" onclick="t_setMode('short')">
+          <span class="t-mode-label">Short Game</span>
+          <span class="t-mode-ratio">2 : 1</span>
+        </button>
+        <button class="t-mode-btn" id="t-mode-putt"  onclick="t_setMode('putt')">
+          <span class="t-mode-label">Putting</span>
+          <span class="t-mode-ratio">2 : 1</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Preset -->
+    <div class="card">
+      <div class="ct">Tempo Preset</div>
+      <div class="t-preset-grid" id="t-preset-grid"></div>
+      <div class="t-swing-row">
+        <span class="t-swing-val" id="t-swing-time">—</span>
+        <span class="t-swing-unit">sec</span>
+        <span class="t-swing-tag" id="t-swing-tag"></span>
+      </div>
+      <div class="t-detail-row">
+        <div class="t-detail-cell">
+          <span class="t-detail-val" id="t-back-ms">—</span>
+          <span class="t-detail-lbl">Back (ms)</span>
+        </div>
+        <div class="t-detail-cell">
+          <span class="t-detail-val" id="t-down-ms">—</span>
+          <span class="t-detail-lbl">Down (ms)</span>
+        </div>
+        <div class="t-detail-cell">
+          <span class="t-detail-val" id="t-ratio">3:1</span>
+          <span class="t-detail-lbl">Ratio</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rest gap -->
+    <div class="card">
+      <div class="ct">Rest Between Swings</div>
+      <div class="t-gap-row">
+        <span class="t-gap-lbl">Gap</span>
+        <input type="range" id="t-gap-slider" class="t-gap-slider"
+               min="2" max="8" step="0.5" value="4"
+               oninput="t_onGapSlider(this.value)">
+        <span class="t-gap-val" id="t-gap-display">4.0s</span>
+      </div>
+    </div>
+
+    <!-- Phase visualizer -->
+    <div class="card">
+      <div class="ct">Current Phase</div>
+      <div id="t-countin-badge" class="t-countin-badge">
+        <div class="t-countin-dot"></div>
+        <span class="t-countin-text">Ready…</span>
+      </div>
+      <div class="t-phase-display" id="t-phase-display">
+        <div class="t-phase-dot" id="t-phase-takeaway">
+          <span class="t-phase-icon">↓</span>
+          <span class="t-phase-name">Takeaway</span>
+        </div>
+        <div class="t-phase-dot" id="t-phase-top">
+          <span class="t-phase-icon">↑</span>
+          <span class="t-phase-name">Top</span>
+        </div>
+        <div class="t-phase-dot" id="t-phase-impact">
+          <span class="t-phase-icon">⚡</span>
+          <span class="t-phase-name">Impact</span>
+        </div>
+        <div class="t-phase-dot" id="t-phase-rest">
+          <span class="t-phase-icon">·</span>
+          <span class="t-phase-name">Rest</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Play button -->
+    <div style="padding:0 16px 32px">
+      <button class="t-play-btn" id="t-play-btn" onclick="t_togglePlay()">
+        <svg class="t-play-icon" viewBox="0 0 24 24" id="t-play-svg">
+          <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
+        </svg>
+        <span id="t-play-label">Start</span>
+      </button>
+    </div>
+
   </div>
 </div>
 
