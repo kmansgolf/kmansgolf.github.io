@@ -28,117 +28,13 @@
   </header>
 
   <div class="tab-strip">
-    <button class="tab-btn active" id="tab-tempo"    onclick="switchTab('tempo')">Tempo</button>
-    <button class="tab-btn"        id="tab-weld"     onclick="switchTab('weld')">WELD</button>
+    <button class="tab-btn active" id="tab-weld"     onclick="switchTab('weld')">WELD</button>
     <button class="tab-btn"        id="tab-mental"   onclick="switchTab('mental')">Mental</button>
     <button class="tab-btn"        id="tab-strategy" onclick="switchTab('strategy')">Strategy</button>
   </div>
 
-  <!-- ═══ TEMPO SCREEN ═══════════════════════════════════════════════════ -->
-  <div class="screen active" id="screen-tempo">
-    <main>
-
-      <div>
-        <div class="page-title">Tempo <span>Trainer</span></div>
-        <div class="page-sub">REAL SWING TIMING · 3-TONE CUE</div>
-      </div>
-
-      <!-- Mode -->
-      <div class="card">
-        <div class="card-label">Swing Mode</div>
-        <div class="mode-row">
-          <button class="mode-btn active" id="mode-full"  onclick="setMode('full')">
-            <span class="mode-btn-label">Full Swing</span>
-            <span class="mode-btn-ratio">3 : 1 ratio</span>
-          </button>
-          <button class="mode-btn" id="mode-short" onclick="setMode('short')">
-            <span class="mode-btn-label">Short Game</span>
-            <span class="mode-btn-ratio">2 : 1 ratio</span>
-          </button>
-          <button class="mode-btn" id="mode-putt"  onclick="setMode('putt')">
-            <span class="mode-btn-label">Putting</span>
-            <span class="mode-btn-ratio">2 : 1 ratio</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Preset -->
-      <div class="card">
-        <div class="card-label">Tempo Preset</div>
-        <div class="preset-grid" id="preset-grid"></div>
-        <div class="swing-time-row">
-          <span class="swing-time-value" id="swing-time-display">—</span>
-          <span class="swing-time-unit">sec</span>
-          <span class="swing-time-label" id="swing-time-tag"></span>
-        </div>
-        <div class="detail-row">
-          <div class="detail-cell">
-            <span class="detail-value" id="detail-back">—</span>
-            <span class="detail-label">Back (ms)</span>
-          </div>
-          <div class="detail-cell">
-            <span class="detail-value" id="detail-down">—</span>
-            <span class="detail-label">Down (ms)</span>
-          </div>
-          <div class="detail-cell">
-            <span class="detail-value" id="detail-ratio">3:1</span>
-            <span class="detail-label">Ratio</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Rest gap -->
-      <div class="card">
-        <div class="card-label">Rest Between Swings</div>
-        <div class="gap-row">
-          <span class="gap-label">Gap</span>
-          <input type="range" id="gap-slider" min="2" max="8" step="0.5" value="4"
-                 oninput="onGapSlider(this.value)">
-          <span class="gap-value" id="gap-display">4.0s</span>
-        </div>
-      </div>
-
-      <!-- Phase visualizer -->
-      <div class="card">
-        <div class="card-label">Current Phase</div>
-        <div id="countin-badge">
-          <div id="countin-dot"></div>
-          <span id="countin-text">Ready…</span>
-        </div>
-        <div class="phase-display" id="phase-display">
-          <div class="phase-dot phase-takeaway" id="phase-takeaway">
-            <span class="phase-icon">↓</span>
-            <span class="phase-name">Takeaway</span>
-          </div>
-          <div class="phase-dot phase-top" id="phase-top">
-            <span class="phase-icon">↑</span>
-            <span class="phase-name">Top</span>
-          </div>
-          <div class="phase-dot phase-impact" id="phase-impact">
-            <span class="phase-icon">⚡</span>
-            <span class="phase-name">Impact</span>
-          </div>
-          <div class="phase-dot phase-rest" id="phase-rest">
-            <span class="phase-icon">·</span>
-            <span class="phase-name">Rest</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Play -->
-      <button class="play-btn" id="play-btn" onclick="togglePlay()">
-        <svg class="play-icon" viewBox="0 0 24 24" id="play-icon-svg">
-          <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
-        </svg>
-        <span id="play-label">Start</span>
-      </button>
-
-      <footer>kmansgolf · The Caddie — prototype</footer>
-    </main>
-  </div>
-
   <!-- ═══ WELD SCREEN ════════════════════════════════════════════════════ -->
-  <div class="screen" id="screen-weld">
+  <div class="screen active" id="screen-weld">
     <main>
 
       <div>
