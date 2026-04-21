@@ -46,23 +46,35 @@
         </button>
         <div class="acc-body" id="acc-body-tee">
           <div class="strat-rule">
-            <div class="strat-rule-label">Default Club</div>
-            <div class="strat-rule-text">Driver is the default. Only move down if a specific penalty forces it — don't leave driver in the bag out of comfort.</div>
+            <div class="strat-rule-label">Default: Hit Driver</div>
+            <div class="strat-rule-text">Driver is always the first selection. Distance is the #1 correlator to lower scores. There must be a compelling reason NOT to hit driver — comfort is not a reason.</div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">The 70-Yard Rule</div>
+            <div class="strat-rule-text">If there are at least 70 yards of safe width between penalty areas, hit driver. Only consider laying back if the safe corridor is narrower than 70 yards AND a shorter club lands in a significantly wider zone.</div>
           </div>
           <div class="strat-rule">
             <div class="strat-rule-label">Hazard Hierarchy</div>
             <div class="strat-rule-text">Avoid in order of severity:</div>
             <div class="strat-hierarchy">
-              <div class="strat-tier strat-tier-ob">OB / Lost Ball</div>
-              <div class="strat-tier strat-tier-water">Water</div>
-              <div class="strat-tier strat-tier-trees">Trees</div>
-              <div class="strat-tier strat-tier-bunker">Bunker</div>
-              <div class="strat-tier strat-tier-rough">Rough</div>
+              <div class="strat-tier strat-tier-ob">1 — OB / Stroke &amp; Distance</div>
+              <div class="strat-tier strat-tier-water">2 — Water (1 stroke + position)</div>
+              <div class="strat-tier strat-tier-trees">3 — Trees / Deep Rough</div>
+              <div class="strat-tier strat-tier-bunker">4 — Fairway Bunker (~0.5 strokes)</div>
+              <div class="strat-tier strat-tier-rough">5 — Light Rough (acceptable)</div>
             </div>
           </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">Target Selection</div>
+            <div class="strat-rule-text">Find the widest landing zone, not the center of the fairway. Aim away from the worst penalty. Play your stock shot shape — don't manufacture the opposite shape under pressure.</div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">Dispersion Reality</div>
+            <div class="strat-rule-text">Tour players have a 70-yard wide dispersion pattern off the tee. Amateurs are wider. Your "aimed at center" shot can finish anywhere in that window — pick targets accordingly.</div>
+          </div>
           <div class="strat-rule" style="border-bottom:none;">
-            <div class="strat-rule-label">Miss Smart</div>
-            <div class="strat-rule-text">When laying back, pick a distance that leaves a full shot in. Half swings create inconsistency — commit to a full swing distance.</div>
+            <div class="strat-rule-label">Pre-Shot Checklist</div>
+            <div class="strat-rule-text">① Where is dead? (OB, water, unplayable) &nbsp;② Where is fine? (rough, bunker, trees with a line) &nbsp;③ What's my stock shape? &nbsp;④ Aim to keep dead out of play — accept fine.</div>
           </div>
         </div>
       </div>
@@ -180,38 +192,56 @@
         </button>
         <div class="acc-body" id="acc-body-approach">
           <div class="strat-rule">
+            <div class="strat-rule-label">Distance Thresholds (10–15 HCP)</div>
+            <div class="strat-make-table">
+              <div class="strat-make-row strat-make-header">
+                <span>Distance</span><span>Target</span>
+              </div>
+              <div class="strat-make-row">
+                <span>125+ yds</span><span style="color:var(--d)">Center green</span>
+              </div>
+              <div class="strat-make-row">
+                <span>100–125 yds</span><span style="color:var(--g)">Pin &amp; center</span>
+              </div>
+              <div class="strat-make-row">
+                <span>Inside 100 yds</span><span style="color:var(--gr)">Attack flag</span>
+              </div>
+            </div>
+            <div class="strat-rule-text" style="margin-top:10px;font-size:13px;color:var(--d);">Distance determines IF you consider pin position. Pin color determines HOW you adjust within scoring range.</div>
+          </div>
+          <div class="strat-rule">
             <div class="strat-rule-label">Pin System — Inside Scoring Range Only</div>
             <div class="strat-pins">
               <div class="strat-pin strat-pin-green">
                 <span class="strat-pin-dot"></span>
                 <div>
                   <div class="strat-pin-name">Green Pin</div>
-                  <div class="strat-pin-desc">Attack the flag. Miss fat side.</div>
+                  <div class="strat-pin-desc">Middle of green, no nearby trouble. Aim at or near flag. Miss fat side.</div>
                 </div>
               </div>
               <div class="strat-pin strat-pin-yellow">
                 <span class="strat-pin-dot"></span>
                 <div>
                   <div class="strat-pin-name">Yellow Pin</div>
-                  <div class="strat-pin-desc">Middle of green. Give yourself a putt.</div>
+                  <div class="strat-pin-desc">Pin toward edge, some trouble. Aim between pin and center. Protect against short-side.</div>
                 </div>
               </div>
               <div class="strat-pin strat-pin-red">
                 <span class="strat-pin-dot"></span>
                 <div>
                   <div class="strat-pin-name">Red Pin</div>
-                  <div class="strat-pin-desc">Aim away from trouble. Bogey is fine.</div>
+                  <div class="strat-pin-desc">Sucker pin, guarded by hazard. Center of green only. Never chase. Bogey is fine.</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="strat-rule">
             <div class="strat-rule-label">70/30 Rule</div>
-            <div class="strat-rule-text">Plan for your average shot, not your best. 70% of approaches should find the green safely.</div>
+            <div class="strat-rule-text">You're firing a shotgun, not a sniper rifle. 70% of approaches should finish on the safe/fat side. Plan for your average shot, not your best.</div>
           </div>
           <div class="strat-rule" style="border-bottom:none;">
             <div class="strat-rule-label">Never Short-Side</div>
-            <div class="strat-rule-text">A short-sided miss is the worst result on any hole. Miss fat side every time.</div>
+            <div class="strat-rule-text">Short-siding = missing on the same side as the pin with no green to work with. Even on Green pins, miss fat side. A short-side miss turns a routine up-and-down into a scramble for bogey.</div>
           </div>
         </div>
       </div>
@@ -337,23 +367,35 @@
         </button>
         <div class="strat-body" id="strat-body-tee">
           <div class="strat-rule">
-            <div class="strat-rule-label">Default Club</div>
-            <div class="strat-rule-text">Driver is the default. Only move down if a specific penalty forces it — don't leave driver in the bag out of comfort.</div>
+            <div class="strat-rule-label">Default: Hit Driver</div>
+            <div class="strat-rule-text">Driver is always the first selection. Distance is the #1 correlator to lower scores. There must be a compelling reason NOT to hit driver — comfort is not a reason.</div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">The 70-Yard Rule</div>
+            <div class="strat-rule-text">If there are at least 70 yards of safe width between penalty areas, hit driver. Only consider laying back if the safe corridor is narrower than 70 yards AND a shorter club lands in a significantly wider zone.</div>
           </div>
           <div class="strat-rule">
             <div class="strat-rule-label">Hazard Hierarchy</div>
             <div class="strat-rule-text">Avoid in order of severity:</div>
             <div class="strat-hierarchy">
-              <div class="strat-tier strat-tier-ob">OB / Lost Ball</div>
-              <div class="strat-tier strat-tier-water">Water</div>
-              <div class="strat-tier strat-tier-trees">Trees</div>
-              <div class="strat-tier strat-tier-bunker">Bunker</div>
-              <div class="strat-tier strat-tier-rough">Rough</div>
+              <div class="strat-tier strat-tier-ob">1 — OB / Stroke &amp; Distance</div>
+              <div class="strat-tier strat-tier-water">2 — Water (1 stroke + position)</div>
+              <div class="strat-tier strat-tier-trees">3 — Trees / Deep Rough</div>
+              <div class="strat-tier strat-tier-bunker">4 — Fairway Bunker (~0.5 strokes)</div>
+              <div class="strat-tier strat-tier-rough">5 — Light Rough (acceptable)</div>
             </div>
           </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">Target Selection</div>
+            <div class="strat-rule-text">Find the widest landing zone, not the center of the fairway. Aim away from the worst penalty. Play your stock shot shape — don't manufacture the opposite shape under pressure.</div>
+          </div>
+          <div class="strat-rule">
+            <div class="strat-rule-label">Dispersion Reality</div>
+            <div class="strat-rule-text">Tour players have a 70-yard wide dispersion pattern off the tee. Amateurs are wider. Your "aimed at center" shot can finish anywhere in that window — pick targets accordingly.</div>
+          </div>
           <div class="strat-rule" style="border-bottom:none;">
-            <div class="strat-rule-label">Miss Smart</div>
-            <div class="strat-rule-text">When laying back, pick a distance that leaves a full shot in. Half swings create inconsistency — commit to a full swing distance.</div>
+            <div class="strat-rule-label">Pre-Shot Checklist</div>
+            <div class="strat-rule-text">① Where is dead? (OB, water, unplayable) &nbsp;② Where is fine? (rough, bunker, trees with a line) &nbsp;③ What's my stock shape? &nbsp;④ Aim to keep dead out of play — accept fine.</div>
           </div>
         </div>
       </div>
@@ -366,38 +408,77 @@
         </button>
         <div class="strat-body" id="strat-body-approach">
           <div class="strat-rule">
+            <div class="strat-rule-label">Distance Thresholds by Handicap</div>
+            <div class="strat-make-table">
+              <div class="strat-make-row strat-make-header">
+                <span>Handicap</span><span>Center Green</span><span>Attack Flag</span>
+              </div>
+              <div class="strat-make-row">
+                <span>20+</span><span style="color:var(--d)">100+ yds</span><span style="color:var(--gr)">&lt;50 yds</span>
+              </div>
+              <div class="strat-make-row">
+                <span>15–20</span><span style="color:var(--d)">100+ yds</span><span style="color:var(--gr)">&lt;75 yds</span>
+              </div>
+              <div class="strat-make-row">
+                <span>10–15</span><span style="color:var(--d)">125+ yds</span><span style="color:var(--gr)">&lt;100 yds</span>
+              </div>
+              <div class="strat-make-row">
+                <span>5–10</span><span style="color:var(--d)">135+ yds</span><span style="color:var(--gr)">&lt;100 yds</span>
+              </div>
+              <div class="strat-make-row">
+                <span>0–5</span><span style="color:var(--d)">150+ yds</span><span style="color:var(--gr)">&lt;125 yds</span>
+              </div>
+            </div>
+            <div class="strat-rule-text" style="margin-top:10px;font-size:13px;color:var(--d);">Distance determines IF you consider pin position. Pin color determines HOW you adjust within scoring range.</div>
+          </div>
+          <div class="strat-rule">
             <div class="strat-rule-label">Pin System — Inside Scoring Range Only</div>
             <div class="strat-pins">
               <div class="strat-pin strat-pin-green">
                 <span class="strat-pin-dot"></span>
                 <div>
                   <div class="strat-pin-name">Green Pin</div>
-                  <div class="strat-pin-desc">Attack the flag. Miss fat side.</div>
+                  <div class="strat-pin-desc">Middle of green, no nearby trouble. Aim at or near flag. Miss fat side.</div>
                 </div>
               </div>
               <div class="strat-pin strat-pin-yellow">
                 <span class="strat-pin-dot"></span>
                 <div>
                   <div class="strat-pin-name">Yellow Pin</div>
-                  <div class="strat-pin-desc">Middle of green. Give yourself a putt.</div>
+                  <div class="strat-pin-desc">Pin toward edge, some trouble. Aim between pin and center. Protect against short-side.</div>
                 </div>
               </div>
               <div class="strat-pin strat-pin-red">
                 <span class="strat-pin-dot"></span>
                 <div>
                   <div class="strat-pin-name">Red Pin</div>
-                  <div class="strat-pin-desc">Aim away from trouble. Bogey is fine.</div>
+                  <div class="strat-pin-desc">Sucker pin, guarded by hazard. Center of green only. Never chase. Bogey is fine.</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="strat-rule">
+            <div class="strat-rule-label">Dispersion Reality</div>
+            <div class="strat-make-table">
+              <div class="strat-make-row strat-make-header">
+                <span>Player</span><span>Club</span><span>Width</span>
+              </div>
+              <div class="strat-make-row">
+                <span>Scratch</span><span>7-iron</span><span>26 yds</span>
+              </div>
+              <div class="strat-make-row">
+                <span>15 HCP</span><span>8-iron</span><span>43 yds</span>
+              </div>
+            </div>
+            <div class="strat-rule-text" style="margin-top:10px;">You're firing a shotgun, not a sniper rifle. Target selection is about overlaying your dispersion circle on the green and maximizing the percentage of shots that stay on the putting surface.</div>
+          </div>
+          <div class="strat-rule">
             <div class="strat-rule-label">70/30 Rule</div>
-            <div class="strat-rule-text">Plan for your average shot, not your best. 70% of approaches should find the green safely.</div>
+            <div class="strat-rule-text">70% of your shots should finish on the fat/safe side of the green. This is baked into target selection — not a conscious aim adjustment mid-swing.</div>
           </div>
           <div class="strat-rule" style="border-bottom:none;">
             <div class="strat-rule-label">Never Short-Side</div>
-            <div class="strat-rule-text">A short-sided miss is the worst result on any hole. Miss fat side every time.</div>
+            <div class="strat-rule-text">Short-siding = missing on the same side as the pin with no green to work with. Even on Green pins, miss fat side. A short-side miss turns a routine up-and-down into a scramble for bogey.</div>
           </div>
         </div>
       </div>
