@@ -166,13 +166,13 @@ main {
   font-size: 32px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  color: var(--w);
+  color: var(--text);
 }
-.page-title span { color: var(--gr); }
+.page-title span { color: var(--green); }
 .page-sub {
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-  color: var(--d);
+  color: var(--text-muted);
   letter-spacing: 0.06em;
   margin-top: 4px;
 }
@@ -191,7 +191,7 @@ main {
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--d);
+  color: var(--text-muted);
   margin-bottom: 14px;
 }
 
@@ -223,18 +223,18 @@ main {
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: var(--w);
+  color: var(--text);
 }
 
 .acc-chevron {
   font-family: 'DM Mono', monospace;
   font-size: 18px;
-  color: var(--d);
+  color: var(--text-muted);
   flex-shrink: 0;
   line-height: 1;
   transition: color 0.18s ease;
 }
-.acc-section:has(.acc-body.open) .acc-chevron { color: var(--gr); }
+.acc-section:has(.acc-body.open) .acc-chevron { color: var(--green); }
 
 .acc-body {
   max-height: 0;
@@ -257,7 +257,7 @@ main {
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--d);
+  color: var(--text-muted);
 }
 .weld-field {
   background: var(--surface-raised);
@@ -266,13 +266,13 @@ main {
   padding: 12px 14px;
   font-family: 'DM Mono', monospace;
   font-size: 16px;
-  color: var(--w);
+  color: var(--text);
   width: 100%;
   outline: none;
   transition: border-color 0.18s ease;
 }
 [data-theme="light"] .weld-field { background: var(--surface-input); border-color: rgba(0,0,0,0.1); }
-.weld-field:focus { border-color: var(--gr); }
+.weld-field:focus { border-color: var(--green); }
 .seg-row { display: flex; gap: 6px; }
 .seg-btn {
   flex: 1;
@@ -283,20 +283,20 @@ main {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 14px;
   font-weight: 700;
-  color: var(--d);
+  color: var(--text-muted);
   cursor: pointer;
   transition: all 0.15s ease;
   text-align: center;
 }
 [data-theme="light"] .seg-btn { background: var(--surface-input); }
-.seg-btn.active { border-color: var(--gr); color: var(--gr); background: rgba(61,220,132,0.08); }
+.seg-btn.active { border-color: var(--green); color: var(--green); background: rgba(61,220,132,0.08); }
 .weld-result-box { background: var(--surface-raised); border-radius: 12px; padding: 20px; text-align: center; }
 [data-theme="light"] .weld-result-box { background: var(--surface-input); }
 .weld-plays-value {
   font-family: 'DM Mono', monospace;
   font-size: 56px;
   font-weight: 500;
-  color: var(--g);
+  color: var(--gold);
   line-height: 1;
 }
 .weld-breakdown { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
@@ -306,20 +306,20 @@ main {
   align-items: center;
   font-family: 'DM Mono', monospace;
   font-size: 12px;
-  color: var(--d);
+  color: var(--text-muted);
   padding: 6px 0;
   border-bottom: 0.5px solid rgba(255,255,255,0.05);
 }
 [data-theme="light"] .weld-row { border-bottom-color: rgba(0,0,0,0.06); }
 .weld-row:last-child { border-bottom: none; }
-.weld-row-val { font-weight: 500; color: var(--w); }
+.weld-row-val { font-weight: 500; color: var(--text); }
 .weld-row-val.pos { color: var(--red); }
-.weld-row-val.neg { color: var(--gr); }
+.weld-row-val.neg { color: var(--green); }
 .weld-aim-note {
   margin-top: 10px;
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-  color: var(--g);
+  color: var(--gold);
   letter-spacing: 0.06em;
   text-align: center;
 }
@@ -329,7 +329,7 @@ main {
   margin-top: 8px;
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-  color: var(--d);
+  color: var(--text-muted);
   text-align: center;
   letter-spacing: 0.04em;
   min-height: 16px;
@@ -353,17 +353,17 @@ main {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 15px;
   font-weight: 700;
-  color: var(--d);
+  color: var(--text-muted);
   letter-spacing: 0.04em;
   width: 100%;
 }
 [data-theme="light"] .toggle-btn { background: var(--surface-input); }
-.toggle-btn.yes { border-color: var(--gr); color: var(--gr); background: rgba(61,220,132,0.08); }
+.toggle-btn.yes { border-color: var(--green); color: var(--green); background: rgba(61,220,132,0.08); }
 .toggle-btn.no  { border-color: var(--red); color: var(--red); background: rgba(231,76,60,0.08); }
 .toggle-btn-sub {
   font-family: 'DM Mono', monospace;
   font-size: 9px;
-  color: var(--d);
+  color: var(--text-muted);
   display: block;
   margin-top: 2px;
   letter-spacing: 0.06em;
@@ -375,7 +375,7 @@ main {
   padding: 14px;
   border: none;
   border-radius: 10px;
-  background: var(--gr);
+  background: var(--green);
   color: #fff;
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 17px;
@@ -410,7 +410,7 @@ footer {
   padding: 20px 0 0;
   font-family: 'DM Mono', monospace;
   font-size: 10px;
-  color: var(--d);
+  color: var(--text-muted);
   opacity: 0.5;
   letter-spacing: 0.04em;
 }
@@ -423,7 +423,7 @@ footer {
   right: 0;
   background: #1c1c1e;
   z-index: 100;
-  border-top: 2px solid var(--g);
+  border-top: 2px solid var(--gold);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -464,7 +464,7 @@ footer {
 }
 .awareness-chevron {
   font-size: 14px;
-  color: var(--g);
+  color: var(--gold);
   line-height: 1;
   transition: transform 0.2s ease;
 }
@@ -522,7 +522,7 @@ footer {
   font-family: 'DM Mono', monospace;
   font-size: 20px;
   font-weight: 500;
-  color: var(--g);
+  color: var(--gold);
   min-width: 22px;
   text-align: center;
   line-height: 1;
@@ -575,7 +575,7 @@ footer {
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--d);
+  color: var(--text-muted);
 }
 .tiger5-total-value {
   font-family: 'DM Mono', monospace;
@@ -597,14 +597,14 @@ footer {
   font-family: 'Barlow', sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: var(--w);
+  color: var(--text);
 }
 .tiger5-counter { display: flex; align-items: center; gap: 12px; }
 .tiger5-count {
   font-family: 'DM Mono', monospace;
   font-size: 22px;
   font-weight: 500;
-  color: var(--g);
+  color: var(--gold);
   min-width: 28px;
   text-align: right;
   line-height: 1;
@@ -615,7 +615,7 @@ footer {
   border-radius: 50%;
   border: 1.5px solid rgba(255,255,255,0.15);
   background: var(--surface-raised);
-  color: var(--w);
+  color: var(--text);
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 22px;
   font-weight: 700;
@@ -659,17 +659,17 @@ footer {
   background: none;
   border: none;
   font-size: 18px;
-  color: var(--d);
+  color: var(--text-muted);
   cursor: pointer;
   line-height: 1;
   padding: 4px;
 }
-.modal-close:hover { color: var(--w); }
+.modal-close:hover { color: var(--text); }
 .modal-title {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 22px;
   font-weight: 800;
-  color: var(--w);
+  color: var(--text);
   letter-spacing: 0.02em;
   margin-bottom: 14px;
 }
@@ -692,12 +692,12 @@ footer {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 17px;
   font-weight: 700;
-  color: var(--w);
+  color: var(--text);
 }
 .strat-chevron {
   font-family: 'DM Mono', monospace;
   font-size: 18px;
-  color: var(--d);
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 .strat-body {
@@ -724,14 +724,14 @@ footer {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--gr);
+  color: var(--green);
   margin-bottom: 6px;
 }
 .strat-rule-text {
   font-family: 'Barlow', sans-serif;
   font-size: 15px;
   line-height: 1.6;
-  color: var(--w);
+  color: var(--text);
   opacity: 0.9;
 }
 .strat-hierarchy { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
@@ -757,20 +757,20 @@ footer {
   flex-shrink: 0;
   margin-top: 3px;
 }
-.strat-pin-green  .strat-pin-dot { background: var(--gr); }
-.strat-pin-yellow .strat-pin-dot { background: var(--g); }
+.strat-pin-green  .strat-pin-dot { background: var(--green); }
+.strat-pin-yellow .strat-pin-dot { background: var(--gold); }
 .strat-pin-red    .strat-pin-dot { background: var(--red); }
 .strat-pin-name {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: var(--w);
+  color: var(--text);
 }
 .strat-pin-desc {
   font-family: 'Barlow', sans-serif;
   font-size: 14px;
-  color: var(--d);
+  color: var(--text-muted);
   margin-top: 3px;
   line-height: 1.45;
 }
@@ -782,19 +782,19 @@ footer {
   border-bottom: 0.5px solid rgba(255,255,255,0.05);
   font-family: 'DM Mono', monospace;
   font-size: 12px;
-  color: var(--w);
+  color: var(--text);
 }
 [data-theme="light"] .strat-make-row { border-bottom-color: rgba(0,0,0,0.06); }
 .strat-make-row:last-child { border-bottom: none; }
-.strat-make-header { color: var(--d); font-size: 10px; letter-spacing: 0.08em; }
+.strat-make-header { color: var(--text-muted); font-size: 10px; letter-spacing: 0.08em; }
 .strat-make-pct { font-weight: 500; }
-.strat-make-pct.high { color: var(--gr); }
-.strat-make-pct.mid  { color: var(--g); }
+.strat-make-pct.high { color: var(--green); }
+.strat-make-pct.mid  { color: var(--gold); }
 .strat-make-pct.low  { color: var(--red); }
 .strat-credit {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
-  color: var(--d);
+  color: var(--text-muted);
   text-align: center;
   padding: 10px 0 4px;
   line-height: 1.6;
@@ -809,7 +809,7 @@ footer {
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
   background: transparent;
-  color: var(--d);
+  color: var(--text-muted);
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 14px;
   font-weight: 700;
@@ -818,12 +818,12 @@ footer {
   transition: all 0.15s ease;
 }
 [data-theme="light"] .weld-reset-btn { border-color: rgba(0,0,0,0.1); }
-.weld-reset-btn:hover { border-color: var(--d); color: var(--w); }
+.weld-reset-btn:hover { border-color: var(--text-muted); color: var(--text); }
 
 /* ── TIGER 5 DECREMENT BUTTON ────────────────────────────────────────── */
 .tiger5-btn-dec {
   border-color: rgba(255,255,255,0.08);
-  color: var(--d);
+  color: var(--text-muted);
 }
 .tiger5-btn-dec:active { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); transform: scale(0.92); }
 
@@ -837,7 +837,7 @@ footer {
   font-family: 'DM Mono', monospace;
   font-size: 13px;
   font-weight: 500;
-  color: var(--g);
+  color: var(--gold);
 }
 
 /* ── HELP MODAL SECTIONS ─────────────────────────────────────────────── */
@@ -854,14 +854,14 @@ footer {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--gr);
+  color: var(--green);
   margin-bottom: 6px;
 }
 .help-text {
   font-family: 'Barlow', sans-serif;
   font-size: 15px;
   line-height: 1.6;
-  color: var(--w);
+  color: var(--text);
   opacity: 0.9;
 }
 
@@ -888,7 +888,7 @@ footer {
   font-family: 'DM Mono', monospace;
   font-size: 26px;
   font-weight: 500;
-  color: var(--w);
+  color: var(--text);
   line-height: 1;
 }
 
@@ -897,7 +897,7 @@ footer {
   font-size: 9px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--d);
+  color: var(--text-muted);
 }
 
 /* ── SHOT LOG ────────────────────────────────────────────────────────── */
@@ -920,7 +920,7 @@ footer {
 .shot-num {
   font-family: 'DM Mono', monospace;
   font-size: 12px;
-  color: var(--d);
+  color: var(--text-muted);
   min-width: 28px;
   flex-shrink: 0;
 }
@@ -942,7 +942,7 @@ footer {
 }
 .shot-badge.y {
   background: rgba(61,220,132,0.12);
-  color: var(--gr);
+  color: var(--green);
   border: 0.5px solid rgba(61,220,132,0.25);
 }
 .shot-badge.n {
@@ -955,6 +955,6 @@ footer {
   font-family: 'DM Mono', monospace;
   font-size: 13px;
   font-weight: 500;
-  color: var(--g);
+  color: var(--gold);
   flex-shrink: 0;
 }
