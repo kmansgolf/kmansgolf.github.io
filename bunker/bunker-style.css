@@ -1,25 +1,25 @@
+/* © 2026 Kevin Mansfield. All rights reserved. */
 :root {
-  --navy:        #000000;
   --navy-mid:    #1c1c1e;
   --navy-light:  #3a3a3c;
   --gold:        #e8b84b;
   --gold-dim:    rgba(232,184,75,0.15);
   --gold-border: rgba(232,184,75,0.4);
-  --blue-soft:   #6e6e73;
+  --blue-soft:   #ffffff;
   --green:       #2ecc71;
   --green-bg:    rgba(46,204,113,0.15);
   --red:         #e74c3c;
   --red-bg:      rgba(231,76,60,0.15);
   --amber:       #f39c12;
   --amber-bg:    rgba(243,156,18,0.15);
-  --slate:       #8ba4c0;
-  --muted:       #6e6e73;
+  --slate:       #ffffff;
+  --muted:       #ffffff;
   --border:      rgba(255,255,255,0.1);
   --surface:     rgba(255,255,255,0.04);
   --white:       #152e50;
-  --text:        #f5f5f7;
+  --text:        #ffffff;
   --green-win:   #2ecc71;
-  --sand:        #6e6e73;
+  --sand:        #ffffff;
   --green-accent: #3ddc84;
   --font-display:'Barlow Condensed', sans-serif;
   --font-body:   'Barlow', sans-serif;
@@ -29,6 +29,13 @@
   --shadow-md:   0 4px 16px rgba(0,0,0,0.4);
   --shadow-gold: 0 2px 8px rgba(232,184,75,0.2);
 }
+
+/* ── White text exceptions ── */
+input::placeholder              { color: rgba(255,255,255,0.35) !important; }
+.score-rel.even                 { color: rgba(255,255,255,0.45) !important; }
+.step-dot                       { color: rgba(255,255,255,0.4)  !important; }
+.status-amount.zero             { color: rgba(255,255,255,0.4)  !important; }
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;}
 body{font-family:var(--font-body);background:var(--navy);color:var(--text);min-height:100vh;}
