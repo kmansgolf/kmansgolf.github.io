@@ -1,9 +1,14 @@
-:root{
-  --n:#000000;--nm:#1c1c1e;--nl:#2c2c2e;--nc:#2c2c2e;--ni:#1c1c1e;
-  --g:#e8b84b;--gl:#f5d070;--w:#f5f5f7;--d:#6e6e73;
+/* © 2026 Kevin Mansfield. All rights reserved. */
+:root{--nm:#1c1c1e;--nl:#2c2c2e;--nc:#2c2c2e;--ni:#1c1c1e;
+  --g:#e8b84b;--gl:#f5d070;--w:#ffffff;--d:#ffffff;
   --gr:#3ddc84;--re:#e74c3c;--or:#f39c12;--bl:#3498db;
   --fc:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;--fm:'DM Mono',monospace;
 }
+
+/* ── White text exceptions ── */
+input::placeholder,
+.inp::placeholder,
+.sel::placeholder { color: rgba(255,255,255,0.35) !important; }
 
 /* ══ LIGHT THEME ══ */
 [data-theme="light"] {
