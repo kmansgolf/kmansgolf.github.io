@@ -13,7 +13,7 @@
   --err: #e74c3c;
   --header-bg: #1c1c1e;
   --radius: 14px;
-  --awareness-h: 228px; /* approx height of pinned bar — keep in sync */
+  --awareness-h: 46px; /* collapsed bar height only */
 }
 [data-theme="light"] {
   --n:  #f2f2f4;
@@ -387,7 +387,7 @@ footer {
   letter-spacing: 0.04em;
 }
 
-/* ── ROUND AWARENESS BAR (pinned) ────────────────────────────────────── */
+/* ── ROUND AWARENESS BAR (pinned, collapsible) ───────────────────────── */
 #round-awareness-bar {
   position: fixed;
   bottom: 0;
@@ -398,24 +398,146 @@ footer {
   border-top: 0.5px solid rgba(255,255,255,0.1);
   padding-bottom: env(safe-area-inset-bottom);
 }
-.awareness-inner {
+
+/* Collapsed header row — always visible */
+#awareness-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.awareness-header-inner {
   max-width: 480px;
   margin: 0 auto;
-  padding: 14px 18px 4px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-#round-awareness-bar .tiger5-total-row {
-  margin-bottom: 8px;
-  padding-bottom: 8px;
+.awareness-header-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
 }
-#round-awareness-bar .tiger5-row {
-  padding: 7px 0;
+.awareness-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-#round-awareness-bar .tiger5-name { font-size: 13px; }
-#round-awareness-bar .tiger5-count { font-size: 18px; }
-#round-awareness-bar .tiger5-btn {
-  width: 32px;
-  height: 32px;
+.awareness-header-total {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.awareness-header-total #tiger5-total {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--err);
+  line-height: 1;
+}
+.awareness-header-unit {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.06em;
+}
+.awareness-chevron {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  color: rgba(255,255,255,0.3);
+  line-height: 1;
+}
+
+/* Expandable body */
+#awareness-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+#awareness-body.open {
+  max-height: 300px;
+}
+
+/* 2-column grid */
+.awareness-grid {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 8px 18px 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  border-top: 0.5px solid rgba(255,255,255,0.07);
+}
+.awareness-cell {
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.awareness-cell-full {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.awareness-cell-name {
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.2;
+}
+.awareness-cell-counter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.awareness-cell .tiger5-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--g);
+  min-width: 22px;
+  text-align: center;
+  line-height: 1;
+}
+.awareness-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.7);
+  font-family: 'Barlow Condensed', sans-serif;
   font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding-bottom: 1px;
+  transition: all 0.12s ease;
+  flex-shrink: 0;
+}
+.awareness-btn:active {
+  background: var(--err);
+  border-color: var(--err);
+  transform: scale(0.92);
+}
+.awareness-btn-dec {
+  border-color: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.35);
+}
+.awareness-btn-dec:active {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
 }
 
 /* ── TIGER 5 (shared) ────────────────────────────────────────────────── */
@@ -487,10 +609,6 @@ footer {
 }
 [data-theme="light"] .tiger5-btn { background: #f0eee9; border-color: rgba(0,0,0,0.12); }
 .tiger5-btn:active { background: var(--err); border-color: var(--err); transform: scale(0.92); }
-
-/* override tiger5 colors inside pinned bar (always dark) */
-#round-awareness-bar .tiger5-total-label { color: rgba(255,255,255,0.4); }
-#round-awareness-bar .tiger5-name        { color: rgba(255,255,255,0.85); }
 
 /* ── MODAL ───────────────────────────────────────────────────────────── */
 .modal-overlay {

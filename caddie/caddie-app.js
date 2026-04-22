@@ -230,6 +230,17 @@ function tiger5Decrement(key) {
   _renderTiger5();
 }
 
+// ── AWARENESS BAR TOGGLE ──────────────────────────────────────────────────
+let awarenessOpen = false;
+
+function toggleAwareness() {
+  awarenessOpen = !awarenessOpen;
+  const body    = document.getElementById('awareness-body');
+  const chevron = document.getElementById('awareness-chevron');
+  body.classList.toggle('open', awarenessOpen);
+  chevron.textContent = awarenessOpen ? '˄' : '˅';
+}
+
 function _renderTiger5() {
   ['threeputt','doubles','penalties','wedgebogey','missedupdown'].forEach(k => {
     document.getElementById('t5-' + k).textContent = tiger5[k];

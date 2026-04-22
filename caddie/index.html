@@ -300,54 +300,71 @@
 
     </main>
 
-    <!-- ── Round Awareness Bar (pinned) ─────────────────────────── -->
+    <!-- ── Round Awareness Bar (pinned, collapsible) ────────────── -->
     <div id="round-awareness-bar">
-      <div class="awareness-inner">
-        <div class="tiger5-total-row">
-          <span class="tiger5-total-label">Round Awareness · Total Mistakes</span>
-          <span class="tiger5-total-value" id="tiger5-total">0</span>
+      <!-- Collapsed header — always visible -->
+      <button id="awareness-toggle" onclick="toggleAwareness()">
+        <div class="awareness-header-inner">
+          <span class="awareness-header-label">ROUND AWARENESS</span>
+          <div class="awareness-header-right">
+            <span class="awareness-header-total">
+              <span id="tiger5-total">0</span>
+              <span class="awareness-header-unit">mistakes</span>
+            </span>
+            <span class="awareness-chevron" id="awareness-chevron">˅</span>
+          </div>
         </div>
-        <div class="tiger5-list">
-          <div class="tiger5-row">
-            <span class="tiger5-name">3-Putts</span>
-            <div class="tiger5-counter">
-              <button class="tiger5-btn tiger5-btn-dec" onclick="tiger5Decrement('threeputt')">−</button>
+      </button>
+
+      <!-- Expandable grid — hidden by default -->
+      <div id="awareness-body">
+        <div class="awareness-grid">
+
+          <div class="awareness-cell">
+            <span class="awareness-cell-name">3-Putts</span>
+            <div class="awareness-cell-counter">
+              <button class="awareness-btn awareness-btn-dec" onclick="tiger5Decrement('threeputt')">−</button>
               <span class="tiger5-count" id="t5-threeputt">0</span>
-              <button class="tiger5-btn" onclick="tiger5Increment('threeputt')">+</button>
+              <button class="awareness-btn" onclick="tiger5Increment('threeputt')">+</button>
             </div>
           </div>
-          <div class="tiger5-row">
-            <span class="tiger5-name">Doubles+</span>
-            <div class="tiger5-counter">
-              <button class="tiger5-btn tiger5-btn-dec" onclick="tiger5Decrement('doubles')">−</button>
+
+          <div class="awareness-cell">
+            <span class="awareness-cell-name">Doubles+</span>
+            <div class="awareness-cell-counter">
+              <button class="awareness-btn awareness-btn-dec" onclick="tiger5Decrement('doubles')">−</button>
               <span class="tiger5-count" id="t5-doubles">0</span>
-              <button class="tiger5-btn" onclick="tiger5Increment('doubles')">+</button>
+              <button class="awareness-btn" onclick="tiger5Increment('doubles')">+</button>
             </div>
           </div>
-          <div class="tiger5-row">
-            <span class="tiger5-name">Penalties</span>
-            <div class="tiger5-counter">
-              <button class="tiger5-btn tiger5-btn-dec" onclick="tiger5Decrement('penalties')">−</button>
+
+          <div class="awareness-cell">
+            <span class="awareness-cell-name">Penalties</span>
+            <div class="awareness-cell-counter">
+              <button class="awareness-btn awareness-btn-dec" onclick="tiger5Decrement('penalties')">−</button>
               <span class="tiger5-count" id="t5-penalties">0</span>
-              <button class="tiger5-btn" onclick="tiger5Increment('penalties')">+</button>
+              <button class="awareness-btn" onclick="tiger5Increment('penalties')">+</button>
             </div>
           </div>
-          <div class="tiger5-row">
-            <span class="tiger5-name">Wedge Bogeys</span>
-            <div class="tiger5-counter">
-              <button class="tiger5-btn tiger5-btn-dec" onclick="tiger5Decrement('wedgebogey')">−</button>
+
+          <div class="awareness-cell">
+            <span class="awareness-cell-name">Wedge Bogeys</span>
+            <div class="awareness-cell-counter">
+              <button class="awareness-btn awareness-btn-dec" onclick="tiger5Decrement('wedgebogey')">−</button>
               <span class="tiger5-count" id="t5-wedgebogey">0</span>
-              <button class="tiger5-btn" onclick="tiger5Increment('wedgebogey')">+</button>
+              <button class="awareness-btn" onclick="tiger5Increment('wedgebogey')">+</button>
             </div>
           </div>
-          <div class="tiger5-row" style="border-bottom:none;">
-            <span class="tiger5-name">Missed Up &amp; Downs</span>
-            <div class="tiger5-counter">
-              <button class="tiger5-btn tiger5-btn-dec" onclick="tiger5Decrement('missedupdown')">−</button>
+
+          <div class="awareness-cell awareness-cell-full">
+            <span class="awareness-cell-name">Missed Up &amp; Downs</span>
+            <div class="awareness-cell-counter">
+              <button class="awareness-btn awareness-btn-dec" onclick="tiger5Decrement('missedupdown')">−</button>
               <span class="tiger5-count" id="t5-missedupdown">0</span>
-              <button class="tiger5-btn" onclick="tiger5Increment('missedupdown')">+</button>
+              <button class="awareness-btn" onclick="tiger5Increment('missedupdown')">+</button>
             </div>
           </div>
+
         </div>
       </div>
     </div>
