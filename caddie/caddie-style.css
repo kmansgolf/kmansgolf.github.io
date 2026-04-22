@@ -10,7 +10,7 @@
 
   --text:           #ffffff;
   --text-secondary: #ffffff;
-  --text-muted:     #c0c0c0;
+  --text-muted:     #ffffff;
 
   --gold:           #e8b84b;
   --gold-dim:       rgba(232,184,75,0.15);
@@ -809,7 +809,8 @@ footer {
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
   background: transparent;
-  color: var(--text-muted);
+  color: var(--text);
+  opacity: 0.6;
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 14px;
   font-weight: 700;
@@ -818,7 +819,7 @@ footer {
   transition: all 0.15s ease;
 }
 [data-theme="light"] .weld-reset-btn { border-color: rgba(0,0,0,0.1); }
-.weld-reset-btn:hover { border-color: var(--text-muted); color: var(--text); }
+.weld-reset-btn:hover { opacity: 1; border-color: var(--text); }
 
 /* ── TIGER 5 DECREMENT BUTTON ────────────────────────────────────────── */
 .tiger5-btn-dec {
