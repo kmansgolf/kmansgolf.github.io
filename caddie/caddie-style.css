@@ -395,7 +395,7 @@ footer {
   right: 0;
   background: #1c1c1e;
   z-index: 100;
-  border-top: 0.5px solid rgba(255,255,255,0.1);
+  border-top: 2px solid var(--g);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -420,7 +420,7 @@ footer {
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.65);
 }
 .awareness-header-right {
   display: flex;
@@ -448,7 +448,7 @@ footer {
 .awareness-chevron {
   font-family: 'DM Mono', monospace;
   font-size: 16px;
-  color: rgba(255,255,255,0.3);
+  color: var(--g);
   line-height: 1;
 }
 
