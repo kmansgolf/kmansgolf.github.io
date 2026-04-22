@@ -238,7 +238,7 @@ function toggleAwareness() {
   const body    = document.getElementById('awareness-body');
   const chevron = document.getElementById('awareness-chevron');
   body.classList.toggle('open', awarenessOpen);
-  chevron.textContent = awarenessOpen ? '˄' : '˅';
+  chevron.classList.toggle('open', awarenessOpen);
 }
 
 function _renderTiger5() {

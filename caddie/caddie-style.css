@@ -410,46 +410,38 @@ footer {
 .awareness-header-inner {
   max-width: 480px;
   margin: 0 auto;
-  padding: 12px 18px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  padding: 10px 18px;
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
-.awareness-header-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.65);
-}
-.awareness-header-right {
-  display: flex;
-  justify-content: flex-end;
+.awareness-pill-label {
+  display: inline-flex;
   align-items: center;
-}
-.awareness-header-total {
-  display: flex;
-  align-items: baseline;
-  gap: 5px;
-}
-.awareness-header-total #tiger5-total {
+  gap: 8px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  padding: 7px 18px;
   font-family: 'DM Mono', monospace;
-  font-size: 22px;
+  font-size: 13px;
   font-weight: 500;
-  color: var(--err);
-  line-height: 1;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.04em;
 }
-.awareness-header-unit {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: rgba(255,255,255,0.3);
-  letter-spacing: 0.06em;
+.awareness-pill-label #tiger5-total {
+  color: var(--err);
+  font-size: 15px;
+  font-weight: 600;
 }
 .awareness-chevron {
-  font-family: 'DM Mono', monospace;
-  font-size: 20px;
+  font-size: 14px;
   color: var(--g);
   line-height: 1;
+  transition: transform 0.2s ease;
+}
+.awareness-chevron.open {
+  transform: rotate(180deg);
 }
 
 /* Expandable body */
