@@ -1,6 +1,6 @@
 # kmansgolf Design System
 **Repository:** `kmansgolf.github.io`
-**Last updated:** 2026-04-09
+**Last updated:** 2026-04-22
 **Maintained by:** Kevin (kmansgolf)
 
 This is the single source of truth for all visual and structural decisions across the kmansgolf app suite. Every app references this document. When in doubt, check here first.
@@ -15,8 +15,8 @@ This is the single source of truth for all visual and structural decisions acros
 | The Range | `/range/` | Live — practice tracker |
 | The Bunker | `/bunker/` | Live — side games/money |
 | The Fairway | `/fairway/` | Live — tournament tracker |
-| The Caddie | `/caddie/` | Planned — mental game |
-| The Green | `/green/` | In development — putting coach |
+| The Caddie | `/caddie/` | Live — mental game & strategy |
+| The Green | `/green/` | Not started — putting coach |
 
 ---
 
@@ -46,14 +46,37 @@ Every app uses this exact structure. Never collapse back to a monolith.
 ### Dark Mode (Default)
 
 ```css
---n:   #0d2340;   /* Background */
---nm:  #152e50;   /* Card background */
---nc:  #1a3558;   /* Card alt / secondary surface */
---g:   #e8b84b;   /* Gold */
---gr:  #2ecc71;   /* Green */
---w:   #f5f0e8;   /* Primary text */
---d:   #8ba4c0;   /* Muted / secondary text */
---err: #e05c5c;   /* Error / fail — use sparingly */
+:root {
+  --bg:             #000000;
+  --surface:        #1c1c1e;
+  --surface-raised: #2c2c2e;
+  --surface-input:  #1a1a1c;
+
+  --text:           #ffffff;
+  --text-secondary: #ffffff;
+  --text-muted:     #c0c0c0;
+
+  --gold:           #e8b84b;
+  --gold-dim:       rgba(232,184,75,0.15);
+  --green:          #3ddc84;
+  --green-dim:      rgba(61,220,132,0.12);
+  --red:            #e05c5c;
+  --red-dim:        rgba(224,92,92,0.12);
+
+  --border:         rgba(255,255,255,0.09);
+  --border-strong:  rgba(255,255,255,0.18);
+
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body:    'Barlow', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+
+  --header-bg: #1c1c1e;
+  --header-h:  56px;
+}
 ```
 
 ### Light Mode Override
@@ -61,29 +84,64 @@ Every app uses this exact structure. Never collapse back to a monolith.
 Applied via `[data-theme="light"]` on the root element.
 
 ```css
---n:   #f2f2f4;   /* Background */
---nm:  #ffffff;   /* Card background */
---nc:  #ffffff;   /* Card alt */
---g:   #d4a030;   /* Gold (slightly darker for contrast) */
---gr:  #27a85e;   /* Green (slightly darker for contrast) */
---w:   #1a1a2e;   /* Primary text */
---d:   #5a6a7a;   /* Muted text */
---err: #c0392b;   /* Error / fail */
+[data-theme="light"] {
+  --bg:             #dcdcdf;
+  --surface:        #ffffff;
+  --surface-raised: #e4e4e8;
+  --surface-input:  #ebebef;
+
+  --text:           #000000;
+  --text-secondary: #000000;
+  --text-muted:     #000000;
+
+  --gold:           #8a6200;
+  --gold-dim:       rgba(138,98,0,0.12);
+  --green:          #145e32;
+  --green-dim:      rgba(20,94,50,0.10);
+  --red:            #9b1c1c;
+  --red-dim:        rgba(155,28,28,0.10);
+
+  --border:         rgba(0,0,0,0.22);
+  --border-strong:  rgba(0,0,0,0.40);
+}
 ```
 
-### Fixed Elements (never inverted)
+### Fixed Elements — Never Use Tokens Here
 
-These stay dark in both light and dark mode:
+The header and tab strip are **always dark in both modes**. All colors inside them must be hardcoded — never use CSS tokens that invert with the theme.
 
 ```css
 /* Header bar */
-background: #1c1c1e;
+.app-header {
+  background: #1c1c1e !important;
+  border-bottom: 0.5px solid rgba(255,255,255,0.08);
+}
 
-/* Bottom navigation */
-background: #1c1c1e;
+/* Logo — "kmans" always white, "golf" always bright green */
+.header-logo-text        { color: #ffffff; }
+.header-logo-text span   { color: #3ddc84; }  /* NEVER var(--green) */
+
+/* Center app name label */
+.header-center { color: rgba(255,255,255,0.5); }  /* NEVER var(--text-muted) */
+
+/* Icon buttons (theme toggle, help, etc.) */
+.icon-btn {
+  color: #ffffff;
+  border: 0.5px solid rgba(255,255,255,0.3);
+}
+
+/* Tab strip */
+.tab-strip {
+  background: #1c1c1e !important;
+  border-bottom: 0.5px solid rgba(255,255,255,0.08);
+}
+
+/* Tab buttons */
+.tab-btn         { color: rgba(255,255,255,0.5); }          /* NEVER var(--text-muted) */
+.tab-btn.active  { color: #3ddc84; border-bottom-color: #3ddc84; }  /* NEVER var(--green) */
 ```
 
-**Why:** Full white inversion causes disappearing text. Headers and nav staying dark preserves readability and visual consistency across modes.
+**Why:** CSS tokens invert in light mode. Using `var(--green)` in a tab turns it dark forest green (`#145e32`). Using `var(--text-muted)` turns labels black. Hardcoding is the only reliable way to keep the header and tabs visually identical across themes.
 
 ---
 
@@ -93,16 +151,16 @@ These rules are non-negotiable. Color communicates meaning.
 
 | Color | Token | Use for | Never use for |
 |-------|-------|---------|---------------|
-| Gold | `--g` | Scores, data, numbers, stats, active nav item | Progress, success states, decoration |
-| Green | `--gr` | Progress, positive outcomes, active nav indicator, passing status | Score display, data |
-| Red | `--err` | Fail states, assessment failures, errors | Decoration, warnings, anything non-critical |
-| Muted | `--d` | Secondary text, labels, not-yet-assessed states | Primary content |
+| Gold | `--gold` | Scores, data, numbers, stats | Progress, success, decoration |
+| Green | `--green` | Progress, actions, active states, passing status | Score display, data |
+| Red | `--red` | Fail states, errors | Decoration, warnings, non-critical states |
+| Muted | `--text-muted` | Secondary text, labels — **content area only** | Anything in the header or tab strip |
 
 **Assessment / status badge states:**
-- Pass → Green `--gr`
-- Needs Work → Gold `--g`
-- Not Yet Assessed → Muted `--d`
-- Fail → Red `--err`
+- Pass → `--green`
+- Needs Work → `--gold`
+- Not Yet Assessed → `--text-muted`
+- Fail → `--red`
 
 ---
 
@@ -111,37 +169,52 @@ These rules are non-negotiable. Color communicates meaning.
 All fonts loaded from Google Fonts with `font-display: swap`.
 
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 ```
 
-| Font | Family | Use for |
-|------|--------|---------|
-| Barlow Condensed | `'Barlow Condensed', sans-serif` | All headings, app names, section titles |
-| Barlow | `'Barlow', sans-serif` | Body text, labels, descriptions, buttons |
-| DM Mono | `'DM Mono', monospace` | All numbers — scores, distances, stats, dates, percentages |
+| Element | Font | Size | Weight |
+|---------|------|------|--------|
+| Page title | Barlow Condensed | 32px | 800 |
+| Accordion header | Barlow Condensed | 19px | 700 |
+| Player name | Barlow | 17px | 600 |
+| Body text | Barlow | 16px | 400 |
+| Numbers/data | DM Mono | 15px | 400 |
+| Section label | Barlow Condensed | 13px | 700, green, uppercase |
+| Metadata label | DM Mono | 11px | 400, muted, uppercase |
 
-**Rule:** Any number displayed in the UI uses DM Mono. No exceptions.
+**Rules:**
+- Any number displayed in the UI uses DM Mono. No exceptions.
+- Hierarchy via size and letter-spacing only — not color (in content areas).
+- All text white in dark mode, black in light mode — except header/tabs which are always white.
+
+---
+
+## Landscape Orientation
+
+Uses `[data-size="landscape"]` attribute set by JS — not a media query.
+
+- All font sizes ~20–25% larger
+- Single column layout (never two-column split)
+- Header shrinks to 44px (`--header-h: 44px`)
 
 ---
 
 ## Logo & Wordmark
 
-### Inline treatment (used in app headers):
+### Inline treatment (app headers):
 ```
 kmansgolf · THE [APP NAME]
 ```
-- `kmans` — white/cream (`--w`)
-- `golf` — green (`#3ddc84`)
-- ` · THE RANGE` etc — white/cream, smaller weight
-- Entire wordmark is clickable, links to homepage (`/`)
+- `kmans` — hardcoded `#ffffff`
+- `golf` — hardcoded `#3ddc84`
+- ` · THE FAIRWAY` etc — `rgba(255,255,255,0.5)`, smaller, DM Mono
 
 ### Homepage hero:
 ```
 Your Game
 Tracked
 ```
-- "Tracked" renders in green (`--gr`)
-- No periods
+- "Tracked" renders in `--green`
 
 ### SVG assets (stored in each app folder):
 - `kmansgolf-wordmark.svg` — horizontal wordmark
@@ -176,19 +249,22 @@ Toggling theme in any app immediately syncs all other apps on next load.
 
 ## Navigation
 
-### Bottom nav (primary)
-- Fixed to bottom of screen
-- Background: `#1c1c1e` (always dark)
-- Active item indicator: Gold `--g`
-- Active nav icon/label: Gold `--g`
-- Inactive: Muted `--d`
-- 4–5 items max per app
-
 ### Header bar
 - Fixed to top
+- Background: `#1c1c1e !important` (always dark — never inverts)
+- All text/colors inside hardcoded (see Fixed Elements above)
+- Height: `--header-h` (56px portrait, 44px landscape)
+
+### Tab strip
+- Immediately below header, sticky
+- Background: `#1c1c1e !important` (always dark — never inverts)
+- All tab colors hardcoded (see Fixed Elements above)
+
+### Bottom nav (where used)
+- Fixed to bottom of screen
 - Background: `#1c1c1e` (always dark)
-- Contains: wordmark left, theme toggle right
-- Height: ~52px
+- Active item: `--gold`
+- Inactive: `--text-muted`
 
 ---
 
@@ -202,8 +278,8 @@ Every app includes a manifest and is installable.
   "short_name": "[App Name]",
   "start_url": "/[app]/",
   "display": "standalone",
-  "background_color": "#0d2340",
-  "theme_color": "#0d2340",
+  "background_color": "#000000",
+  "theme_color": "#1c1c1e",
   "icons": [...]
 }
 ```
@@ -211,10 +287,6 @@ Every app includes a manifest and is installable.
 ---
 
 ## Interaction Patterns
-
-### Swipe-down to refresh
-- Enabled on: Home screen, History screens
-- Disabled on: Active scoring/input screens (prevents accidental refresh mid-session)
 
 ### Pinch zoom
 - Enabled on all apps, all screens
@@ -225,7 +297,7 @@ Every app includes a manifest and is installable.
 - Logo tap during active session shows confirmation dialog before navigating away
 
 ### Animations
-- Transitions: 200–300ms ease
+- Transitions: 150–200ms ease
 - No janky or distracting animations — utility first
 - Loading states: simple opacity fade, not spinners
 
@@ -238,8 +310,8 @@ kmansgolf.github.io/           → The Tee Box (homepage)
 kmansgolf.github.io/range/     → The Range
 kmansgolf.github.io/bunker/    → The Bunker
 kmansgolf.github.io/fairway/   → The Fairway
-kmansgolf.github.io/caddie/    → The Caddie (planned)
-kmansgolf.github.io/green/     → The Green
+kmansgolf.github.io/caddie/    → The Caddie
+kmansgolf.github.io/green/     → The Green (not started)
 ```
 
 **GitHub Pages note:** To create a subfolder, type `[folder]/index.html` in the GitHub filename field — GitHub auto-creates the directory. Repo must be named `kmansgolf.github.io` exactly for root-level serving.
@@ -251,47 +323,46 @@ kmansgolf.github.io/green/     → The Green
 | Layer | Tool | Status |
 |-------|------|--------|
 | Client storage | `localStorage` | Active — all apps |
+| Live data proxy | Cloudflare Worker (`kmansgolf.kemiman74.workers.dev`) | Active — The Fairway |
 | Multi-user backend | Supabase | Planned — parked until real testing data exists |
-| Live data scraping | Cloudflare Workers | Planned — The Fairway live tabs |
 | Member database | GitHub Actions (weekly scrape) | Planned |
 | Gist sync | GitHub Gist | The Bunker only — left as-is until Supabase |
+
+**Worker note:** Changes to `cloudflare-worker.js` require manual deploy via Cloudflare dashboard or `wrangler deploy`. GitHub push alone does NOT update the Worker.
 
 ---
 
 ## App-Specific Notes
 
 ### The Range
-- Gate Combine scoring system: G-{line}-{pace} codes
-- Two-format putting within Gate Combine
+- Gate Combine scoring: G-{line}-{pace} codes (e.g. G-C-Z = 3pts)
 - PIN recovery via 6-character code shown once at account creation
 - Reserved username list in place
 - Export/import/load test data in Profile screen
+- Supabase migration parked until real testing data exists
 
 ### The Fairway
-- Live data tabs (Pairings, Leaderboard, Skins, Watch) require Cloudflare Worker
-- API calls fail on GitHub Pages without auth headers — do not attempt direct API calls
-- Per-tour login planned: Regular Tour ID 55097 (C Flight), Senior Tour ID 17956 (B Flight)
+- Live data via Cloudflare Worker — do not attempt direct API calls from GitHub Pages
+- Regular Tour domain: `amateurgolftour.net` | Senior Tour domain: `senioramateurgolftour.net`
+- Pairings grouping key: `startHole|group|teeTime` (composite — "group" alone is unreliable)
+- `/standings` Worker route: briefing written, not yet coded
 
 ### The Bunker
-- Wolf payouts: pairwise settlement — every player settles with every other based on point difference × bet amount
-- Gist sync left as-is until Supabase
+- Wolf payouts: pairwise settlement — every player vs. every other by point difference × bet
+- 16 Columbus-area courses with verified hole-by-hole data
+- Modular file split pending
 
 ### The Caddie
-- Mental game app — two modes: Range/Practice and On-Course
-- Mental scorecard: binary Y/N per shot (Calculate / Create / Execute) per Lardon's Pre-Shot Pyramid
-- Credit: *Mental scorecard based on Dr. Michael Lardon's Pre-Shot Pyramid from Mastering Golf's Mental Game*
-- Tempo: 3-tone system (takeaway → top → impact), 3:1 ratio locked in, 5 named speed presets on slider
-- WELD calculator: Wind / Elevation / Lie / Distance — two modes (Competition / Casual)
-- Course strategy: *Based on Scott Fawcett's DECADE system and Mark Broadie's strokes gained research*
+- WELD calculator: crosswind formula `Drift (ft) = windSpd × distance ÷ 100`
+- Mental scorecard: binary C/C/E per shot per Lardon's Pre-Shot Pyramid
+- Round Awareness bar: collapsed by default, 5 tracked mistake types
+- Credit: *Mental scorecard — Dr. Michael Lardon. Strategy — Scott Fawcett's DECADE system + Mark Broadie's strokes gained research.*
 
 ### The Green
 - Personal putting & short game coach — Sieckmann system
 - Private/personal use — not publicly promoted
-- Credit: *Practice system based on James Sieckmann's Your Putting Solution and Your Short Game Solution*
-- 4 assessment modules matching book exactly
-- Journal: 4 sections — Assessments, Technical Plan, Training Plan, Personal Growth
-- Training modules: Chapters 3–9, cards fill in progressively
-- Modular: Short game book added as separate Train section when ready
+- Credit: *James Sieckmann, Your Putting Solution + Your Short Game Solution*
+- Not yet started
 
 ---
 
@@ -299,17 +370,27 @@ kmansgolf.github.io/green/     → The Green
 
 | Content | Credit | Where shown |
 |---------|--------|-------------|
-| Mental scorecard / Pre-Shot Pyramid | Dr. Michael Lardon, *Mastering Golf's Mental Game* | The Caddie — How to Use section |
-| Course strategy | Scott Fawcett's DECADE system + Mark Broadie's strokes gained research | The Caddie — Strategy section |
-| Putting & short game system | James Sieckmann, *Your Putting Solution* + *Your Short Game Solution* | The Green — footer |
+| Mental scorecard / Pre-Shot Pyramid | Dr. Michael Lardon, *Mastering Golf's Mental Game* | The Caddie |
+| Course strategy | Scott Fawcett's DECADE system + Mark Broadie's strokes gained research | The Caddie |
+| Putting & short game system | James Sieckmann, *Your Putting Solution* + *Your Short Game Solution* | The Green |
+
+---
+
+## Copyright
+
+All files get a copyright header:
+- JS: `// © 2026 Kevin Mansfield. All rights reserved.`
+- CSS: `/* © 2026 Kevin Mansfield. All rights reserved. */`
+- HTML: `<!-- © 2026 Kevin Mansfield. All rights reserved. -->`
 
 ---
 
 ## Development Principles
 
-- **Short, direct responses** — no filler, no padding
+- **Framework before code** — data model and design locked before any implementation
+- **Modular architecture is non-negotiable** — never collapse files; always edit the correct file
+- **Short, direct responses** — no filler
 - **Visual mockups over descriptions** for design decisions
-- **Mobile-first** — phone screen shows 6–8 sentences; design for that constraint
+- **Mobile-first** — design for outdoor phone use
 - **Output only changed files** — never regenerate everything
-- **No monoliths** — always 5-file split
-- **Casual player first** — complexity is opt-in, not default
+- **Hardcode header/tab colors** — never use tokens that invert with theme
