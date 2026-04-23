@@ -282,7 +282,7 @@ function navTo(id, tabId) {
   } else if (id === 's-history') { buildHistory(); goTo(id); }
   else if (id === 's-profile') { buildProfile(); goTo(id); }
   else if (id === 's-tempo') { goTo(id); }
-  else if (id === 's-games') { renderGamesList(); goTo(id); }
+  else if (id === 's-games') { renderGamesList(); showGScreen('games'); goTo(id); }
   else { refreshHome(); goTo(id); }
 }
 
