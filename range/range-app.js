@@ -1238,9 +1238,6 @@ document.addEventListener('DOMContentLoaded', () => {
   t_buildPresetGrid();
   t_updateDisplay();
 
-  // Initialise Games list so it's ready when user navigates
-  renderGamesList();
-
   // Rehydrate session after pull-to-refresh or page reload
   const savedUser = sessionStorage.getItem('range_session_user');
   if (savedUser) {
@@ -1756,7 +1753,7 @@ function filterGames(cat, btn) {
 
 function renderGamesList() {
   const container = document.getElementById('games-list');
-  if (!container) return;
+  if (!container || typeof GAMES === 'undefined') return;
   const filtered = GAMES.filter(g => {
     if (activeFilter === 'all') return true;
     if (activeFilter === 'multi') return g.multi;
