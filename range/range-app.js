@@ -282,6 +282,7 @@ function navTo(id, tabId) {
   } else if (id === 's-history') { buildHistory(); goTo(id); }
   else if (id === 's-profile') { buildProfile(); goTo(id); }
   else if (id === 's-tempo') { goTo(id); }
+  else if (id === 's-games') { renderGamesList(); goTo(id); }
   else { refreshHome(); goTo(id); }
 }
 
@@ -1100,9 +1101,7 @@ function buildHistory() {
 //  PROFILE
 // ═══════════════════════════════════════════
 function openGames() {
-  // Pass username so games file can greet the user
-  const user = CU?.username || '';
-  window.location.href = `range-games.html?user=${encodeURIComponent(user)}`;
+  navTo('s-games', 'tab-games');
 }
 
 function buildProfile() {
@@ -1183,6 +1182,14 @@ function applyTheme(theme) {
     if (btn) btn.textContent = label;
   });
 
+  // Sync profile toggle state
+  const tog = document.getElementById('theme-tog');
+  if (tog) tog.classList.toggle('on', isLight);
+  const lbl = document.getElementById('theme-lbl');
+  const sub = document.getElementById('theme-sub');
+  if (lbl) lbl.textContent = isLight ? '🌙 Light Mode' : '🌙 Light Mode';
+  if (sub) sub.textContent = isLight ? 'On — easier to read in bright sunlight' : 'Off — tap to switch for outdoor use';
+
   localStorage.setItem('range_theme', theme);
 }
 
@@ -1230,6 +1237,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialise Tempo UI (builds preset grid, sets display values)
   t_buildPresetGrid();
   t_updateDisplay();
+
+  // Initialise Games list so it's ready when user navigates
+  renderGamesList();
 
   // Rehydrate session after pull-to-refresh or page reload
   const savedUser = sessionStorage.getItem('range_session_user');
@@ -1498,3 +1508,803 @@ function t_togglePlay() {
   });
 })();
 
+
+// ═══════════════════════════════════════════
+//  GAMES — DATA & LOGIC
+//  Migrated from range-games.html
+// ═══════════════════════════════════════════
+
+const GAMES = [
+  {
+    id: 'clock', name: 'Clock Face', icon: '🕐',
+    tagline: 'Make all 12 putts in a row around the hole. Miss one — start over.',
+    category: 'putting', solo: true, multi: false, time: '15 min',
+    rules: [
+      'Place 12 balls in a circle around the hole at 3 feet — one on each hour.',
+      'Putt each ball in sequence around the clock, clockwise or counterclockwise.',
+      'Make all 12 in a row without missing.',
+      'Miss any putt and restart from ball 1.',
+      'Track how many attempts it takes to complete the drill.',
+    ],
+    scoring: [
+      { label: 'Complete the drill', value: '12/12 ✓' },
+      { label: 'Restart counter', value: 'Tracked' },
+      { label: 'Best score', value: 'Fewest attempts' },
+    ],
+    exit: 'Do not leave until you complete all 12 in a row at least once. Tour pros target completing it in under 3 attempts.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=clock+face+putting+drill+golf',
+    screen: 'clock',
+  },
+  {
+    id: 'ladder', name: 'Ladder', icon: '🪜',
+    tagline: 'Start at 3 feet. Make it, step back. Miss, restart from the beginning.',
+    category: 'putting', solo: true, multi: false, time: '15 min',
+    rules: [
+      'Place a tee at 3 feet, 6 feet, and 10 feet from a hole.',
+      'Start at 3 feet. Make it — advance to 6 feet.',
+      'Make it — advance to 10 feet.',
+      'Make all three in sequence to complete the ladder.',
+      'Miss at any distance — restart from 3 feet.',
+    ],
+    scoring: [
+      { label: '3 ft made', value: 'Advance →' },
+      { label: '6 ft made', value: 'Advance →' },
+      { label: '10 ft made', value: 'Complete ✓' },
+      { label: 'Any miss', value: 'Restart from 3ft' },
+    ],
+    exit: 'Complete the full 3→6→10 foot sequence without missing. Track attempts. Goal: complete in under 5 attempts.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=golf+ladder+putting+drill+pressure+3+6+10+feet',
+    screen: 'ladder',
+  },
+  {
+    id: 'molinari', name: "Molinari's 8", icon: '🎖️',
+    tagline: 'Make 8 consecutive 5-foot putts. Used by Francesco Molinari before The Open.',
+    category: 'putting', solo: true, multi: false, time: '10 min',
+    rules: [
+      'Place a tee at 5 feet from the hole.',
+      'Putt one ball at a time through your full pre-shot routine.',
+      'Make 8 consecutive putts without missing.',
+      'Miss any putt — restart the count from 0.',
+      'Record how many attempts to reach 8 in a row.',
+    ],
+    scoring: [
+      { label: 'Target streak', value: '8 in a row' },
+      { label: 'Miss', value: 'Restart count' },
+      { label: 'Best score', value: 'Fewest attempts' },
+    ],
+    exit: "Complete 8 consecutive 5-foot putts. Molinari did it in 9 attempts before winning The Open. What's your number?",
+    youtubeSearch: 'https://www.youtube.com/results?search_query=Molinari+consecutive+5+foot+putts+drill+golf+pressure',
+    screen: 'clock',
+  },
+  {
+    id: 'sevenup', name: '7 Up', icon: '7️⃣',
+    tagline: 'Lag putting competition. Get closest to the hole or make it to score. First to 7 wins.',
+    category: 'putting', solo: false, multi: true, time: '20 min',
+    rules: [
+      'Each player lags from 20+ feet to a hole.',
+      'The player closest to the pin after all putts "controls" the hole.',
+      'If the closest player can win a point if another player 3-putts.',
+      'Hole-out on the first putt = 2 points instantly.',
+      'First player to reach exactly 7 points wins.',
+    ],
+    scoring: [
+      { label: 'Hole-out (1 putt)', value: '+2 pts' },
+      { label: 'Closest + other 3-putts', value: '+1 pt' },
+      { label: 'Target', value: 'Exactly 7 pts' },
+    ],
+    exit: 'First to reach exactly 7 points wins the game.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=7+up+golf+putting+game+multiplayer',
+    screen: 'points',
+  },
+  {
+    id: 'twentyone', name: '21', icon: '🃏',
+    tagline: 'Putt between two holes. Made putt = 3 pts, 2-putt = 1 pt. First to exactly 21.',
+    category: 'putting', solo: false, multi: true, time: '20 min',
+    rules: [
+      'Pick two holes on the practice green.',
+      'All players putt from one hole toward the other.',
+      'Hole-out on first putt = 3 points.',
+      'Two-putt = 1 point.',
+      'Three-putt or worse = 0 points.',
+      'After each player holes out, rotate and putt the other direction.',
+      'First player to reach EXACTLY 21 wins. Go over — you bust and drop to 15.',
+    ],
+    scoring: [
+      { label: '1-putt (hole-out)', value: '+3 pts' },
+      { label: '2-putt', value: '+1 pt' },
+      { label: '3-putt+', value: '0 pts' },
+      { label: 'Bust over 21', value: 'Drop to 15' },
+    ],
+    exit: 'First player to reach exactly 21 wins.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=golf+putting+game+21+points+two+holes',
+    screen: 'points',
+  },
+  {
+    id: 'par18', name: 'Par 18', icon: '⛳',
+    tagline: 'Play 9 holes of par-2 chip-and-putt. Shoot 18 or better to win.',
+    category: 'chipping', solo: true, multi: true, time: '25 min',
+    rules: [
+      'Select 9 locations around the green — 3 easy, 3 medium, 3 hard.',
+      'Each location is a par 2: chip on, then putt out.',
+      'Play one ball, go through your full routine on every shot.',
+      'Chip-in = birdie (1). Up-and-down = par (2). Three shots = bogey (3).',
+      'With a partner, alternate who picks each location.',
+      'Add up your total strokes across all 9 holes.',
+    ],
+    scoring: [
+      { label: 'Chip-in (birdie)', value: '1 stroke' },
+      { label: 'Up-and-down (par)', value: '2 strokes' },
+      { label: 'Miss putt (bogey)', value: '3 strokes' },
+      { label: 'Par score', value: '18 total' },
+    ],
+    exit: 'Goal is to shoot 18 (even par) or better. Play once per session — no mulligans. Score counts.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=par+18+chipping+game+golf+practice',
+    screen: 'par18',
+  },
+  {
+    id: 'dollar', name: 'Dollar Signs', icon: '💰',
+    tagline: 'Chip for imaginary money. Get it close to win, miss the green to lose.',
+    category: 'chipping', solo: true, multi: false, time: '20 min',
+    rules: [
+      'Pick 5 chipping spots around the green.',
+      'Hit 3 chips from each spot (15 shots total).',
+      'Start with a $0 bankroll and track your running total.',
+      'Chip-in = +$10. Inside 3 feet = +$2. On green = $0. Miss green = -$5.',
+      'Goal: finish with a positive bankroll.',
+    ],
+    scoring: [
+      { label: 'Chip-in', value: '+$10 💰' },
+      { label: 'Inside 3 feet', value: '+$2' },
+      { label: 'On green, outside 3ft', value: '$0' },
+      { label: 'Miss the green', value: '-$5 ❌' },
+    ],
+    exit: 'Finish all 15 shots with a positive bankroll. If you go negative, run it again.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=dollar+signs+chipping+game+golf+practice',
+    screen: 'dollar',
+  },
+  {
+    id: 'darts', name: 'Darts', icon: '🎯',
+    tagline: 'Score points based on how close you chip to the pin. Aim for the bullseye.',
+    category: 'chipping', solo: true, multi: true, time: '15 min',
+    rules: [
+      'Scatter 10 balls at various distances and locations around the green.',
+      'Chip each ball toward a single pin target.',
+      'Score is based on proximity to the hole.',
+      'First to 50 points wins in multiplayer.',
+      'Solo: track your score and try to beat it each session.',
+    ],
+    scoring: [
+      { label: 'Inside 3 feet', value: '5 pts 🎯' },
+      { label: 'Inside 6 feet', value: '3 pts' },
+      { label: 'Inside 12 feet', value: '1 pt' },
+      { label: 'Miss green', value: '-2 pts' },
+      { label: 'Max possible', value: '50 pts' },
+    ],
+    exit: 'Solo: score 30+ points out of 50. Multiplayer: first to 50 total points across rounds.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=darts+chipping+game+golf+proximity+scoring',
+    screen: 'darts',
+  },
+  {
+    id: 'fairway', name: 'Fairway Finder', icon: '🏌️',
+    tagline: 'Create an imaginary fairway. Hit 9 shots. Score points for hitting it.',
+    category: 'range', solo: true, multi: true, time: '20 min',
+    rules: [
+      'Imagine a 40-yard wide fairway using distant targets as your boundaries.',
+      'Play 9 imaginary holes, choosing your club for each tee shot.',
+      'Score points for finding the fairway. More points for harder clubs.',
+      'Driver in fairway = 3 pts. Hybrid/fairway wood = 2 pts. Iron = 1 pt.',
+      'Miss the fairway = 0 pts. In imaginary water = -1 pt.',
+    ],
+    scoring: [
+      { label: 'Driver in fairway', value: '3 pts' },
+      { label: 'Hybrid/FW in fairway', value: '2 pts' },
+      { label: 'Iron in fairway', value: '1 pt' },
+      { label: 'Miss fairway', value: '0 pts' },
+      { label: 'Water/OB', value: '-1 pt' },
+    ],
+    exit: 'Solo: score 18+ points out of 27. Multiplayer: highest score after 9 holes wins.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=fairway+finder+driving+range+game+golf+pressure+drill',
+    screen: 'fairway',
+  },
+  {
+    id: 'horse', name: 'H-O-R-S-E', icon: '🐴',
+    tagline: 'Call the shot. Everyone has to match it. Miss — get a letter.',
+    category: 'range', solo: false, multi: true, time: '25 min',
+    rules: [
+      'Player 1 calls a shot — club, target, shape (e.g. "fade 7-iron to the 150 flag").',
+      'Everyone hits that exact shot.',
+      'Player 1 sets the standard — only gets a letter if they miss their own call.',
+      'Any other player who misses the shot gets a letter.',
+      'First player to spell H-O-R-S-E is eliminated.',
+      'Works with chipping, putting, or full swing shots.',
+    ],
+    scoring: [
+      { label: 'Miss the called shot', value: 'Get a letter' },
+      { label: 'Make the called shot', value: 'No letter' },
+      { label: 'Spell H-O-R-S-E', value: 'Eliminated' },
+      { label: 'Winner', value: 'Last player standing' },
+    ],
+    exit: 'Last player without spelling H-O-R-S-E wins. No time limit — play as long as it takes.',
+    youtubeSearch: 'https://www.youtube.com/results?search_query=HORSE+game+golf+driving+range+multiplayer',
+    screen: 'points',
+  },
+];
+
+// ── Games State ──────────────────────────────────────────────────────────────
+let currentGame = null;
+let gPlayers = ['Me'];
+let activeFilter = 'all';
+
+// ── Sub-screen management ────────────────────────────────────────────────────
+function showGScreen(name) {
+  document.querySelectorAll('.g-screen').forEach(s => s.classList.remove('active'));
+  const s = document.getElementById('screen-' + name);
+  if (s) s.classList.add('active');
+}
+
+function confirmGameQuit() {
+  if (confirm('Quit this game? Your score will not be saved.')) showGScreen('games');
+}
+
+// ── Games List ───────────────────────────────────────────────────────────────
+function filterGames(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderGamesList();
+}
+
+function renderGamesList() {
+  const container = document.getElementById('games-list');
+  if (!container) return;
+  const filtered = GAMES.filter(g => {
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'multi') return g.multi;
+    return g.category === activeFilter;
+  });
+  container.innerHTML = '';
+  filtered.forEach(g => {
+    const badges = [];
+    if (g.solo) badges.push('<span class="g-badge g-badge-solo">Solo</span>');
+    if (g.multi) badges.push('<span class="g-badge g-badge-multi">Multiplayer</span>');
+    badges.push(`<span class="g-badge g-badge-time">⏱ ${g.time}</span>`);
+    const catBadge = g.category === 'putting' ? 'g-badge-putting' : g.category === 'chipping' ? 'g-badge-chipping' : 'g-badge-range';
+    const catLabel = g.category === 'putting' ? '⛳ Putting' : g.category === 'chipping' ? '🏌️ Chipping' : '🎯 Range';
+    badges.push(`<span class="g-badge ${catBadge}">${catLabel}</span>`);
+    container.innerHTML += `
+      <div class="game-card" onclick="openGame('${g.id}')">
+        <div class="game-card-header">
+          <div class="game-icon">${g.icon}</div>
+          <div class="game-info">
+            <div class="game-name">${g.name}</div>
+            <div class="game-tagline">${g.tagline}</div>
+          </div>
+        </div>
+        <div class="game-badges">${badges.join('')}</div>
+      </div>`;
+  });
+}
+
+// ── Game Detail ──────────────────────────────────────────────────────────────
+function openGame(id) {
+  currentGame = GAMES.find(g => g.id === id);
+  document.getElementById('detail-header-title').textContent = currentGame.name.toUpperCase();
+  document.getElementById('detail-icon').textContent = currentGame.icon;
+  document.getElementById('detail-title').textContent = currentGame.name;
+  document.getElementById('detail-sub').textContent = currentGame.tagline;
+  const badges = [];
+  if (currentGame.solo) badges.push('<span class="g-badge g-badge-solo">Solo</span>');
+  if (currentGame.multi) badges.push('<span class="g-badge g-badge-multi">Multiplayer</span>');
+  badges.push(`<span class="g-badge g-badge-time">⏱ ${currentGame.time}</span>`);
+  document.getElementById('detail-badges').innerHTML = badges.join('');
+  document.getElementById('detail-rules').innerHTML = currentGame.rules.map(r => `<li>${r}</li>`).join('');
+  document.getElementById('detail-scoring').innerHTML = currentGame.scoring.map(s =>
+    `<div class="scoring-row"><div class="scoring-label">${s.label}</div><div class="scoring-value" style="color:var(--g)">${s.value}</div></div>`
+  ).join('');
+  document.getElementById('detail-exit').textContent = currentGame.exit;
+  document.getElementById('detail-watch-btn').href = currentGame.youtubeSearch;
+  showGScreen('detail');
+}
+
+// ── Player Setup ─────────────────────────────────────────────────────────────
+const G_PLAYER_COLORS = ['p1','p2','p3','p4'];
+let gPlayerCount = 1;
+let gPlayerNames = [''];
+
+function goToPlayerSetup() {
+  gPlayerCount = 1;
+  gPlayerNames = [''];
+  const isSolo = !currentGame.multi;
+  document.getElementById('setup-desc').textContent = isSolo
+    ? `${currentGame.name} is a solo game. Enter your name and start.`
+    : `${currentGame.name} supports 2–4 players. Enter everyone's name before starting.`;
+  renderGPlayerRows();
+  document.getElementById('add-player-btn').style.display = (!isSolo && gPlayerCount < 4) ? 'flex' : 'none';
+  showGScreen('setup');
+}
+
+function renderGPlayerRows() {
+  const container = document.getElementById('player-rows');
+  container.innerHTML = '';
+  const colors = ['var(--g)','var(--gr)','var(--bl)','var(--or)'];
+  for (let i = 0; i < gPlayerCount; i++) {
+    container.innerHTML += `
+      <div class="g-player-setup-row">
+        <div class="g-player-number" style="background:${colors[i]};color:#000">${i+1}</div>
+        <input class="inp" id="gp-name-${i}" type="text" placeholder="Player ${i+1} name"
+          value="${gPlayerNames[i]||''}" autocomplete="off" oninput="gPlayerNames[${i}]=this.value">
+        ${i > 0 ? `<button onclick="removeGPlayer(${i})" style="background:none;border:none;color:var(--re);font-size:20px;cursor:pointer;padding:4px">✕</button>` : ''}
+      </div>`;
+  }
+  document.getElementById('add-player-btn').style.display =
+    (currentGame.multi && gPlayerCount < 4) ? 'flex' : 'none';
+}
+
+function addPlayer() {
+  if (gPlayerCount < 4) { gPlayerCount++; gPlayerNames.push(''); renderGPlayerRows(); }
+}
+
+function removeGPlayer(i) {
+  gPlayerNames.splice(i, 1); gPlayerCount--;
+  renderGPlayerRows();
+}
+
+function startGame() {
+  gPlayers = [];
+  for (let i = 0; i < gPlayerCount; i++) {
+    const n = document.getElementById(`gp-name-${i}`)?.value?.trim() || `Player ${i+1}`;
+    gPlayers.push(n);
+  }
+  if (currentGame.screen === 'par18') initPar18();
+  else if (currentGame.id === 'clock' || currentGame.id === 'molinari') initClock();
+  else if (currentGame.id === 'ladder') initLadder();
+  else if (currentGame.id === 'dollar') initDollar();
+  else if (currentGame.id === 'sevenup') initPoints('7up');
+  else if (currentGame.id === 'twentyone') initPoints('21');
+  else if (currentGame.id === 'horse') initPoints('horse');
+  else if (currentGame.id === 'fairway') initFairway();
+  else if (currentGame.id === 'darts') initDarts();
+  else alert('Scorecard coming soon!');
+}
+
+// ── PAR 18 ───────────────────────────────────────────────────────────────────
+const PAR18_HOLES = [
+  'Easy – short chip','Easy – fringe','Easy – 10 yds',
+  'Mid – 15 yds','Mid – rough','Mid – sidehill',
+  'Hard – 20 yds','Hard – downhill','Hard – tight lie'
+];
+let par18Scores = [];
+
+function initPar18() {
+  par18Scores = gPlayers.map(() => new Array(9).fill(null));
+  for (let p = 0; p < 4; p++) {
+    const el = document.getElementById(`par18-h${p+1}name`);
+    el.textContent = p < gPlayers.length ? gPlayers[p].substring(0,4).toUpperCase() : '—';
+    el.style.opacity = p < gPlayers.length ? '1' : '0.3';
+  }
+  renderPar18();
+  showGScreen('par18');
+}
+
+function renderPar18() {
+  const container = document.getElementById('par18-rows');
+  container.innerHTML = '';
+  PAR18_HOLES.forEach((desc, h) => {
+    let rowHTML = `<div class="par18-hole-row"><div class="par18-hole-num">${h+1}</div><div class="par18-desc">${desc}</div>`;
+    for (let p = 0; p < 4; p++) {
+      if (p < gPlayers.length) {
+        const score = par18Scores[p][h];
+        const cls = score===1?'birdie':score===2?'par':score===3?'bogey':score>=4?'double':'';
+        rowHTML += `<button class="par18-score-btn ${cls}" onclick="cyclePar18(${p},${h})">${score||'—'}</button>`;
+      } else {
+        rowHTML += `<div class="par18-score-btn" style="opacity:0.2">—</div>`;
+      }
+    }
+    rowHTML += `</div>`;
+    container.innerHTML += rowHTML;
+  });
+  for (let p = 0; p < 4; p++) {
+    const el = document.getElementById(`par18-t${p+1}`);
+    if (p < gPlayers.length) {
+      const total = par18Scores[p].reduce((a,v) => a+(v||0), 0);
+      el.textContent = total || '—';
+      el.style.color = total <= 18 ? 'var(--gr)' : total <= 22 ? 'var(--g)' : 'var(--re)';
+    } else { el.textContent = '—'; }
+  }
+  const filled = par18Scores[0].filter(v => v !== null).length;
+  document.getElementById('par18-progress').style.width = (filled/9*100)+'%';
+  document.getElementById('par18-total-header').textContent = filled+' / 9';
+}
+
+function cyclePar18(player, hole) {
+  const cur = par18Scores[player][hole];
+  par18Scores[player][hole] = cur === null ? 1 : cur >= 5 ? null : cur + 1;
+  renderPar18();
+}
+
+function checkPar18Winner() {
+  const totals = gPlayers.map((p,i) => ({ name: p, score: par18Scores[i].reduce((a,v)=>a+(v||0),0) }));
+  const winner = totals.reduce((a,b) => a.score <= b.score ? a : b);
+  showGWinner(winner.name, `Shot ${winner.score} (Par 18)`, totals.map(t => `${t.name}: ${t.score}`).join(' · '));
+}
+
+// ── CLOCK FACE ───────────────────────────────────────────────────────────────
+let clockMade = [];
+let clockRestarts = 0;
+let clockStreak = 0;
+
+function initClock() {
+  const total = currentGame.id === 'molinari' ? 8 : 12;
+  clockMade = new Array(total).fill(null);
+  clockRestarts = 0; clockStreak = 0;
+  renderClock();
+  showGScreen('clock');
+}
+
+function renderClock() {
+  const total = clockMade.length;
+  const face = document.getElementById('clock-face');
+  face.innerHTML = '<div class="clock-hole">⛳</div>';
+  const radius = 82;
+  for (let i = 0; i < total; i++) {
+    const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+    const x = 50 + (radius / 110) * 50 * Math.cos(angle);
+    const y = 50 + (radius / 110) * 50 * Math.sin(angle);
+    const dot = document.createElement('div');
+    dot.className = 'clock-dot' + (clockMade[i] === true ? ' made' : clockMade[i] === false ? ' missed' : '');
+    dot.style.left = x + '%'; dot.style.top = y + '%';
+    dot.textContent = clockMade[i] === true ? '✓' : (i+1);
+    dot.onclick = () => tapClockDot(i);
+    face.appendChild(dot);
+  }
+  document.getElementById('clock-streak').textContent = clockStreak;
+  document.getElementById('clock-restarts').textContent = clockRestarts + ' restart' + (clockRestarts !== 1 ? 's' : '');
+  document.getElementById('clock-attempt-label').textContent = `Attempt ${clockRestarts+1}`;
+  const allMade = clockMade.every(v => v === true);
+  document.getElementById('clock-status-text').textContent = allMade
+    ? `✅ Complete! ${clockRestarts} restart${clockRestarts!==1?'s':''}. Outstanding!`
+    : `Tap each ball as you putt it — made or missed. Make all ${total} in a row.`;
+}
+
+function tapClockDot(i) {
+  const nextIdx = clockMade.findIndex(v => v === null);
+  if (nextIdx !== i) return;
+  const made = confirm(`Ball ${i+1}: Did you make it?`);
+  clockMade[i] = made;
+  if (made) {
+    clockStreak++;
+    if (clockMade.every(v => v === true)) { renderClock(); return; }
+  } else {
+    clockStreak = 0; clockRestarts++;
+    setTimeout(() => { clockMade = new Array(clockMade.length).fill(null); renderClock(); }, 400);
+  }
+  renderClock();
+}
+
+function resetClock() { clockMade = new Array(clockMade.length).fill(null); clockStreak = 0; clockRestarts++; renderClock(); }
+
+// ── LADDER ───────────────────────────────────────────────────────────────────
+const LADDER_RUNGS = [3, 6, 10];
+let ladderIndex = 0;
+let ladderAttempts = 0;
+let ladderStatus = [null, null, null];
+
+function initLadder() {
+  ladderIndex = 0; ladderAttempts = 1; ladderStatus = [null, null, null];
+  renderLadder(); showGScreen('ladder');
+}
+
+function renderLadder() {
+  const container = document.getElementById('ladder-rungs');
+  container.innerHTML = '';
+  LADDER_RUNGS.forEach((dist, i) => {
+    const status = ladderStatus[i];
+    const isActive = i === ladderIndex;
+    const isLocked = i > ladderIndex;
+    let cls = 'ladder-status';
+    if (status === true) cls += ' made';
+    else if (isActive) cls += ' active';
+    else if (isLocked) cls += ' locked';
+    const barWidth = status === true ? 100 : isActive ? 50 : 0;
+    const barColor = status === true ? 'var(--gr)' : 'var(--g)';
+    container.innerHTML += `
+      <div class="ladder-rung">
+        <div class="ladder-distance">${dist}ft</div>
+        <div class="ladder-bar"><div class="ladder-bar-fill" style="width:${barWidth}%;background:${barColor}"></div></div>
+        <div class="${cls}">${status===true?'✓':isActive?'→':isLocked?'🔒':''}</div>
+      </div>`;
+  });
+  document.getElementById('ladder-current-dist').textContent = ladderIndex < LADDER_RUNGS.length ? LADDER_RUNGS[ladderIndex] + ' ft' : '✅ Complete!';
+  document.getElementById('ladder-attempt-label').textContent = `Attempt ${ladderAttempts}`;
+  document.getElementById('ladder-stats').textContent = ladderIndex > 0 ? `${ladderIndex}/${LADDER_RUNGS.length} rungs cleared` : 'Make your first putt to start climbing.';
+}
+
+function madeLadder() {
+  ladderStatus[ladderIndex] = true;
+  ladderIndex++;
+  if (ladderIndex >= LADDER_RUNGS.length) {
+    renderLadder();
+    showGWinner(gPlayers[0], `Completed in ${ladderAttempts} attempts`, 'Ladder complete! 3ft → 6ft → 10ft ✓');
+  } else { renderLadder(); }
+}
+
+function missedLadder() {
+  ladderAttempts++;
+  ladderIndex = 0;
+  ladderStatus = [null, null, null];
+  renderLadder();
+}
+
+// ── DOLLAR SIGNS ─────────────────────────────────────────────────────────────
+const DOLLAR_SPOT_NAMES = ['Spot 1 — Short Chip','Spot 2 — Medium Chip','Spot 3 — Rough Lie','Spot 4 — Uphill','Spot 5 — Tight Lie'];
+const DOLLAR_ACTIONS = [
+  { label: 'Chip-In', cls: 'chip-in', value: 10 },
+  { label: '< 3 ft',  cls: 'close',   value: 2  },
+  { label: 'On Green',cls: 'on-green', value: 0  },
+  { label: 'Miss Green',cls:'miss',    value: -5 },
+];
+let dollarBankroll = 0;
+let dollarResults = [];
+
+function initDollar() {
+  dollarBankroll = 0;
+  dollarResults = Array(5).fill(null).map(() => [null, null, null]);
+  renderDollar();
+  showGScreen('dollar');
+}
+
+function renderDollar() {
+  const container = document.getElementById('dollar-spots');
+  container.innerHTML = '';
+  dollarResults.forEach((spot, si) => {
+    const spotTotal = spot.reduce((a,v) => a + (v !== null ? DOLLAR_ACTIONS[v].value : 0), 0);
+    const totalColor = spotTotal > 0 ? 'var(--gr)' : spotTotal < 0 ? 'var(--re)' : 'var(--d)';
+    const ballsHTML = spot.map((ball, bi) =>
+      `<div style="display:flex;flex-direction:column;gap:4px;flex:1">
+        ${DOLLAR_ACTIONS.map((a,ai) =>
+          `<button class="dollar-ball-btn ${a.cls}${ball===ai?' selected':''}" onclick="setDollarBall(${si},${bi},${ai})">${a.label}</button>`
+        ).join('')}
+      </div>`
+    ).join('');
+    container.innerHTML += `
+      <div class="dollar-spot">
+        <div class="dollar-spot-header">
+          <div class="dollar-spot-name">${DOLLAR_SPOT_NAMES[si]}</div>
+          <div class="dollar-spot-total" style="color:${totalColor}">${spotTotal > 0 ? '+' : ''}$${spotTotal}</div>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:4px">
+          <div style="font-family:var(--fc);font-size:11px;color:var(--d);flex:1;text-align:center">Ball 1</div>
+          <div style="font-family:var(--fc);font-size:11px;color:var(--d);flex:1;text-align:center">Ball 2</div>
+          <div style="font-family:var(--fc);font-size:11px;color:var(--d);flex:1;text-align:center">Ball 3</div>
+        </div>
+        <div style="display:flex;gap:6px">${ballsHTML}</div>
+      </div>`;
+  });
+  dollarBankroll = dollarResults.flat().reduce((a,v) => a + (v !== null ? DOLLAR_ACTIONS[v].value : 0), 0);
+  const bankEl = document.getElementById('dollar-bankroll');
+  bankEl.textContent = (dollarBankroll >= 0 ? '+' : '') + '$' + dollarBankroll;
+  bankEl.className = 'bankroll-amount ' + (dollarBankroll > 0 ? 'positive' : dollarBankroll < 0 ? 'negative' : 'zero');
+  document.getElementById('dollar-bankroll-header').textContent = (dollarBankroll >= 0 ? '+' : '') + '$' + dollarBankroll;
+  document.getElementById('dollar-bankroll-header').style.color = dollarBankroll >= 0 ? 'var(--gr)' : 'var(--re)';
+}
+
+function setDollarBall(spot, ball, action) {
+  dollarResults[spot][ball] = dollarResults[spot][ball] === action ? null : action;
+  renderDollar();
+}
+
+// ── POINTS GAMES (7 UP, 21, H-O-R-S-E) ──────────────────────────────────────
+let pointsScores = [];
+let pointsMode = '7up';
+let pointsActivePlayer = 0;
+let pointsHole = 1;
+const HORSE_LETTERS = ['H','O','R','S','E'];
+
+function initPoints(mode) {
+  pointsMode = mode;
+  pointsScores = gPlayers.map(() => 0);
+  pointsActivePlayer = 0;
+  pointsHole = 1;
+  document.getElementById('points-game-name').textContent = mode === '7up' ? '7️⃣ 7 UP' : mode === '21' ? '🃏 21' : '🐴 H-O-R-S-E';
+  renderPoints();
+  showGScreen('points');
+}
+
+function renderPoints() {
+  const colors = ['var(--g)','var(--gr)','var(--bl)','var(--or)'];
+  const container = document.getElementById('points-players');
+  container.innerHTML = '';
+  const pointsTarget = pointsMode === '7up' ? 7 : pointsMode === '21' ? 21 : 5;
+  gPlayers.forEach((name, i) => {
+    const isActive = i === pointsActivePlayer;
+    const score = pointsScores[i];
+    const displayScore = pointsMode === 'horse' ? (HORSE_LETTERS.slice(0, score).join('') || '—') : score;
+    const targetDisplay = pointsMode === 'horse' ? 'HORSE' : 'Target: ' + pointsTarget;
+    container.innerHTML += `
+      <div class="player-score-row ${isActive ? 'active-player' : ''}">
+        <div class="player-score-indicator" style="background:${colors[i]}"></div>
+        <div class="player-score-name">${name}</div>
+        <div>
+          <div class="player-score-pts" style="color:${colors[i]}">${displayScore}</div>
+          <div class="player-score-target">${targetDisplay}</div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('points-current-player-label').textContent = `SCORING FOR ${gPlayers[pointsActivePlayer].toUpperCase()}`;
+  document.getElementById('points-hole-label').textContent = pointsMode === 'horse' ? `Call ${pointsHole}` : `Hole ${pointsHole}`;
+  const btnContainer = document.getElementById('points-score-buttons');
+  btnContainer.innerHTML = '';
+  if (pointsMode === '7up') {
+    [{ label: 'Hole-Out', pts: 2, cls: 'hole-in-one' }, { label: 'Won Hole', pts: 1, cls: 'birdie' }, { label: 'No Points', pts: 0, cls: 'par' }]
+      .forEach(b => {
+        btnContainer.innerHTML += `<button class="score-action-btn ${b.cls}" onclick="addPointsScore(${b.pts})">
+          <div class="pts">${b.pts > 0 ? '+' : ''}${b.pts}</div><div>${b.label}</div></button>`;
+      });
+    document.getElementById('points-instruction').textContent = 'Lag to hole. Closest controls the hole. Hole-out = 2 pts instant.';
+  } else if (pointsMode === '21') {
+    [{ label: '1-Putt', pts: 3, cls: 'hole-in-one' }, { label: '2-Putt', pts: 1, cls: 'birdie' }, { label: '3-Putt+', pts: 0, cls: 'par' }]
+      .forEach(b => {
+        btnContainer.innerHTML += `<button class="score-action-btn ${b.cls}" onclick="addPointsScore(${b.pts})">
+          <div class="pts">${b.pts > 0 ? '+' : ''}${b.pts}</div><div>${b.label}</div></button>`;
+      });
+    document.getElementById('points-instruction').textContent = 'Go over 21 — drop to 15. First to exactly 21 wins.';
+  } else if (pointsMode === 'horse') {
+    [{ label: 'Made It', cls: 'birdie' }, { label: 'Missed', cls: 'bogey' }]
+      .forEach((b,i) => {
+        btnContainer.innerHTML += `<button class="score-action-btn ${b.cls}" onclick="horseResult(${i===1})">
+          <div class="pts">${i===0?'✓':'✕'}</div><div>${b.label}</div></button>`;
+      });
+    document.getElementById('points-instruction').textContent = 'Miss the called shot — get a letter. Spell H-O-R-S-E to be eliminated.';
+  }
+}
+
+function addPointsScore(pts) {
+  const pointsTarget = pointsMode === '7up' ? 7 : 21;
+  pointsScores[pointsActivePlayer] += pts;
+  if (pointsMode === '21' && pointsScores[pointsActivePlayer] > 21) pointsScores[pointsActivePlayer] = 15;
+  checkPointsWinner();
+}
+
+function horseResult(missed) {
+  if (missed) pointsScores[pointsActivePlayer]++;
+  if (pointsScores[pointsActivePlayer] >= 5) {
+    showGWinner(gPlayers.find((p,i) => pointsScores[i] < 5) || gPlayers[0], 'Last player standing', 'H-O-R-S-E Champion 🐴');
+    return;
+  }
+  nextPointsPlayer();
+}
+
+function checkPointsWinner() {
+  const score = pointsScores[pointsActivePlayer];
+  const target = pointsMode === '7up' ? 7 : 21;
+  if ((pointsMode === '7up' && score >= 7) || (pointsMode === '21' && score === 21)) {
+    showGWinner(gPlayers[pointsActivePlayer], `${score} points`, pointsMode === '7up' ? '7 Up Champion!' : '21 Champion!');
+    return;
+  }
+  nextPointsPlayer();
+}
+
+function nextPointsPlayer() {
+  pointsActivePlayer = (pointsActivePlayer + 1) % gPlayers.length;
+  if (pointsActivePlayer === 0) pointsHole++;
+  renderPoints();
+}
+
+// ── FAIRWAY FINDER ───────────────────────────────────────────────────────────
+const FF_CLUBS = ['Driver','Driver','Hybrid','3-Wood','Driver','Iron','Driver','Hybrid','Driver'];
+let ffResults = new Array(9).fill(null);
+let ffClubUsed = new Array(9).fill(null);
+
+function initFairway() {
+  ffResults = new Array(9).fill(null);
+  ffClubUsed = [...FF_CLUBS];
+  renderFairway();
+  showGScreen('fairway');
+}
+
+function renderFairway() {
+  const container = document.getElementById('ff-holes');
+  container.innerHTML = '';
+  let total = 0;
+  for (let i = 0; i < 9; i++) {
+    const res = ffResults[i];
+    const club = ffClubUsed[i];
+    let pts = '';
+    if (res === 'fairway') {
+      const p = club === 'Driver' ? 3 : (club === 'Hybrid' || club === '3-Wood') ? 2 : 1;
+      pts = '+' + p; total += p;
+    } else if (res === 'water') { pts = '-1'; total -= 1; }
+    else if (res === 'miss') { pts = '0'; }
+    container.innerHTML += `
+      <div class="ff-hole-row">
+        <div class="ff-hole-num">${i+1}</div>
+        <div class="ff-hole-info">
+          <div class="ff-club">${club}</div>
+          <div class="ff-hit-miss">
+            <button class="ff-btn fairway${res==='fairway'?' selected':''}" onclick="setFF(${i},'fairway')">Fairway</button>
+            <button class="ff-btn miss${res==='miss'?' selected':''}" onclick="setFF(${i},'miss')">Miss</button>
+            <button class="ff-btn miss${res==='water'?' selected':''}" style="${res==='water'?'background:var(--re);color:white':''}" onclick="setFF(${i},'water')">Water</button>
+          </div>
+        </div>
+        <div class="ff-pts">${pts || '—'}</div>
+      </div>`;
+  }
+  document.getElementById('ff-score-header').textContent = total + ' pts';
+  document.getElementById('ff-score-header').style.color = total >= 18 ? 'var(--gr)' : 'var(--g)';
+}
+
+function setFF(hole, result) {
+  ffResults[hole] = ffResults[hole] === result ? null : result;
+  renderFairway();
+}
+
+// ── DARTS ────────────────────────────────────────────────────────────────────
+const DART_ZONES = [
+  { label: '< 3ft',  pts: 5,  cls: 'z1' },
+  { label: '< 6ft',  pts: 3,  cls: 'z2' },
+  { label: '< 12ft', pts: 1,  cls: 'z3' },
+  { label: 'Miss',   pts: -2, cls: 'z4' },
+];
+let dartSelections = new Array(10).fill(null);
+
+function initDarts() {
+  dartSelections = new Array(10).fill(null);
+  renderDarts();
+  showGScreen('darts');
+}
+
+function renderDarts() {
+  const container = document.getElementById('darts-chips');
+  container.innerHTML = '';
+  let total = 0;
+  dartSelections.forEach((sel, i) => {
+    if (sel !== null) total += DART_ZONES[sel].pts;
+    const zonesHTML = DART_ZONES.map((z, zi) =>
+      `<button class="dart-zone-btn ${z.cls}${sel===zi?' sel':''}" onclick="setDart(${i},${zi})">${z.label}<br><span style="font-family:var(--fm);font-size:12px">${z.pts>0?'+':''}${z.pts}</span></button>`
+    ).join('');
+    container.innerHTML += `
+      <div class="darts-chip-row">
+        <div class="dart-num">${i+1}</div>
+        <div class="dart-zones">${zonesHTML}</div>
+        <div class="dart-pts">${sel!==null ? (DART_ZONES[sel].pts>0?'+':'')+DART_ZONES[sel].pts : '—'}</div>
+      </div>`;
+  });
+  document.getElementById('darts-total').textContent = total + ' / 50';
+  document.getElementById('darts-score-header').textContent = total + ' pts';
+  document.getElementById('darts-score-header').style.color = total >= 30 ? 'var(--gr)' : 'var(--g)';
+}
+
+function setDart(chip, zone) {
+  dartSelections[chip] = dartSelections[chip] === zone ? null : zone;
+  renderDarts();
+}
+
+// ── WINNER ───────────────────────────────────────────────────────────────────
+let lastGWinnerData = {};
+
+function showGWinner(name, score, detail) {
+  lastGWinnerData = { name, score, detail };
+  document.getElementById('winner-name').textContent = name;
+  document.getElementById('winner-score').textContent = score;
+  document.getElementById('winner-overlay').style.display = 'flex';
+}
+
+function playAgain() {
+  document.getElementById('winner-overlay').style.display = 'none';
+  startGame();
+}
+
+function returnToGames() {
+  document.getElementById('winner-overlay').style.display = 'none';
+  showGScreen('games');
+}
+
+function shareWinner() {
+  const text = `⛳ The Range — ${currentGame?.name}\n🏆 Winner: ${lastGWinnerData.name}\n📊 ${lastGWinnerData.score}\n${lastGWinnerData.detail}\n\nkmansgolf.github.io/range`;
+  window.open(`sms:?body=${encodeURIComponent(text)}`, '_blank');
+}
+
+function shareGame(type) {
+  const text = `⛳ The Range — ${currentGame?.name} in progress\nkmansgolf.github.io/range`;
+  window.open(`sms:?body=${encodeURIComponent(text)}`, '_blank');
+}

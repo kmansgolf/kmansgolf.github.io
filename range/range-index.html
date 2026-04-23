@@ -47,9 +47,29 @@
   </div>
 </div>
 
+<!-- ══ SHARED APP HEADER ══ -->
+<div id="app-header" style="display:none">
+  <div class="header-top">
+    <a href="/" style="text-decoration:none;display:flex;align-items:baseline;gap:0">
+      <span style="font-family:var(--fc);font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span>
+      <span style="font-family:var(--fc);font-size:0.8rem;color:rgba(255,255,255,0.3);margin:0 5px">·</span>
+      <span style="font-family:var(--fc);font-size:0.8rem;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">THE RANGE</span>
+    </a>
+    <div class="header-date" id="hdate"></div>
+    <button onclick="toggleTheme()" id="theme-btn" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:var(--gr);font-family:var(--fc);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;flex-shrink:0">☀️ Light</button>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn" id="tab-home"     onclick="navTo('s-home','tab-home')">Home</button>
+    <button class="tab-btn" id="tab-practice" onclick="navTo('s-practice','tab-practice')">Practice</button>
+    <button class="tab-btn" id="tab-games"    onclick="navTo('s-games','tab-games')">Games</button>
+    <button class="tab-btn" id="tab-history"  onclick="navTo('s-history','tab-history')">History</button>
+    <button class="tab-btn" id="tab-tempo"    onclick="navTo('s-tempo','tab-tempo')">Tempo</button>
+    <button class="tab-btn" id="tab-profile"  onclick="navTo('s-profile','tab-profile')">Profile</button>
+  </div>
+</div>
+
 <!-- ══ HOME ══ -->
 <div id="s-home" class="scr">
-  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm" id="hdate"></div></div>
   <div class="sb">
     <div class="hhero">
       <div class="hgreet">Welcome, <em id="hname">—</em></div>
@@ -70,13 +90,10 @@
   </div>
 </div>
 
-<!-- ══ SESSION SETUP ══ -->
+<!-- ══ PRACTICE ══ -->
 <div id="s-practice" class="scr">
-  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">SESSION SETUP</div></div>
   <div class="sb" style="padding-top:14px">
     <div id="rx-section"></div>
-
-    <!-- COMBINES accordion -->
     <div class="accord" id="acc-combines">
       <div class="accord-hdr" onclick="toggleAccord('acc-combines')">
         <div class="accord-hdr-left">
@@ -89,7 +106,6 @@
         <div class="accord-arr">▼</div>
       </div>
       <div class="accord-body">
-        <!-- Session type toggle (shown after threshold) -->
         <div id="stype-section" style="display:none">
           <div class="stype-wrap">
             <div class="stype-lbl">Session Type</div>
@@ -100,7 +116,6 @@
             <div class="stype-desc" id="stype-desc">8 stations · 3 shots each · weakness-weighted</div>
           </div>
         </div>
-        <!-- Combine type toggle -->
         <div style="margin-bottom:14px;padding-top:10px;border-top:1px solid rgba(232,184,75,.1)" id="ctype-section">
           <div style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--d);margin-bottom:8px">Putting Format</div>
           <div class="ctype-tog">
@@ -109,27 +124,18 @@
           </div>
           <div style="font-family:var(--fb);font-size:12px;color:var(--d);margin-top:6px;line-height:1.4" id="ctype-desc">Gate drill — 2 tees + back tee. Scores line and pace independently. Best for diagnosis.</div>
         </div>
-        <!-- Putting row -->
         <div class="accord-check-row" onclick="togCombine('putting')">
           <div class="chkbox" id="chk-putting"><span class="chkmark" style="display:none">✓</span></div>
           <div class="accord-check-ico">⛳</div>
-          <div style="flex:1">
-            <div class="accord-check-name">Putting Combine</div>
-            <div class="accord-check-meta">Slope, break, distance tracking</div>
-          </div>
+          <div style="flex:1"><div class="accord-check-name">Putting Combine</div><div class="accord-check-meta">Slope, break, distance tracking</div></div>
           <div style="font-family:var(--fm);font-size:12px;color:var(--d)" id="dur-putting">—</div>
         </div>
-        <!-- Chipping row -->
         <div class="accord-check-row" onclick="togCombine('chipping')">
           <div class="chkbox" id="chk-chipping"><span class="chkmark" style="display:none">✓</span></div>
           <div class="accord-check-ico">🏌️</div>
-          <div style="flex:1">
-            <div class="accord-check-name">Chipping Combine</div>
-            <div class="accord-check-meta">Distance, lie, club selection</div>
-          </div>
+          <div style="flex:1"><div class="accord-check-name">Chipping Combine</div><div class="accord-check-meta">Distance, lie, club selection</div></div>
           <div style="font-family:var(--fm);font-size:12px;color:var(--d)" id="dur-chipping">—</div>
         </div>
-        <!-- Session length at bottom -->
         <div id="ver-section" style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(232,184,75,.1)">
           <div style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--d);margin-bottom:8px">Session Length</div>
           <div class="vertog">
@@ -140,45 +146,37 @@
         </div>
       </div>
     </div>
-
-    <!-- PRACTICE accordion -->
     <div class="accord" id="acc-practice">
       <div class="accord-hdr" onclick="toggleAccord('acc-practice')">
         <div class="accord-hdr-left">
           <div class="accord-ico">🔥</div>
-          <div>
-            <div class="accord-title">Warmup</div>
-            <div class="accord-sub">TPI mobility routine · ~8 min</div>
-          </div>
+          <div><div class="accord-title">Warmup</div><div class="accord-sub">TPI mobility routine · ~8 min</div></div>
         </div>
         <div class="accord-arr">▼</div>
       </div>
       <div class="accord-body">
-        <p style="font-family:var(--fb);font-size:13px;color:var(--d);line-height:1.5;margin-bottom:12px">TPI recommends an 8-minute mobility routine before every session. Prime your body for rotational power and reduce injury risk.</p>
+        <p style="font-family:var(--fb);font-size:13px;color:var(--d);line-height:1.5;margin-bottom:12px">TPI recommends an 8-minute mobility routine before every session.</p>
         <button class="btn ol" onclick="goTo('s-warmup')" style="font-size:14px;padding:11px">View TPI Warmup →</button>
       </div>
     </div>
-
-    <!-- Start button + time estimate -->
     <div style="padding:4px 16px 8px">
       <div class="sestim" id="sestim">Select a combine above to begin</div>
       <button class="btn" id="start-btn" onclick="startSession()" style="opacity:.4;pointer-events:none">Start Session</button>
     </div>
-
   </div>
 </div>
 
-<!-- ══ WARMUP ══ -->
+<!-- ══ WARMUP (sub-screen — keeps own header) ══ -->
 <div id="s-warmup" class="scr">
   <div class="hd"><button class="bk" onclick="goTo('s-practice')">←</button><div class="logo" style="font-size:17px">TPI WARMUP</div><div class="hm">~8 min</div></div>
   <div class="sb">
-    <div style="padding:12px 16px 8px;font-family:var(--fb);font-size:13px;color:var(--d);line-height:1.6">Based on the Titleist Performance Institute protocol. These movements prime your body for rotational power and reduce injury risk.</div>
+    <div style="padding:12px 16px 8px;font-family:var(--fb);font-size:13px;color:var(--d);line-height:1.6">Based on the Titleist Performance Institute protocol.</div>
     <div id="warmup-list"></div>
     <div style="padding:0 16px 16px"><button class="btn" onclick="goTo('s-practice')">Done — Back to Session</button></div>
   </div>
 </div>
 
-<!-- ══ COMBINE RUNNER ══ -->
+<!-- ══ COMBINE RUNNER (sub-screen — keeps own header) ══ -->
 <div id="s-runner" class="scr" style="padding-bottom:0">
   <div class="rhdr">
     <button class="bk" onclick="confirmQuit()">✕</button>
@@ -195,7 +193,7 @@
   </div>
 </div>
 
-<!-- ══ RESULTS ══ -->
+<!-- ══ RESULTS (sub-screen — keeps own header) ══ -->
 <div id="s-results" class="scr">
   <div class="hd"><div class="logo">SESSION <span>RESULTS</span></div></div>
   <div class="sb">
@@ -212,15 +210,295 @@
   </div>
 </div>
 
+<!-- ══ GAMES ══ -->
+<div id="s-games" class="scr">
+  <div class="sb">
+
+    <!-- Browse -->
+    <div id="screen-games" class="g-screen active">
+      <div style="padding:12px 16px 4px;font-family:var(--fb);font-size:14px;color:var(--d);line-height:1.5">Games with consequences. Every shot counts. You don't leave until you hit your number.</div>
+      <div class="cat-tabs">
+        <div class="cat-tab active" onclick="filterGames('all',this)">All Games</div>
+        <div class="cat-tab" onclick="filterGames('putting',this)">⛳ Putting</div>
+        <div class="cat-tab" onclick="filterGames('chipping',this)">🏌️ Chipping</div>
+        <div class="cat-tab" onclick="filterGames('range',this)">🎯 Range</div>
+        <div class="cat-tab" onclick="filterGames('multi',this)">👥 Multiplayer</div>
+      </div>
+      <div id="games-list" style="padding-top:8px"></div>
+    </div>
+
+    <!-- Detail -->
+    <div id="screen-detail" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="showGScreen('games')">←</button>
+        <div class="g-rng-logo" id="detail-header-title">GAME DETAILS</div>
+        <div style="width:40px"></div>
+      </div>
+      <div class="game-detail-hero">
+        <div class="game-detail-icon" id="detail-icon"></div>
+        <div>
+          <div class="game-detail-title" id="detail-title"></div>
+          <div class="game-detail-sub" id="detail-sub"></div>
+          <div class="game-badges" style="padding:8px 0 0" id="detail-badges"></div>
+        </div>
+      </div>
+      <div style="height:12px"></div>
+      <div class="g-rng-card"><div class="g-rng-card-title">How to Play</div><ul class="rules-list" id="detail-rules"></ul></div>
+      <div class="g-rng-card"><div class="g-rng-card-title">Scoring</div><div id="detail-scoring"></div></div>
+      <div class="exit-box">
+        <div class="exit-box-label">🏁 Exit Requirement</div>
+        <div class="exit-box-text" id="detail-exit"></div>
+      </div>
+      <div style="padding:0 16px 12px">
+        <a id="detail-watch-btn" href="#" target="_blank" class="watch-btn">
+          <span class="watch-icon">▶</span><span class="watch-label">Watch How to Play on YouTube</span>
+        </a>
+      </div>
+      <div style="padding:0 16px 16px"><button class="g-rng-btn" onclick="goToPlayerSetup()">Play This Game</button></div>
+    </div>
+
+    <!-- Player Setup -->
+    <div id="screen-setup" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="showGScreen('detail')">←</button>
+        <div class="g-rng-logo" style="font-size:16px">PLAYER SETUP</div>
+        <div style="width:40px"></div>
+      </div>
+      <div style="padding:16px 16px 8px;font-family:var(--fb);font-size:14px;color:var(--d);line-height:1.5" id="setup-desc"></div>
+      <div class="g-rng-card">
+        <div class="g-rng-card-title">Players</div>
+        <div id="player-rows"></div>
+        <button class="add-player-btn" id="add-player-btn" onclick="addPlayer()">
+          <div style="font-size:20px;color:var(--d)">+</div>
+          <div class="add-player-label">Add Player (up to 4)</div>
+        </button>
+      </div>
+      <div style="padding:0 16px 16px"><button class="g-rng-btn" onclick="startGame()">Start Game</button></div>
+    </div>
+
+    <!-- Par 18 -->
+    <div id="screen-par18" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">⛳ PAR 18</div>
+        <div style="font-family:var(--fm);font-size:13px;color:var(--d)" id="par18-total-header">0 / 9</div>
+      </div>
+      <div class="g-progress-bar-wrap"><div class="g-progress-bar-fill" id="par18-progress" style="width:0%"></div></div>
+      <div style="padding:8px 16px 4px">
+        <div class="par18-hole-row header">
+          <div class="par18-header-cell">#</div><div></div>
+          <div class="par18-header-cell" id="par18-h1name" style="color:var(--g)">P1</div>
+          <div class="par18-header-cell" id="par18-h2name" style="color:var(--gr)">P2</div>
+          <div class="par18-header-cell" id="par18-h3name" style="color:var(--bl)">P3</div>
+          <div class="par18-header-cell" id="par18-h4name" style="color:var(--or)">P4</div>
+        </div>
+        <div id="par18-rows"></div>
+        <div class="par18-total-row">
+          <div></div>
+          <div style="font-family:var(--fc);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--d);padding-left:4px">TOTAL</div>
+          <div class="par18-cell" id="par18-t1" style="color:var(--g)">—</div>
+          <div class="par18-cell" id="par18-t2" style="color:var(--gr)">—</div>
+          <div class="par18-cell" id="par18-t3" style="color:var(--bl)">—</div>
+          <div class="par18-cell" id="par18-t4" style="color:var(--or)">—</div>
+        </div>
+      </div>
+      <div style="padding:12px 16px 16px;display:flex;gap:10px">
+        <button class="g-rng-btn g-outline g-sm" onclick="shareGame('par18')">📤 Share</button>
+        <button class="g-rng-btn g-sm" onclick="checkPar18Winner()">Finish Game</button>
+      </div>
+    </div>
+
+    <!-- Clock Face -->
+    <div id="screen-clock" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">🕐 CLOCK FACE</div>
+        <div style="font-family:var(--fm);font-size:13px;color:var(--d)" id="clock-attempt-label">Attempt 1</div>
+      </div>
+      <div style="padding:16px;text-align:center">
+        <div class="clock-streak" id="clock-streak">0</div>
+        <div class="clock-streak-label">CONSECUTIVE MAKES</div>
+        <div class="restart-count" id="clock-restarts">0 restarts</div>
+      </div>
+      <div class="clock-face" id="clock-face"></div>
+      <div style="padding:12px 16px 8px;font-family:var(--fc);font-size:13px;color:var(--d);text-align:center" id="clock-status-text">Tap each ball as you putt it. Make all 12 in a row to complete the drill.</div>
+      <div style="padding:8px 16px 16px"><button class="g-rng-btn g-outline" onclick="resetClock()">↺ Restart Drill</button></div>
+    </div>
+
+    <!-- Ladder -->
+    <div id="screen-ladder" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">🪜 LADDER</div>
+        <div style="font-family:var(--fm);font-size:13px;color:var(--d)" id="ladder-attempt-label">Attempt 1</div>
+      </div>
+      <div class="g-rng-card" style="margin-top:16px">
+        <div class="g-rng-card-title">Current Rung</div>
+        <div style="font-family:var(--fc);font-size:32px;font-weight:800;color:var(--g)" id="ladder-current-dist">3 ft</div>
+        <div style="font-family:var(--fb);font-size:13px;color:var(--d);margin-top:4px">Make this putt to advance. Miss and you restart.</div>
+      </div>
+      <div class="g-rng-card"><div class="g-rng-card-title">Rungs</div><div class="ladder-wrap" id="ladder-rungs"></div></div>
+      <div style="padding:0 16px 8px;display:flex;gap:10px">
+        <button class="g-rng-btn g-danger g-sm" onclick="missedLadder()">✕ Missed</button>
+        <button class="g-rng-btn g-sm" onclick="madeLadder()">✓ Made It</button>
+      </div>
+      <div style="padding:0 16px 16px;font-family:var(--fc);font-size:13px;color:var(--d);text-align:center" id="ladder-stats"></div>
+    </div>
+
+    <!-- Dollar Signs -->
+    <div id="screen-dollar" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">💰 DOLLAR SIGNS</div>
+        <div style="font-family:var(--fm);font-size:13px" id="dollar-bankroll-header">$0</div>
+      </div>
+      <div class="g-rng-card" style="margin-top:16px">
+        <div class="bankroll-display">
+          <div class="bankroll-amount zero" id="dollar-bankroll">$0</div>
+          <div class="bankroll-label">Running Bankroll</div>
+        </div>
+      </div>
+      <div style="padding:0 16px 4px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px;text-align:center">
+          <div style="font-size:10px;font-family:var(--fc);color:var(--gr)">Chip-In<br><span style="font-family:var(--fm)">+$10</span></div>
+          <div style="font-size:10px;font-family:var(--fc);color:var(--g)">&lt;3ft<br><span style="font-family:var(--fm)">+$2</span></div>
+          <div style="font-size:10px;font-family:var(--fc);color:var(--bl)">On Green<br><span style="font-family:var(--fm)">$0</span></div>
+          <div style="font-size:10px;font-family:var(--fc);color:var(--re)">Miss<br><span style="font-family:var(--fm)">-$5</span></div>
+        </div>
+      </div>
+      <div style="padding:0 16px 16px" id="dollar-spots"></div>
+    </div>
+
+    <!-- Points (7 Up / 21 / HORSE) -->
+    <div id="screen-points" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px" id="points-game-name">7 UP</div>
+        <div style="font-family:var(--fc);font-size:13px;color:var(--d)" id="points-hole-label">Hole 1</div>
+      </div>
+      <div style="padding:12px 16px 8px"><div class="players-scoreboard" id="points-players"></div></div>
+      <div class="g-rng-card">
+        <div class="g-rng-card-title" id="points-current-player-label">SCORING FOR —</div>
+        <div class="score-buttons" id="points-score-buttons"></div>
+        <div style="font-family:var(--fb);font-size:13px;color:var(--d);text-align:center;margin-top:8px" id="points-instruction"></div>
+      </div>
+      <div style="padding:0 16px 16px"><button class="g-rng-btn g-outline g-sm" onclick="shareGame('points')">📤 Share Scores</button></div>
+    </div>
+
+    <!-- Fairway Finder -->
+    <div id="screen-fairway" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">🏌️ FAIRWAY FINDER</div>
+        <div style="font-family:var(--fm);font-size:13px;color:var(--g)" id="ff-score-header">0 pts</div>
+      </div>
+      <div style="padding:12px 16px 4px;font-family:var(--fc);font-size:13px;color:var(--d)">Driver = 3 pts · Hybrid/FW = 2 pts · Iron = 1 pt in the fairway.</div>
+      <div id="ff-holes" style="padding:8px 16px 16px"></div>
+    </div>
+
+    <!-- Darts -->
+    <div id="screen-darts" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">🎯 DARTS</div>
+        <div style="font-family:var(--fm);font-size:13px;color:var(--g)" id="darts-score-header">0 pts</div>
+      </div>
+      <div style="padding:12px 16px 4px;font-family:var(--fc);font-size:13px;color:var(--d)">Hit 10 chips. Tap your proximity zone for each shot.</div>
+      <div id="darts-chips" style="padding:8px 16px 8px"></div>
+      <div style="padding:0 16px 16px">
+        <div class="darts-total-bar">
+          <div class="darts-total-label">Total Points</div>
+          <div class="darts-total-pts" id="darts-total">0 / 50</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Winner Overlay -->
+    <div id="winner-overlay" style="display:none" class="winner-overlay">
+      <div class="winner-trophy">🏆</div>
+      <div class="winner-title">Winner</div>
+      <div class="winner-name" id="winner-name"></div>
+      <div class="winner-score" id="winner-score"></div>
+      <div class="winner-buttons">
+        <button class="g-rng-btn" onclick="playAgain()">Play Again</button>
+        <button class="g-rng-btn g-outline" onclick="shareWinner()">📤 Share Result</button>
+        <button class="g-rng-btn" style="background:transparent;border:2px solid rgba(255,255,255,0.2);color:var(--d)" onclick="returnToGames()">Back to Games</button>
+      </div>
+    </div>
+
+  </div><!-- .sb -->
+</div><!-- #s-games -->
+
 <!-- ══ HISTORY ══ -->
 <div id="s-history" class="scr">
-  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">HISTORY</div></div>
   <div class="sb" style="padding-top:8px"><div id="hist-list"></div></div>
+</div>
+
+<!-- ══ TEMPO ══ -->
+<div id="s-tempo" class="scr">
+  <div class="sb">
+    <div class="t-hero">
+      <div class="t-hero-title">SWING <span>TEMPO</span></div>
+      <div class="t-hero-sub">Audio Metronome · 3:1 &amp; 2:1 Ratios</div>
+    </div>
+    <div style="padding:0 16px 4px">
+      <div class="slbl" style="padding:0 0 8px">Swing Mode</div>
+      <div class="t-mode-row">
+        <button class="t-mode-btn active" id="t-mode-full"  onclick="t_setMode('full')"><span class="t-mode-label">Full Swing</span><span class="t-mode-ratio">3:1</span></button>
+        <button class="t-mode-btn"        id="t-mode-short" onclick="t_setMode('short')"><span class="t-mode-label">Short Game</span><span class="t-mode-ratio">2:1</span></button>
+        <button class="t-mode-btn"        id="t-mode-putt"  onclick="t_setMode('putt')"><span class="t-mode-label">Putting</span><span class="t-mode-ratio">2:1</span></button>
+      </div>
+    </div>
+    <div style="padding:14px 16px 4px">
+      <div class="slbl" style="padding:0 0 8px">Tempo Preset</div>
+      <div class="t-preset-grid" id="t-preset-grid"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Swing Timing</div>
+      <div class="t-swing-row">
+        <div class="t-swing-val" id="t-swing-time">1.07</div>
+        <div class="t-swing-unit">sec</div>
+        <div class="t-swing-tag" id="t-swing-tag">Tour Std</div>
+      </div>
+      <div class="t-detail-row">
+        <div class="t-detail-cell"><span class="t-detail-val" id="t-back-ms">800</span><span class="t-detail-lbl">Backswing ms</span></div>
+        <div class="t-detail-cell"><span class="t-detail-val" id="t-down-ms">267</span><span class="t-detail-lbl">Downswing ms</span></div>
+        <div class="t-detail-cell"><span class="t-detail-val" id="t-ratio">3:1</span><span class="t-detail-lbl">Ratio</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Rest Gap Between Swings</div>
+      <div class="t-gap-row">
+        <div class="t-gap-lbl">Gap</div>
+        <input type="range" class="t-gap-slider" min="1" max="10" step="0.5" value="4" oninput="t_onGapSlider(this.value)">
+        <div class="t-gap-val" id="t-gap-display">4.0s</div>
+      </div>
+    </div>
+    <div class="t-countin-badge" id="t-countin-badge">
+      <div class="t-countin-dot"></div>
+      <div class="t-countin-text">COUNT IN…</div>
+    </div>
+    <div style="padding:0 16px 14px">
+      <div class="t-phase-display" id="t-phase-display">
+        <div class="t-phase-dot" id="t-phase-takeaway"><div class="t-phase-icon">↑</div><div class="t-phase-name">Takeaway</div></div>
+        <div class="t-phase-dot" id="t-phase-top"><div class="t-phase-icon">⟳</div><div class="t-phase-name">Top</div></div>
+        <div class="t-phase-dot" id="t-phase-impact"><div class="t-phase-icon">⚡</div><div class="t-phase-name">Impact</div></div>
+        <div class="t-phase-dot" id="t-phase-rest"><div class="t-phase-icon">—</div><div class="t-phase-name">Rest</div></div>
+      </div>
+    </div>
+    <div style="padding:0 16px 24px">
+      <button class="t-play-btn" id="t-play-btn" onclick="t_togglePlay()">
+        <svg class="t-play-icon" id="t-play-svg" viewBox="0 0 24 24" fill="none" stroke="none">
+          <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
+        </svg>
+        <span id="t-play-label">Start</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ PROFILE ══ -->
 <div id="s-profile" class="scr">
-  <div class="hd"><a href="/" id="home-logo" style="text-decoration:none;display:flex;align-items:baseline;gap:0"><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--fc);font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--gr)">golf</span><span style="font-family:var(--fc);font-size:11px;color:rgba(255,255,255,0.3);margin:0 5px">·</span><span style="font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">RANGE</span></a><div class="hm">PROFILE</div></div>
   <div class="sb">
     <div class="profav" id="prof-av"></div>
     <div class="profnam" id="prof-nm"></div>
@@ -233,7 +511,7 @@
       </div>
       <div class="trow" style="border-top:1px solid rgba(255,255,255,.07);margin-top:10px;padding-top:10px">
         <div class="tinfo"><div class="tlbl" id="theme-lbl">🌙 Light Mode</div><div class="tsub" id="theme-sub">Off — tap to switch for outdoor use</div></div>
-        <div class="tsw" id="theme-tog" onclick="togTheme()"><div class="tknob"></div></div>
+        <div class="tsw" id="theme-tog" onclick="toggleTheme()"><div class="tknob"></div></div>
       </div>
     </div>
     <div class="card" id="ap-stats-card" style="display:none">
@@ -261,31 +539,7 @@
   </div>
 </div>
 
-<!-- ══ BOTTOM NAV ══ -->
-<nav id="bnav">
-  <button class="nb on" data-s="s-home" onclick="navTo('s-home',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span class="nl">Home</span>
-  </button>
-  <button class="nb" data-s="s-practice" onclick="navTo('s-practice',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-    <span class="nl">Practice</span>
-  </button>
-  <button class="nb" onclick="openGames()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/></svg>
-    <span class="nl">Games</span>
-  </button>
-  <button class="nb" data-s="s-history" onclick="navTo('s-history',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    <span class="nl">History</span>
-  </button>
-  <button class="nb" data-s="s-profile" onclick="navTo('s-profile',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    <span class="nl">Profile</span>
-  </button>
-</nav>
-</div>
-
+</div><!-- #app -->
 <script src="range-data.js"></script>
 <script src="range-engine.js"></script>
 <script src="range-app.js"></script>
