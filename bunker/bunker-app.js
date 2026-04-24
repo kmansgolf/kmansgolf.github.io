@@ -210,7 +210,8 @@ function startRound() {
     state.teeName = '';
   }
 
-  document.getElementById('header-hole-label').textContent = (state.courseName && state.courseName !== 'Round' ? state.courseName + ' · ' : '') + (state.teeName || 'Hole 1 of 18');
+  const _hhl = document.getElementById('header-hole-label');
+  if (_hhl) _hhl.textContent = (state.courseName && state.courseName !== 'Round' ? state.courseName + ' · ' : '') + (state.teeName || 'Hole 1 of 18');
   showView('play');
   renderHole();
   updateHeader('play');
