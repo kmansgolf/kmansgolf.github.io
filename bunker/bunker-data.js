@@ -291,14 +291,14 @@ function applyTheme(theme) {
   if (btn) btn.textContent = isLight ? '🌙 Dark' : '☀️ Light';
   const meta = document.getElementById('theme-meta');
   if (meta) meta.setAttribute('content', isLight ? '#faf8f4' : '#000000');
-  localStorage.setItem('bunker_theme', theme);
+  localStorage.setItem('range_theme', theme);
 }
 function toggleTheme() {
-  const current = localStorage.getItem('bunker_theme') || 'dark';
+  const current = localStorage.getItem('range_theme') || 'dark';
   applyTheme(current === 'light' ? 'dark' : 'light');
 }
 // Apply saved theme on load
 (function() {
-  const saved = localStorage.getItem('bunker_theme') || 'dark';
+  const saved = localStorage.getItem('range_theme') || 'dark';
   applyTheme(saved);
 })();
