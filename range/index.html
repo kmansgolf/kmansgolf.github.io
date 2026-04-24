@@ -79,7 +79,7 @@
   <div class="tab-bar">
     <button class="tab-btn active" id="tab-home"     onclick="navTo('s-home','tab-home')">🏠 Home</button>
     <button class="tab-btn"        id="tab-practice" onclick="navTo('s-practice','tab-practice')">⛳ Practice</button>
-    <button class="tab-btn"        id="tab-games"    onclick="openGames()">🎮 Games</button>
+    <button class="tab-btn"        id="tab-games"    onclick="navTo('s-games','tab-games')">🎮 Games</button>
     <button class="tab-btn"        id="tab-history"  onclick="navTo('s-history','tab-history')">📈 History</button>
     <button class="tab-btn"        id="tab-profile"  onclick="navTo('s-profile','tab-profile')">👤 Profile</button>
     <button class="tab-btn"        id="tab-tempo"    onclick="navTo('s-tempo','tab-tempo')">🎵 Tempo</button>
@@ -234,6 +234,225 @@
       <button class="btn ol sm" onclick="shareResults()">📤 Share</button>
       <button class="btn sm" onclick="goHome()">Home</button>
     </div>
+  </div>
+</div>
+
+<!-- ══ GAMES ══ -->
+<div id="s-games" class="scr">
+  <div class="sb">
+
+    <!-- Browse -->
+    <div id="screen-games" class="g-screen active">
+      <div style="padding:12px 16px 4px;font-family:var(--fb);font-size:14px;color:var(--d);line-height:1.5">Games with consequences. Every shot counts. You don't leave until you hit your number.</div>
+      <div class="cat-tabs">
+        <div class="cat-tab active" onclick="filterGames('all',this)">All Games</div>
+        <div class="cat-tab" onclick="filterGames('putting',this)">⛳ Putting</div>
+        <div class="cat-tab" onclick="filterGames('chipping',this)">🏌️ Chipping</div>
+        <div class="cat-tab" onclick="filterGames('range',this)">🎯 Range</div>
+        <div class="cat-tab" onclick="filterGames('multi',this)">👥 Multiplayer</div>
+      </div>
+      <div id="games-list" style="padding-top:8px"></div>
+    </div>
+
+    <!-- Detail -->
+    <div id="screen-detail" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="showGScreen('games')">←</button>
+        <div class="g-rng-logo" id="detail-header-title">GAME DETAILS</div>
+        <div style="width:40px"></div>
+      </div>
+      <div class="game-detail-hero">
+        <div class="game-detail-icon" id="detail-icon"></div>
+        <div>
+          <div class="game-detail-title" id="detail-title"></div>
+          <div class="game-detail-sub" id="detail-sub"></div>
+          <div class="game-badges" style="padding:8px 0 0" id="detail-badges"></div>
+        </div>
+      </div>
+      <div style="height:12px"></div>
+      <div class="g-rng-card"><div class="g-rng-card-title">How to Play</div><ul class="rules-list" id="detail-rules"></ul></div>
+      <div class="g-rng-card"><div class="g-rng-card-title">Scoring</div><div id="detail-scoring"></div></div>
+      <div class="exit-box">
+        <div class="exit-box-label">🏁 Exit Requirement</div>
+        <div class="exit-box-text" id="detail-exit"></div>
+      </div>
+      <div style="padding:0 16px 12px">
+        <a id="detail-watch-btn" href="#" target="_blank" class="watch-btn">
+          <span class="watch-icon">▶</span><span class="watch-label">Watch How to Play on YouTube</span>
+        </a>
+      </div>
+      <div style="padding:0 16px 16px"><button class="g-rng-btn" onclick="goToPlayerSetup()">Play This Game</button></div>
+    </div>
+
+    <!-- Player Setup -->
+    <div id="screen-setup" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="showGScreen('detail')">←</button>
+        <div class="g-rng-logo" style="font-size:16px">PLAYER SETUP</div>
+        <div style="width:40px"></div>
+      </div>
+      <div style="padding:16px 16px 8px;font-family:var(--fb);font-size:14px;color:var(--d);line-height:1.5" id="setup-desc"></div>
+      <div class="g-rng-card">
+        <div class="g-rng-card-title">Players</div>
+        <div id="player-rows"></div>
+        <button class="add-player-btn" id="add-player-btn" onclick="addPlayer()">
+          <div style="font-size:20px;color:var(--d)">+</div>
+          <div class="add-player-label">Add Player (up to 4)</div>
+        </button>
+      </div>
+      <div style="padding:0 16px 16px"><button class="g-rng-btn" onclick="startGame()">Start Game</button></div>
+    </div>
+
+    <!-- Par 18 -->
+    <div id="screen-par18" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">⛳ PAR 18</div>
+        <div style="font-family:var(--fm);font-size:13px;color:var(--d)" id="par18-total-header">0 / 9</div>
+      </div>
+      <div class="g-progress-bar-wrap"><div class="g-progress-bar-fill" id="par18-progress" style="width:0%"></div></div>
+      <div style="padding:8px 16px 4px">
+        <div class="par18-hole-row header">
+          <div class="par18-header-cell">#</div><div></div>
+          <div class="par18-header-cell" id="par18-h1name" style="color:var(--g)">P1</div>
+          <div class="par18-header-cell" id="par18-h2name" style="color:var(--gr)">P2</div>
+          <div class="par18-header-cell" id="par18-h3name" style="color:var(--bl)">P3</div>
+          <div class="par18-header-cell" id="par18-h4name" style="color:var(--or)">P4</div>
+        </div>
+        <div id="par18-rows"></div>
+        <div class="par18-total-row">
+          <div></div>
+          <div style="font-family:var(--fc);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--d);padding-left:4px">TOTAL</div>
+          <div class="par18-cell" id="par18-t1" style="color:var(--g)">—</div>
+          <div class="par18-cell" id="par18-t2" style="color:var(--gr)">—</div>
+          <div class="par18-cell" id="par18-t3" style="color:var(--bl)">—</div>
+          <div class="par18-cell" id="par18-t4" style="color:var(--or)">—</div>
+        </div>
+      </div>
+      <div style="padding:12px 16px 16px;display:flex;gap:10px">
+        <button class="g-rng-btn g-outline g-sm" onclick="shareGame('par18')">📤 Share</button>
+        <button class="g-rng-btn g-sm" onclick="checkPar18Winner()">Finish Game</button>
+      </div>
+    </div>
+
+    <!-- Clock Face -->
+    <div id="screen-clock" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">🕐 CLOCK FACE</div>
+        <div style="font-family:var(--fm);font-size:13px;color:var(--d)" id="clock-attempt-label">Attempt 1</div>
+      </div>
+      <div style="padding:16px;text-align:center">
+        <div class="clock-streak" id="clock-streak">0</div>
+        <div class="clock-streak-label">CONSECUTIVE MAKES</div>
+        <div class="restart-count" id="clock-restarts">0 restarts</div>
+      </div>
+      <div class="clock-face" id="clock-face"></div>
+      <div style="padding:12px 16px 8px;font-family:var(--fc);font-size:13px;color:var(--d);text-align:center" id="clock-status-text">Tap each ball as you putt it. Make all 12 in a row to complete the drill.</div>
+      <div style="padding:8px 16px 16px"><button class="g-rng-btn g-outline" onclick="resetClock()">↺ Restart Drill</button></div>
+    </div>
+
+    <!-- Ladder -->
+    <div id="screen-ladder" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">🪜 LADDER</div>
+        <div style="font-family:var(--fm);font-size:13px;color:var(--d)" id="ladder-attempt-label">Attempt 1</div>
+      </div>
+      <div class="g-rng-card" style="margin-top:16px">
+        <div class="g-rng-card-title">Current Rung</div>
+        <div style="font-family:var(--fc);font-size:32px;font-weight:800;color:var(--g)" id="ladder-current-dist">3 ft</div>
+        <div style="font-family:var(--fb);font-size:13px;color:var(--d);margin-top:4px">Make this putt to advance. Miss and you restart.</div>
+      </div>
+      <div class="g-rng-card"><div class="g-rng-card-title">Rungs</div><div class="ladder-wrap" id="ladder-rungs"></div></div>
+      <div style="padding:0 16px 8px;display:flex;gap:10px">
+        <button class="g-rng-btn g-danger g-sm" onclick="missedLadder()">✕ Missed</button>
+        <button class="g-rng-btn g-sm" onclick="madeLadder()">✓ Made It</button>
+      </div>
+      <div style="padding:0 16px 16px;font-family:var(--fc);font-size:13px;color:var(--d);text-align:center" id="ladder-stats"></div>
+    </div>
+
+    <!-- Dollar Signs -->
+    <div id="screen-dollar" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">💰 DOLLAR SIGNS</div>
+        <div style="font-family:var(--fm);font-size:13px" id="dollar-bankroll-header">$0</div>
+      </div>
+      <div class="g-rng-card" style="margin-top:16px">
+        <div class="bankroll-display">
+          <div class="bankroll-amount zero" id="dollar-bankroll">$0</div>
+          <div class="bankroll-label">Running Bankroll</div>
+        </div>
+      </div>
+      <div style="padding:0 16px 4px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px;text-align:center">
+          <div style="font-size:10px;font-family:var(--fc);color:var(--gr)">Chip-In<br><span style="font-family:var(--fm)">+$10</span></div>
+          <div style="font-size:10px;font-family:var(--fc);color:var(--g)">&lt;3ft<br><span style="font-family:var(--fm)">+$2</span></div>
+          <div style="font-size:10px;font-family:var(--fc);color:var(--bl)">On Green<br><span style="font-family:var(--fm)">$0</span></div>
+          <div style="font-size:10px;font-family:var(--fc);color:var(--re)">Miss<br><span style="font-family:var(--fm)">-$5</span></div>
+        </div>
+      </div>
+      <div style="padding:0 16px 16px" id="dollar-spots"></div>
+    </div>
+
+    <!-- Points (7 Up / 21 / HORSE) -->
+    <div id="screen-points" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px" id="points-game-name">7 UP</div>
+        <div style="font-family:var(--fc);font-size:13px;color:var(--d)" id="points-hole-label">Hole 1</div>
+      </div>
+      <div style="padding:12px 16px 8px"><div class="players-scoreboard" id="points-players"></div></div>
+      <div class="g-rng-card">
+        <div class="g-rng-card-title" id="points-current-player-label">SCORING FOR —</div>
+        <div class="score-buttons" id="points-score-buttons"></div>
+        <div style="font-family:var(--fb);font-size:13px;color:var(--d);text-align:center;margin-top:8px" id="points-instruction"></div>
+      </div>
+      <div style="padding:0 16px 16px"><button class="g-rng-btn g-outline g-sm" onclick="shareGame('points')">📤 Share Scores</button></div>
+    </div>
+
+    <!-- Fairway Finder -->
+    <div id="screen-fairway" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">🏌️ FAIRWAY FINDER</div>
+        <div style="font-family:var(--fm);font-size:13px;color:var(--g)" id="ff-score-header">0 pts</div>
+      </div>
+      <div style="padding:12px 16px 4px;font-family:var(--fc);font-size:13px;color:var(--d)">Driver = 3 pts · Hybrid/FW = 2 pts · Iron = 1 pt in the fairway.</div>
+      <div id="ff-holes" style="padding:8px 16px 16px"></div>
+    </div>
+
+    <!-- Darts -->
+    <div id="screen-darts" class="g-screen">
+      <div class="g-rng-header">
+        <button class="g-back-btn" onclick="confirmGameQuit()">✕</button>
+        <div class="g-rng-logo" style="font-size:16px">🎯 DARTS</div>
+        <div style="font-family:var(--fm);font-size:13px;color:var(--g)" id="darts-score-header">0 pts</div>
+      </div>
+      <div style="padding:12px 16px 4px;font-family:var(--fc);font-size:13px;color:var(--d)">Hit 10 chips. Tap your proximity zone for each shot.</div>
+      <div id="darts-chips" style="padding:8px 16px 8px"></div>
+      <div style="padding:0 16px 16px">
+        <div class="darts-total-bar">
+          <div class="darts-total-label">Total Points</div>
+          <div class="darts-total-pts" id="darts-total">0 / 50</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Winner Overlay -->
+    <div id="winner-overlay" style="display:none" class="winner-overlay">
+      <div class="winner-trophy">🏆</div>
+      <div class="winner-title">Winner</div>
+      <div class="winner-name" id="winner-name"></div>
+      <div class="winner-score" id="winner-score"></div>
+      <div class="winner-buttons">
+        <button class="g-rng-btn" onclick="playAgain()">Play Again</button>
+        <button class="g-rng-btn g-outline" onclick="shareWinner()">📤 Share Result</button>
+        <button class="g-rng-btn" style="background:transparent;border:2px solid rgba(255,255,255,0.2);color:var(--d)" onclick="returnToGames()">Back to Games</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
