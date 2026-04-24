@@ -16,6 +16,14 @@ function switchTab(tab) {
 // 'awareness' is pinned — never touched by toggleAcc
 const ACC_KEYS = ['tee','weld','recovery','approach','logshot'];
 
+// Scroll a card so its top sits just below the sticky app header
+function scrollCardIntoView(el) {
+  if (!el) return;
+  const headerH = document.querySelector('header')?.offsetHeight || 0;
+  const y = el.getBoundingClientRect().top + window.scrollY - headerH - 8;
+  window.scrollTo({ top: y, behavior: 'smooth' });
+}
+
 function toggleAcc(key) {
   const isOpen = document.getElementById('acc-body-' + key).classList.contains('open');
 
@@ -29,6 +37,9 @@ function toggleAcc(key) {
   if (!isOpen) {
     document.getElementById('acc-body-'    + key).classList.add('open');
     document.getElementById('acc-chevron-' + key).textContent = '˅';
+    scrollCardIntoView(
+      document.getElementById('acc-body-' + key).closest('.acc-section')
+    );
   }
 }
 
@@ -39,6 +50,9 @@ function toggleStrat(section) {
   const chevron = document.getElementById('strat-chevron-' + section);
   const isOpen  = body.classList.toggle('open');
   chevron.textContent = isOpen ? '˅' : '›';
+  if (isOpen) {
+    scrollCardIntoView(body.closest('.strat-card'));
+  }
 }
 
 // ── WELD UI ───────────────────────────────────────────────────────────────
