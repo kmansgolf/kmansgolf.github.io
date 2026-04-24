@@ -1,5 +1,6 @@
 /* © 2026 Kevin Mansfield. All rights reserved. */
 :root {
+  --navy:        #000000;
   --navy-mid:    #1c1c1e;
   --navy-light:  #3a3a3c;
   --gold:        #e8b84b;
@@ -61,7 +62,7 @@ input[type="text"],input[type="number"]{width:100%;background:var(--navy-mid);bo
 input[type="text"]{padding:10px 10px 10px 30px;}
 input[type="number"]{padding:9px 10px;}
 input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,184,75,0.15);}
-input::placeholder{color:var(--muted);}
+input::placeholder{color:rgba(255,255,255,0.35);}
 
 .games-grid{display:grid;gap:8px;}
 .game-toggle{background:var(--navy-mid);border:1.5px solid var(--border);border-radius:var(--r-md);padding:13px 14px;cursor:pointer;transition:all .15s;user-select:none;display:flex;align-items:flex-start;gap:12px;box-shadow:var(--shadow-sm);}
