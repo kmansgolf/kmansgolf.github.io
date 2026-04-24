@@ -289,9 +289,9 @@ tfoot td:first-child{text-align:left;padding-left:12px;}
 /* ── LIGHT THEME — dark chrome header + warm cream content ── */
 body[data-theme="light"]{
   --navy:        #faf8f4;
-  --navy-mid:    #1c1c1e;
-  --white:       #ffffff;  /* fix: dark restyle set this to #1c1c1e */
-  --navy-light:  #3a3a3c;
+  --navy-mid:    #ffffff;
+  --navy-light:  #e8e5e0;
+  --white:       #ffffff;
   --text:        #1a1a1a;
   --muted:       #6e6e73;
   --blue-soft:   #6e6e73;
@@ -308,13 +308,24 @@ body[data-theme="light"]{
   --amber-bg:    #fef3c7;
   background:    #faf8f4;
 }
+/* Cards are white via --navy-mid token — just add shadow and border */
 body[data-theme="light"] .score-card,
 body[data-theme="light"] .game-panel,
 body[data-theme="light"] .round-card,
 body[data-theme="light"] .results-card,
 body[data-theme="light"] .hole-nav,
 body[data-theme="light"] .course-item,
-body[data-theme="light"] .game-toggle{background:#ffffff;border-color:rgba(0,0,0,0.08);box-shadow:0 1px 6px rgba(0,0,0,0.07);}
+body[data-theme="light"] .game-toggle{border-color:rgba(0,0,0,0.08);box-shadow:0 1px 6px rgba(0,0,0,0.07);}
+/* Dark surfaces that must stay dark in light mode */
+body[data-theme="light"] .score-header,
+body[data-theme="light"] .game-panel-header,
+body[data-theme="light"] thead th{background:#1c1c1e;border-color:rgba(255,255,255,0.08);}
+body[data-theme="light"] .totals-bar{background:#1c1c1e;}
+body[data-theme="light"] .totals-bar h4,
+body[data-theme="light"] .total-cell .tc-name,
+body[data-theme="light"] .tc-amount.zero{color:rgba(255,255,255,0.6);}
+/* Step indicator bar */
+body[data-theme="light"] .step-indicator-bar{background:#e8e5e0;}
 body[data-theme="light"] input[type="text"],
 body[data-theme="light"] input[type="number"],
 body[data-theme="light"] .player-select,
@@ -346,21 +357,7 @@ body[data-theme="light"] .course-item:hover{border-color:var(--green-accent);}
 body[data-theme="light"] .hole-nav-center .hole-num{color:#1a1a1a;}
 body[data-theme="light"] #app-header{background:#000000;}
 
-/* ── LIGHT MODE: comprehensive fixes ────────────────────────────────────────── */
-
-/* Score header and game panel header stay dark — white text on dark bg */
-body[data-theme="light"] .score-header {
-  background: #1c1c1e;
-}
-body[data-theme="light"] .game-panel-header {
-  background: #1c1c1e;
-  border-bottom-color: rgba(255,255,255,0.08);
-}
-/* Table headers stay dark */
-body[data-theme="light"] thead th {
-  background: #1c1c1e;
-  border-color: rgba(255,255,255,0.08);
-}
+/* ── LIGHT MODE: text and semantic color fixes ────────────────────────────── */
 
 /* All text that should be dark on light bg */
 body[data-theme="light"] .fw-player-name,
