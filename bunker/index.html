@@ -13,7 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap&font-display=swap" rel="stylesheet">
 <link rel="stylesheet" href="bunker-style.css">
 </head>
-</head>
 <body>
 <div id="app">
 
@@ -21,11 +20,11 @@
 <div id="app-header">
   <div class="header-top">
     <a href="/" style="text-decoration:none;display:flex;align-items:baseline;gap:0">
-      <span style="font-family:var(--font-display);font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--font-display);font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:#3ddc84">golf</span>
+      <span style="font-family:var(--font-display);font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:#f5f5f7">kmans</span><span style="font-family:var(--font-display);font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;color:var(--green-accent)">golf</span>
       <span style="font-family:var(--font-display);font-size:0.8rem;color:rgba(255,255,255,0.3);margin:0 5px">·</span>
       <span style="font-family:var(--font-display);font-size:0.8rem;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.6)">THE BUNKER</span>
     </a>
-    <button onclick="toggleTheme()" id="theme-btn" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:#3ddc84;font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;">☀️ Light</button>
+    <button onclick="toggleTheme()" id="theme-btn" style="background:rgba(61,220,132,0.08);border:1px solid rgba(61,220,132,0.2);border-radius:20px;padding:5px 12px;color:var(--green-accent);font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;white-space:nowrap;">☀️ Light</button>
   </div>
   <div class="tab-bar">
     <button class="tab-btn active" id="tab-setup"     onclick="navTo('setup')">⛳ New Round</button>
@@ -38,18 +37,6 @@
 
 <!-- ═══════════════ SETUP WIZARD ═══════════════ -->
 <div id="setup" class="view active">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole">New Round Setup</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="showLastRound()">Last Round</button>
-      <button class="hdr-btn" onclick="showHistory()">Leaderboard</button>
-      <button class="hdr-btn" id="home-scorecard-btn" onclick="homeShowScorecard()" style="display:none;">Scorecard</button>
-      <button class="hdr-btn" id="home-resume-btn" onclick="homeResumeRound()" style="display:none;background:rgba(240,192,64,0.15);color:var(--gold);border-color:rgba(240,192,64,0.3);">▶ Resume Round</button>
-    </div>
-  </div>
 
   <!-- Step indicator -->
   <div style="display:flex;align-items:center;justify-content:center;gap:0;padding:14px 24px;background:var(--white);border-bottom:1px solid var(--border);">
@@ -131,55 +118,22 @@
   <!-- Wizard nav -->
   <div style="padding:16px;display:flex;gap:10px;">
     <button id="wizard-back" onclick="wizardBack()" style="display:none;flex:0 0 auto;padding:14px 18px;background:var(--white);color:var(--navy-mid);border:1.5px solid var(--border);border-radius:var(--r-md);font-family:var(--font-display);font-size:1rem;font-weight:700;letter-spacing:1px;cursor:pointer;">← Back</button>
-    <button id="wizard-next" onclick="wizardNext()" style="flex:1;padding:14px;background:#3ddc84;color:#000;font-family:var(--font-display);font-size:1.1rem;font-weight:700;letter-spacing:3px;border:none;border-radius:var(--r-md);cursor:pointer;">Next →</button>
+    <button id="wizard-next" onclick="wizardNext()" style="flex:1;padding:14px;background:var(--green-accent);color:#000;font-family:var(--font-display);font-size:1.1rem;font-weight:700;letter-spacing:3px;border:none;border-radius:var(--r-md);cursor:pointer;">Next →</button>
   </div>
 </div>
 
 <!-- ═══════════════ PLAY ═══════════════ -->
 <div id="play" class="view">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole" id="header-hole-label">Hole 1 of 18</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="showHistory()">Leaderboard</button>
-      <button class="hdr-btn" onclick="showScorecard()">Scorecard</button>
-      <button class="hdr-btn" onclick="showResults()">Finish ✓</button>
-    </div>
-  </div>
-
   <div class="play-content" id="play-content"></div>
 </div>
 
 <!-- ═══════════════ FULL SCORECARD ═══════════════ -->
 <div id="scorecard-view" class="view">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole">Scorecard</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="backToPlay()">← Back</button>
-      <button class="hdr-btn" onclick="showHistory()">Leaderboard</button>
-      <button class="hdr-btn" onclick="showPrintView()">Print</button>
-    </div>
-  </div>
   <div class="sc-table-wrap" id="sc-table-wrap"></div>
 </div>
 
 <!-- ═══════════════ RESULTS ═══════════════ -->
 <div id="results-view" class="view">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole">Review &amp; Confirm</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="showHistory()">Leaderboard</button>
-      <button class="hdr-btn" onclick="newRound()">New Round</button>
-    </div>
-  </div>
   <div class="results-body">
     <div id="results-content"></div>
   </div>
@@ -187,32 +141,11 @@
 
 <!-- ═══════════════ HISTORY ═══════════════ -->
 <div id="history-view" class="view">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole">Season Leaderboard</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="showLastRound()">Last Round</button>
-      <button class="hdr-btn" onclick="newRound()">New Round</button>
-    </div>
-  </div>
   <div class="play-content" id="history-content"></div>
 </div>
 
 <!-- ═══════════════ PRINT VIEW ═══════════════ -->
 <div id="print-view" class="view">
-  <div class="play-header">
-    <div class="header-brand">
-      <div class="header-logo">🏌 THE BUNKER</div>
-      <div class="header-hole" id="print-sub">Print View</div>
-    </div>
-    <div class="header-btns">
-      <button class="hdr-btn" onclick="backToPlay()">← Back</button>
-      <button class="hdr-btn" onclick="showHistory()">Leaderboard</button>
-      <button class="hdr-btn" onclick="window.print()" style="background:rgba(240,192,64,0.15);color:var(--gold);border-color:rgba(240,192,64,0.3);">🖨 Print</button>
-    </div>
-  </div>
   <div style="padding:14px;flex:1;overflow-y:auto;max-width:600px;width:100%;margin:0 auto;" id="print-body"></div>
 </div>
 
