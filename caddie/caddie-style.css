@@ -959,3 +959,44 @@ footer {
   color: var(--gold);
   flex-shrink: 0;
 }
+
+/* ─── Reference Diagrams (teaching holes) ─────────────────────────── */
+/* Used inside .strat-rule blocks to illustrate concepts with annotated aerials. */
+.ref-figure {
+  margin: 14px 0 4px;
+  padding: 0;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+[data-theme="light"] .ref-figure {
+  background: #1c1c1e;
+  border-color: rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.ref-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Allow pinch-zoom by ensuring image isn't blocked */
+  touch-action: manipulation;
+}
+.ref-caption {
+  display: block;
+  padding: 8px 12px 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.6);
+  text-align: center;
+  background: #0d0d0e;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+[data-theme="light"] .ref-caption {
+  background: #2c2c2e;
+  color: rgba(255,255,255,0.7);
+  border-top-color: rgba(255,255,255,0.05);
+}
