@@ -108,6 +108,20 @@
     min-height: 100vh;
   }
 
+  /* ─── Wordmark ──────────────────────────────────────────────────── */
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 30px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 18px;
+  }
+  .wordmark .l-k { color: var(--text); }
+  .wordmark .l-g { color: var(--green-active); }
+
   /* ─── Tagline ───────────────────────────────────────────────────── */
   .tagline {
     font-family: 'Barlow Condensed', sans-serif;
@@ -232,6 +246,9 @@
 <div class="bag-fixed" aria-hidden="true"></div>
 
 <main class="scroll-content">
+  <div class="wordmark">
+    <span class="l-k">kmans</span><span class="l-g">golf</span>
+  </div>
   <h1 class="tagline">Your Game<span class="green-word">Tracked</span></h1>
   <div class="sub">the suite</div>
 
