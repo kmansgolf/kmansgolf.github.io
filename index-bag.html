@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>kmansgolf · the suite</title>
+<meta name="description" content="kmansgolf — practice, play, and improvement tracking.">
+<link rel="icon" href="kmansgolf-icon.svg" type="image/svg+xml">
+
+<!-- Preload bag images for instant theme swap -->
+<link rel="preload" as="image" href="assets/bag-dark.webp">
+<link rel="preload" as="image" href="assets/bag-light.webp">
+
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --gold:       #e8b84b;
+    --green:      #3ddc84;
+    --green-d:    #1a8a4a;
+    --cream:      #f5f0e8;
+  }
+  [data-theme="dark"] {
+    --bg:           #0a0a0b;
+    --surface:      #1c1c1e;
+    --raised:       #2c2c2e;
+    --text:         #ffffff;
+    --muted:        rgba(255,255,255,0.55);
+    --border:       rgba(255,255,255,0.09);
+    --green-active: var(--green);
+    --bag-img:      url('assets/bag-dark.webp');
+    --bag-shadow:   drop-shadow(0 30px 50px rgba(245,240,232,0.12));
+  }
+  [data-theme="light"] {
+    --bg:           #faf8f4;
+    --surface:      #ffffff;
+    --raised:       #f0ece4;
+    --text:         #1a1a1e;
+    --muted:        rgba(0,0,0,0.55);
+    --border:       rgba(0,0,0,0.10);
+    --green-active: var(--green-d);
+    --bag-img:      url('assets/bag-light.webp');
+    --bag-shadow:   drop-shadow(0 28px 44px rgba(26,138,74,0.18));
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 280ms ease, color 280ms ease;
+    overflow-x: hidden;
+  }
+
+  /* ─── Theme toggle (top-right corner) ───────────────────────────── */
+  .theme-toggle {
+    position: fixed;
+    top: max(14px, env(safe-area-inset-top));
+    right: 14px;
+    z-index: 100;
+    width: 38px; height: 38px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 200ms ease;
+    color: var(--text);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .theme-toggle:hover {
+    border-color: var(--gold);
+    transform: scale(1.05);
+  }
+  .theme-toggle svg { width: 18px; height: 18px; }
+  [data-theme="dark"] .theme-toggle .icon-sun  { display: block; }
+  [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+  [data-theme="light"] .theme-toggle .icon-sun  { display: none; }
+  [data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+  /* ─── Fixed-position bag (parallax effect as content scrolls) ───── */
+  .bag-fixed {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 82vw; max-width: 460px;
+    aspect-ratio: 560 / 800;
+    background-image: var(--bag-img);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    filter: var(--bag-shadow);
+    z-index: 1;
+    pointer-events: none;
+    transition: filter 280ms ease;
+  }
+
+  /* ─── Foreground content scrolls over the fixed bag ─────────────── */
+  .scroll-content {
+    position: relative;
+    z-index: 2;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 56px 20px 80px;
+    min-height: 100vh;
+  }
+
+  /* ─── Tagline ───────────────────────────────────────────────────── */
+  .tagline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(56px, 14vw, 72px);
+    line-height: 0.92;
+    letter-spacing: -0.025em;
+    margin: 24px 0 6px;
+  }
+  .tagline .green-word {
+    color: var(--green-active);
+    display: block;
+  }
+  .sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  /* Spacer keeps bag visible between tagline and nav */
+  .bag-space {
+    height: 56vh;
+    pointer-events: none;
+  }
+
+  /* ─── Nav list ──────────────────────────────────────────────────── */
+  .nav-list {
+    display: flex; flex-direction: column;
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-row {
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 14px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text);
+    transition: padding 180ms ease, background 180ms ease;
+  }
+  .nav-row:last-child { border-bottom: none; }
+  .nav-row:hover, .nav-row:focus-visible {
+    padding-left: 22px;
+    background: color-mix(in srgb, var(--gold) 6%, transparent);
+    outline: none;
+  }
+  .nav-row:hover .nav-arrow,
+  .nav-row:focus-visible .nav-arrow {
+    color: var(--gold);
+    transform: translateX(4px);
+  }
+  .nav-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+  }
+  .nav-club {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .nav-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .nav-arrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    color: var(--muted);
+    transition: all 200ms ease;
+  }
+
+  /* ─── Footer ────────────────────────────────────────────────────── */
+  .footer {
+    text-align: center;
+    margin-top: 32px;
+    padding: 20px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Reduced motion — disable transitions for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+  </svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+</button>
+
+<div class="bag-fixed" aria-hidden="true"></div>
+
+<main class="scroll-content">
+  <h1 class="tagline">Your Game<span class="green-word">Tracked</span></h1>
+  <div class="sub">the suite</div>
+
+  <div class="bag-space" aria-hidden="true"></div>
+
+  <nav class="nav-list" aria-label="Apps">
+    <a class="nav-row" href="range/">
+      <div class="nav-num">01</div>
+      <div>
+        <div class="nav-club">DRIVER</div>
+        <div class="nav-name">The Range</div>
+      </div>
+      <div class="nav-arrow">→</div>
+    </a>
+    <a class="nav-row" href="bunker/">
+      <div class="nav-num">02</div>
+      <div>
+        <div class="nav-club">WEDGE</div>
+        <div class="nav-name">The Bunker</div>
+      </div>
+      <div class="nav-arrow">→</div>
+    </a>
+    <a class="nav-row" href="fairway/">
+      <div class="nav-num">03</div>
+      <div>
+        <div class="nav-club">3-WOOD</div>
+        <div class="nav-name">The Fairway</div>
+      </div>
+      <div class="nav-arrow">→</div>
+    </a>
+    <a class="nav-row" href="caddie/">
+      <div class="nav-num">04</div>
+      <div>
+        <div class="nav-club">HYBRID</div>
+        <div class="nav-name">The Caddie</div>
+      </div>
+      <div class="nav-arrow">→</div>
+    </a>
+    <a class="nav-row" href="green/">
+      <div class="nav-num">05</div>
+      <div>
+        <div class="nav-club">PUTTER</div>
+        <div class="nav-name">The Green</div>
+      </div>
+      <div class="nav-arrow">→</div>
+    </a>
+  </nav>
+
+  <div class="footer">kmansgolf · 2026</div>
+</main>
+
+<script>
+  // ─── Theme handling — syncs with the rest of the suite via 'range_theme' key ──
+  (function() {
+    const KEY = 'range_theme';
+    const html = document.documentElement;
+    const stored = localStorage.getItem(KEY);
+    const theme = stored === 'light' ? 'light' : 'dark';
+    html.setAttribute('data-theme', theme);
+
+    document.getElementById('theme-btn').addEventListener('click', () => {
+      const cur = html.getAttribute('data-theme');
+      const next = cur === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem(KEY, next);
+    });
+  })();
+</script>
+</body>
+</html>
